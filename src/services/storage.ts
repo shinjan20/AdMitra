@@ -23,7 +23,10 @@ const STORAGE_KEYS = {
 export const INITIAL_USER: User = {
   id: 'usr-demo-01',
   email: 'owner@aurabridal.in',
+  username: 'pooja_aura',
   name: 'Pooja Sharma',
+  authProvider: 'email',
+  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
   createdAt: '2026-10-15T09:00:00Z',
 };
 

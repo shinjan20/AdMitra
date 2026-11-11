@@ -5,7 +5,10 @@ export type CampaignStatus = 'draft' | 'active' | 'paused' | 'completed';
 export interface User {
   id: string;
   email: string;
+  username?: string;
   name: string;
+  avatarUrl?: string;
+  authProvider: 'email' | 'google';
   createdAt: string;
 }
 

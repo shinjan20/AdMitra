@@ -25,7 +25,11 @@ interface ToastMessage {
 }
 
 interface AppContextType {
-  user: User;
+  user: User | null;
+  setUser: (user: User | null) => void;
+  showAuthModal: boolean;
+  setShowAuthModal: (show: boolean) => void;
+  logout: () => void;
   activeBusiness: BusinessProfile;
   businesses: BusinessProfile[];
   campaigns: Campaign[];
@@ -54,7 +58,8 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User>(() => StorageService.getUser());
+  const [user, setUserState] = useState<User | null>(() => StorageService.getUser());
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const [activeBusiness, setActiveBusinessState] = useState<BusinessProfile>(() => StorageService.getActiveBusiness());
   const [businesses, setBusinesses] = useState<BusinessProfile[]>(() => StorageService.getAllBusinesses());
   const [campaigns, setCampaigns] = useState<Campaign[]>(() => StorageService.getCampaigns());
@@ -77,6 +82,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setTimeout(() => {
       dismissToast(id);
     }, 4500);
+  };
+
+  const setUser = (newUser: User | null) => {
+    setUserState(newUser);
+    if (newUser) {
+      StorageService.setUser(newUser);
+    }
+  };
+
+  const logout = () => {
+    setUserState(null);
+    localStorage.removeItem('cp_auth_session');
+    showToast({
+      type: 'info',
+      title: 'Signed Out',
+      message: 'You have been signed out of CampaignPilot.',
+    });
   };
 
   const dismissToast = (id: string) => {
@@ -109,7 +131,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const newBiz: BusinessProfile = {
       ...data,
       id: `biz-${Date.now()}`,
-      userId: user.id,
+      userId: user?.id || 'usr-demo-01',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -219,6 +241,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider
       value={{
         user,
+        setUser,
+        showAuthModal,
+        setShowAuthModal,
+        logout,
         activeBusiness,
         businesses,
         campaigns,

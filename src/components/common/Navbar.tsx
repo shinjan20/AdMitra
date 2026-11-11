@@ -3,9 +3,12 @@ import { useApp } from '../../context/AppContext';
 import {
   Compass,
   Plus,
-  Store,
   ChevronDown,
   Check,
+  LogIn,
+  LogOut,
+  Building2,
+  Mail,
 } from 'lucide-react';
 import { DemoNoticeBadge } from './DemoNoticeBadge';
 
@@ -18,9 +21,12 @@ export const Navbar: React.FC = () => {
     activeDraft,
     user,
     setShowOnboardingModal,
+    setShowAuthModal,
+    logout,
   } = useApp();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200/60 px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
@@ -123,14 +129,90 @@ export const Navbar: React.FC = () => {
           <span>{activeDraft ? 'Resume Draft' : 'New Campaign'}</span>
         </button>
 
-        {/* User avatar */}
-        <button
-          onClick={() => navigateTo('business-profile')}
-          className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium flex items-center justify-center transition-colors"
-          title={`Signed in as ${user.name}`}
-        >
-          {user.name[0]}
-        </button>
+        {/* User Account / Sign In */}
+        {user ? (
+          <div className="relative">
+            <button
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              className="flex items-center gap-1.5 p-1 rounded-full hover:bg-slate-100 transition-colors"
+              title={`Account: ${user.name}`}
+            >
+              {user.avatarUrl ? (
+                <img
+                  src={user.avatarUrl}
+                  alt={user.name}
+                  className="w-7 h-7 rounded-full object-cover border border-slate-200"
+                />
+              ) : (
+                <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-medium flex items-center justify-center">
+                  {user.name[0]}
+                </div>
+              )}
+            </button>
+
+            {isUserMenuOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setIsUserMenuOpen(false)}
+                />
+                <div className="absolute right-0 mt-1.5 w-60 bg-white rounded-xl shadow-lg border border-slate-200/80 p-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+                  <div className="px-2.5 py-2 border-b border-slate-100">
+                    <p className="text-xs font-semibold text-slate-900 truncate">{user.name}</p>
+                    <p className="text-[11px] text-slate-400 truncate">{user.email}</p>
+                    <div className="mt-1 inline-flex items-center gap-1 text-[10px] text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">
+                      {user.authProvider === 'google' ? 'Google Account' : 'Email Account'}
+                    </div>
+                  </div>
+
+                  <div className="py-1 space-y-0.5">
+                    <button
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        navigateTo('business-profile');
+                      }}
+                      className="w-full text-left px-2.5 py-1.5 text-xs text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2"
+                    >
+                      <Building2 className="w-3.5 h-3.5 text-slate-400" />
+                      Business Profile
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        setShowOnboardingModal(true);
+                      }}
+                      className="w-full text-left px-2.5 py-1.5 text-xs text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2"
+                    >
+                      <Plus className="w-3.5 h-3.5 text-slate-400" />
+                      Switch Business Preset
+                    </button>
+                  </div>
+
+                  <div className="border-t border-slate-100 pt-1">
+                    <button
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        logout();
+                      }}
+                      className="w-full text-left px-2.5 py-1.5 text-xs text-rose-600 hover:bg-rose-50 rounded-lg flex items-center gap-2 font-medium"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
+          <button
+            onClick={() => setShowAuthModal(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-medium rounded-lg transition-colors"
+          >
+            <LogIn className="w-3.5 h-3.5" />
+            <span>Sign In</span>
+          </button>
+        )}
       </div>
     </header>
   );

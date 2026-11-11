@@ -4,6 +4,7 @@ import { Navbar } from './components/common/Navbar';
 import { Sidebar } from './components/common/Sidebar';
 import { ToastContainer } from './components/common/Toast';
 import { BusinessOnboardingModal } from './components/onboarding/BusinessOnboardingModal';
+import { AuthModal } from './components/auth/AuthModal';
 import { JTBDLauncher } from './components/dashboard/JTBDLauncher';
 import { DashboardOverview } from './components/dashboard/DashboardOverview';
 import { CampaignList } from './components/dashboard/CampaignList';
@@ -13,7 +14,7 @@ import { CampaignDetailModal } from './components/campaign-details/CampaignDetai
 import { CreativeStudioPage } from './components/creative-studio/CreativeStudioPage';
 import { BusinessProfilePage } from './components/business-profile/BusinessProfilePage';
 import { SettingsPage } from './components/settings/SettingsPage';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, LogIn, Sparkles } from 'lucide-react';
 
 const MainContent: React.FC = () => {
   const {
@@ -21,6 +22,9 @@ const MainContent: React.FC = () => {
     selectedCampaignId,
     navigateTo,
     activeBusiness,
+    user,
+    showAuthModal,
+    setShowAuthModal,
   } = useApp();
 
   return (
@@ -31,6 +35,24 @@ const MainContent: React.FC = () => {
         <Sidebar />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto w-full">
+          {/* Guest notification pill if logged out */}
+          {!user && (
+            <div className="mb-5 p-3 rounded-xl bg-slate-900 text-white flex items-center justify-between text-xs shadow-sm">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                <span>
+                  You are exploring CampaignPilot as a guest. Sign in with username/password or Google to save custom campaigns.
+                </span>
+              </div>
+              <button
+                onClick={() => setShowAuthModal(true)}
+                className="px-3 py-1 bg-white text-slate-900 font-semibold rounded-lg hover:bg-slate-100 flex items-center gap-1.5 whitespace-nowrap ml-3"
+              >
+                <LogIn className="w-3.5 h-3.5" /> Sign In
+              </button>
+            </div>
+          )}
+
           {/* VIEW 1: DASHBOARD */}
           {activePage === 'dashboard' && (
             <div className="space-y-6">
@@ -88,6 +110,7 @@ const MainContent: React.FC = () => {
       </div>
 
       <BusinessOnboardingModal />
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
       <ToastContainer />
     </div>
   );
