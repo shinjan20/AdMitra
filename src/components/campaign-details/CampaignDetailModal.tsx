@@ -8,17 +8,10 @@ import { formatINR } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 import { DemoNoticeBadge } from '../common/DemoNoticeBadge';
 import {
-  MessageSquare,
-  Users,
-  Eye,
-  IndianRupee,
   Play,
   Pause,
   Square,
-  Sparkles,
   MapPin,
-  Calendar,
-  Share2,
 } from 'lucide-react';
 
 interface CampaignDetailModalProps {
@@ -30,7 +23,7 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({
   campaignId,
   onClose,
 }) => {
-  const { campaigns, updateCampaignStatus, showToast } = useApp();
+  const { campaigns, updateCampaignStatus } = useApp();
   const [activeTab, setActiveTab] = useState<'analytics' | 'creative' | 'audience'>('analytics');
 
   const campaign = campaigns.find((c) => c.id === campaignId);
@@ -50,29 +43,27 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({
       isOpen={Boolean(campaignId)}
       onClose={onClose}
       title={campaign.campaignName}
-      subtitle={`${campaign.objective.toUpperCase()} Campaign • ${campaign.audience.locationCity} • ${formatDate(campaign.startDate)} to ${formatDate(campaign.endDate)}`}
-      maxWidth="4xl"
+      subtitle={`${campaign.objective.toUpperCase()} · ${campaign.audience.locationCity} · ${formatDate(campaign.startDate)} to ${formatDate(campaign.endDate)}`}
+      maxWidth="3xl"
     >
-      <div className="space-y-6">
-        {/* Top Control Bar: Status, Action Buttons, Demo Badge */}
-        <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+      <div className="space-y-5">
+        {/* Top Control Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/80">
           <div className="flex items-center gap-2">
             <span
-              className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+              className={`px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize flex items-center gap-1.5 ${
                 campaign.status === 'active'
-                  ? 'bg-emerald-100 text-emerald-800'
-                  : campaign.status === 'paused'
-                  ? 'bg-amber-100 text-amber-800'
+                  ? 'bg-emerald-50 text-emerald-700'
                   : 'bg-slate-200 text-slate-700'
               }`}
             >
               {campaign.status === 'active' && (
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               )}
               {campaign.status}
             </span>
             <span className="text-xs text-slate-500">
-              Budget: <strong>{formatINR(spend)}</strong> of {formatINR(campaign.totalBudget)}
+              Spent: <strong>{formatINR(spend)}</strong> of {formatINR(campaign.totalBudget)}
             </span>
           </div>
 
@@ -80,104 +71,101 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({
             {campaign.status === 'active' ? (
               <button
                 onClick={() => updateCampaignStatus(campaign.id, 'paused')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-semibold border border-amber-200 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium border border-slate-200 transition-colors"
               >
                 <Pause className="w-3.5 h-3.5" />
-                Pause Delivery
+                Pause
               </button>
             ) : campaign.status === 'paused' ? (
               <button
                 onClick={() => updateCampaignStatus(campaign.id, 'active')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium transition-colors"
               >
                 <Play className="w-3.5 h-3.5" />
-                Resume Delivery
+                Resume
               </button>
             ) : null}
 
             {campaign.status !== 'completed' && (
               <button
                 onClick={() => updateCampaignStatus(campaign.id, 'completed')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 text-xs font-medium transition-colors"
               >
                 <Square className="w-3.5 h-3.5" />
-                End Campaign
+                Stop
               </button>
             )}
           </div>
         </div>
 
-        {/* Prototype notice */}
-        <DemoNoticeBadge />
-
         {/* Tab Switcher */}
-        <div className="flex items-center border-b border-slate-200 space-x-6 text-xs font-semibold">
+        <div className="flex items-center border-b border-slate-200 space-x-5 text-xs font-medium">
           <button
             onClick={() => setActiveTab('analytics')}
-            className={`pb-2.5 transition-colors ${
+            className={`pb-2 transition-colors ${
               activeTab === 'analytics'
-                ? 'border-b-2 border-blue-600 text-blue-600'
-                : 'text-slate-500 hover:text-slate-800'
+                ? 'border-b-2 border-slate-900 text-slate-900 font-semibold'
+                : 'text-slate-400 hover:text-slate-700'
             }`}
           >
-            Performance Analytics & AI Coach
+            Analytics & Coach
           </button>
           <button
             onClick={() => setActiveTab('creative')}
-            className={`pb-2.5 transition-colors ${
+            className={`pb-2 transition-colors ${
               activeTab === 'creative'
-                ? 'border-b-2 border-blue-600 text-blue-600'
-                : 'text-slate-500 hover:text-slate-800'
+                ? 'border-b-2 border-slate-900 text-slate-900 font-semibold'
+                : 'text-slate-400 hover:text-slate-700'
             }`}
           >
-            Ad Creative & Messaging
+            Ad Creative
           </button>
           <button
             onClick={() => setActiveTab('audience')}
-            className={`pb-2.5 transition-colors ${
+            className={`pb-2 transition-colors ${
               activeTab === 'audience'
-                ? 'border-b-2 border-blue-600 text-blue-600'
-                : 'text-slate-500 hover:text-slate-800'
+                ? 'border-b-2 border-slate-900 text-slate-900 font-semibold'
+                : 'text-slate-400 hover:text-slate-700'
             }`}
           >
-            Audience & Location
+            Audience Targeting
           </button>
         </div>
 
-        {/* TAB 1: Analytics & Coach */}
+        {/* TAB 1: Analytics */}
         {activeTab === 'analytics' && (
-          <div className="space-y-6">
+          <div className="space-y-5">
             {/* KPI Cards Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-[10px] text-slate-500 font-semibold uppercase">Total Spend</span>
-                <p className="text-lg font-extrabold text-slate-900 mt-0.5">{formatINR(spend)}</p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                <span className="text-[10px] text-slate-400 font-medium uppercase">Total Spent</span>
+                <p className="text-base font-bold text-slate-900 mt-0.5">{formatINR(spend)}</p>
                 <span className="text-[10px] text-slate-400">
-                  {formatINR(campaign.dailyBudget)}/day avg
+                  {formatINR(campaign.dailyBudget)}/day
                 </span>
               </div>
 
-              <div className="p-3.5 bg-emerald-50/60 rounded-xl border border-emerald-100">
-                <span className="text-[10px] text-emerald-800 font-semibold uppercase">
+              <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100">
+                <span className="text-[10px] text-emerald-800 font-medium uppercase">
                   {campaign.objective === 'messages'
                     ? 'WhatsApp Chats'
                     : campaign.objective === 'leads'
-                    ? 'Leads Collected'
+                    ? 'Leads'
                     : 'Clicks'}
                 </span>
-                <p className="text-lg font-extrabold text-emerald-950 mt-0.5">
+                <p className="text-base font-bold text-emerald-950 mt-0.5">
                   {campaign.objective === 'messages'
                     ? messages
                     : campaign.objective === 'leads'
                     ? leads
                     : clicks}
                 </p>
-                <span className="text-[10px] text-emerald-700 font-medium">Direct Inquiries</span>
+                <span className="text-[10px] text-emerald-700">Direct Inquiries</span>
               </div>
 
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-[10px] text-slate-500 font-semibold uppercase">Cost / Inquiry</span>
-                <p className="text-lg font-extrabold text-slate-900 mt-0.5">
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                <span className="text-[10px] text-slate-400 font-medium uppercase">Cost / Inquiry</span>
+                <p className="text-base font-bold text-slate-900 mt-0.5">
                   {formatINR(
                     campaign.objective === 'messages' && messages > 0
                       ? spend / messages
@@ -188,84 +176,66 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({
                       : 0
                   )}
                 </p>
-                <span className="text-[10px] text-slate-400">Per Conversion</span>
+                <span className="text-[10px] text-slate-400">Average</span>
               </div>
 
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-[10px] text-slate-500 font-semibold uppercase">
-                  Impressions & CTR
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                <span className="text-[10px] text-slate-400 font-medium uppercase">
+                  Impressions
                 </span>
-                <p className="text-lg font-extrabold text-slate-900 mt-0.5">
+                <p className="text-base font-bold text-slate-900 mt-0.5">
                   {impressions.toLocaleString('en-IN')}
                 </p>
-                <span className="text-[10px] text-blue-600 font-bold">{ctr}% click rate</span>
+                <span className="text-[10px] text-slate-600 font-medium">{ctr}% click rate</span>
               </div>
             </div>
 
-            {/* Recharts Spend vs Outcomes Chart */}
-            <div className="p-4 bg-white rounded-xl border border-slate-200">
+            <div className="p-4 bg-white rounded-xl border border-slate-200/80">
               <PerformanceChart
                 data={metrics?.dailyData || []}
                 objective={campaign.objective}
               />
             </div>
 
-            {/* AI Insights Card */}
             <AIInsightsCard campaign={campaign} />
           </div>
         )}
 
         {/* TAB 2: Creative */}
         {activeTab === 'creative' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                Active Ad Creative
-              </h4>
-              <div className="p-4 bg-white rounded-xl border border-slate-200 space-y-3">
-                <img
-                  src={campaign.creative.imageUrl}
-                  alt="Ad preview"
-                  className="w-full h-48 object-cover rounded-lg border border-slate-200"
-                />
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900">{campaign.creative.headline}</h3>
-                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                    {campaign.creative.description}
-                  </p>
-                </div>
-                <div className="pt-2 flex items-center justify-between border-t border-slate-100">
-                  <span className="text-xs text-slate-500">CTA:</span>
-                  <span className="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-lg">
-                    {campaign.creative.cta}
-                  </span>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
+            <div className="p-4 bg-white rounded-xl border border-slate-200/80 space-y-3">
+              <img
+                src={campaign.creative.imageUrl}
+                alt=""
+                className="w-full h-44 object-cover rounded-lg border border-slate-200"
+              />
+              <div>
+                <h3 className="text-xs font-semibold text-slate-900">{campaign.creative.headline}</h3>
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                  {campaign.creative.description}
+                </p>
+              </div>
+              <div className="pt-2 flex items-center justify-between border-t border-slate-100 text-xs">
+                <span className="text-slate-400">Button:</span>
+                <span className="px-2.5 py-1 bg-slate-900 text-white text-xs font-medium rounded-lg">
+                  {campaign.creative.cta}
+                </span>
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                Creative Details
-              </h4>
-              <div className="space-y-2 text-xs text-slate-600">
-                <div className="flex justify-between py-1 border-b border-slate-200">
-                  <span>Type:</span>
-                  <span className="font-semibold text-slate-800">
-                    {campaign.creative.isAIGenerated ? 'AI Generated (Reviewed & Approved)' : 'Custom'}
-                  </span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-200">
-                  <span>Target Destination:</span>
-                  <span className="font-semibold text-slate-800">
-                    {campaign.objective === 'messages' ? 'Direct WhatsApp Chat' : 'Lead Form'}
-                  </span>
-                </div>
-                <div className="flex justify-between py-1 text-slate-600">
-                  <span>Approval Status:</span>
-                  <span className="font-bold text-emerald-600 uppercase">
-                    {campaign.creative.approvalStatus}
-                  </span>
-                </div>
+            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/60 space-y-2 text-xs text-slate-600">
+              <div className="flex justify-between py-1 border-b border-slate-200/60">
+                <span>Destination:</span>
+                <span className="font-medium text-slate-900">
+                  {campaign.objective === 'messages' ? 'Direct WhatsApp Chat' : 'Lead Form'}
+                </span>
+              </div>
+              <div className="flex justify-between py-1 border-b border-slate-200/60">
+                <span>Approval:</span>
+                <span className="font-medium text-emerald-600 uppercase">
+                  {campaign.creative.approvalStatus}
+                </span>
               </div>
             </div>
           </div>
@@ -273,55 +243,30 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({
 
         {/* TAB 3: Audience */}
         {activeTab === 'audience' && (
-          <div className="space-y-4">
-            <div className="p-4 bg-white rounded-xl border border-slate-200 space-y-3">
-              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-blue-600" />
-                Target Geography & Demographics
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <span className="text-slate-400 block text-[10px]">Location</span>
-                  <span className="font-bold text-slate-900">
-                    {campaign.audience.locationCity}
-                  </span>
-                  {campaign.audience.locationArea && (
-                    <span className="text-slate-500 block text-[10px]">
-                      {campaign.audience.locationArea}
-                    </span>
-                  )}
-                </div>
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <span className="text-slate-400 block text-[10px]">Radius</span>
-                  <span className="font-bold text-slate-900">
-                    {campaign.audience.radiusKm} km radius
-                  </span>
-                </div>
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <span className="text-slate-400 block text-[10px]">Age Range</span>
-                  <span className="font-bold text-slate-900">
-                    {campaign.audience.ageRangeMin} - {campaign.audience.ageRangeMax} yrs
-                  </span>
-                </div>
+          <div className="p-4 bg-white rounded-xl border border-slate-200/80 space-y-3">
+            <h4 className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-slate-500" />
+              Target Location & Audience
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+              <div className="p-2.5 bg-slate-50 rounded-lg">
+                <span className="text-slate-400 block text-[10px]">Location</span>
+                <span className="font-semibold text-slate-900">
+                  {campaign.audience.locationCity}
+                </span>
               </div>
-
-              {campaign.audience.interests.length > 0 && (
-                <div className="pt-2">
-                  <span className="text-[11px] font-semibold text-slate-600 block mb-1.5">
-                    Targeted Customer Interests:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {campaign.audience.interests.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <div className="p-2.5 bg-slate-50 rounded-lg">
+                <span className="text-slate-400 block text-[10px]">Radius</span>
+                <span className="font-semibold text-slate-900">
+                  {campaign.audience.radiusKm} km radius
+                </span>
+              </div>
+              <div className="p-2.5 bg-slate-50 rounded-lg">
+                <span className="text-slate-400 block text-[10px]">Age Range</span>
+                <span className="font-semibold text-slate-900">
+                  {campaign.audience.ageRangeMin} - {campaign.audience.ageRangeMax} yrs
+                </span>
+              </div>
             </div>
           </div>
         )}
@@ -329,4 +274,3 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({
     </Modal>
   );
 };
-

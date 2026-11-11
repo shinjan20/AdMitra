@@ -132,3 +132,4 @@ Creates an optimized static bundle in `dist/` ready for immediate deployment on 
 7. **Step 5:** Choose the *Growth Push (₹5,000)* package. Review daily spend math.
 8. **Step 6:** Review the pre-flight checklist. Check the approval confirmation and click **Launch Demo Campaign**.
 9. Watch the celebratory confetti, then drill down into your new campaign in the Dashboard to view performance trends and AI Coach recommendations!
+

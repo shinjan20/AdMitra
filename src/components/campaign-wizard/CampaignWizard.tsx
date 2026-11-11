@@ -9,14 +9,14 @@ import { Step5Budget } from './Step5Budget';
 import { Step6Review } from './Step6Review';
 import { generateMockMetrics } from '../../services/storage';
 import {
+  RotateCcw,
+  X,
   Target,
   Sparkles,
   Palette,
   Users,
   IndianRupee,
   CheckCircle,
-  X,
-  RotateCcw,
 } from 'lucide-react';
 
 export const CampaignWizard: React.FC = () => {
@@ -50,19 +50,18 @@ export const CampaignWizard: React.FC = () => {
   }, [activeBusiness.id]);
 
   const steps = [
-    { number: 1, label: 'Objective', icon: <Target className="w-3.5 h-3.5" /> },
-    { number: 2, label: 'Strategy', icon: <Sparkles className="w-3.5 h-3.5" /> },
-    { number: 3, label: 'Creative', icon: <Palette className="w-3.5 h-3.5" /> },
-    { number: 4, label: 'Audience', icon: <Users className="w-3.5 h-3.5" /> },
-    { number: 5, label: 'Budget', icon: <IndianRupee className="w-3.5 h-3.5" /> },
-    { number: 6, label: 'Review', icon: <CheckCircle className="w-3.5 h-3.5" /> },
+    { number: 1, label: 'Objective' },
+    { number: 2, label: 'Strategy' },
+    { number: 3, label: 'Creative' },
+    { number: 4, label: 'Audience' },
+    { number: 5, label: 'Budget' },
+    { number: 6, label: 'Review' },
   ];
 
   const handleNextStep = (next: number) => {
     setCurrentStep(next);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Funnel event logging for each step transition
     const stepEvents: Record<number, any> = {
       2: 'campaign_recommendation_generated',
       3: 'creative_generated',
@@ -76,7 +75,6 @@ export const CampaignWizard: React.FC = () => {
   };
 
   const handleLaunchSuccess = (launchedCampaign: Campaign) => {
-    // Generate initial live metrics for the new campaign
     const metrics = generateMockMetrics(
       launchedCampaign.id,
       launchedCampaign.totalBudget,
@@ -97,7 +95,7 @@ export const CampaignWizard: React.FC = () => {
 
     showToast({
       type: 'success',
-      title: '🚀 Campaign Launched Successfully!',
+      title: 'Campaign Launched',
       message: `"${fullCampaign.campaignName}" is now active in demo mode.`,
     });
 
@@ -105,103 +103,94 @@ export const CampaignWizard: React.FC = () => {
   };
 
   const handleResetDraft = () => {
-    if (window.confirm('Are you sure you want to discard this campaign draft?')) {
+    if (window.confirm('Discard this campaign draft and start fresh?')) {
       clearActiveDraft();
       setCurrentStep(1);
-      showToast({
-        type: 'info',
-        title: 'Draft Cleared',
-        message: 'Started fresh campaign creation.',
-      });
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 pb-16">
-      {/* Wizard Header Bar & Step Progress */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+    <div className="max-w-4xl mx-auto space-y-5 pb-16">
+      {/* Quiet Top Navigation & Step Tracker */}
+      <div className="bg-white rounded-2xl border border-slate-200/70 p-4 shadow-2xs space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div>
-            <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">
-              Guided Campaign Builder
+            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">
+              Guided Campaign Setup
             </span>
-            <h1 className="text-lg font-bold text-slate-900 mt-0.5">
-              Launch Campaign for {activeBusiness.businessName}
+            <h1 className="text-base font-semibold text-slate-900 mt-0.5">
+              New Campaign for {activeBusiness.businessName}
             </h1>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={handleResetDraft}
-              className="text-xs text-slate-400 hover:text-rose-600 font-medium flex items-center gap-1 transition-colors px-2 py-1 rounded hover:bg-slate-50"
-              title="Clear draft and start fresh"
+              className="text-xs text-slate-400 hover:text-slate-700 font-medium px-2 py-1 rounded transition-colors flex items-center gap-1"
+              title="Start fresh"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              Reset Draft
+              Reset
             </button>
             <button
               onClick={() => navigateTo('dashboard')}
-              className="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-              title="Save and exit to dashboard"
+              className="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-50 transition-colors"
+              title="Close and save as draft"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Step Progress Indicators */}
-        <div className="pt-4 overflow-x-auto">
-          <div className="flex items-center justify-between min-w-[550px]">
-            {steps.map((st, idx) => {
-              const isCurrent = currentStep === st.number;
-              const isPast = currentStep > st.number;
-              return (
-                <React.Fragment key={st.number}>
-                  <button
-                    onClick={() => {
-                      if (isPast || st.number < currentStep) {
-                        setCurrentStep(st.number);
-                      }
-                    }}
-                    disabled={st.number > currentStep}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+        {/* Minimalist Step Pills */}
+        <div className="flex items-center justify-between gap-1 overflow-x-auto pt-1 pb-0.5">
+          {steps.map((st, idx) => {
+            const isCurrent = currentStep === st.number;
+            const isPast = currentStep > st.number;
+            return (
+              <React.Fragment key={st.number}>
+                <button
+                  onClick={() => {
+                    if (isPast) setCurrentStep(st.number);
+                  }}
+                  disabled={!isPast && !isCurrent}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    isCurrent
+                      ? 'bg-slate-900 text-white shadow-2xs'
+                      : isPast
+                      ? 'bg-slate-100 text-slate-700 hover:bg-slate-200/70 cursor-pointer'
+                      : 'text-slate-400 bg-slate-50 cursor-not-allowed'
+                  }`}
+                >
+                  <span
+                    className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-semibold ${
                       isCurrent
-                        ? 'bg-blue-600 text-white shadow-sm ring-2 ring-blue-500/20'
+                        ? 'bg-white text-slate-900'
                         : isPast
-                        ? 'bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer'
-                        : 'text-slate-400 bg-slate-50 cursor-not-allowed opacity-70'
+                        ? 'bg-slate-300 text-slate-800'
+                        : 'bg-slate-200 text-slate-400'
                     }`}
                   >
-                    <span
-                      className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                        isCurrent
-                          ? 'bg-white text-blue-600'
-                          : isPast
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-slate-200 text-slate-500'
-                      }`}
-                    >
-                      {st.number}
-                    </span>
-                    <span>{st.label}</span>
-                  </button>
+                    {st.number}
+                  </span>
+                  <span>{st.label}</span>
+                </button>
 
-                  {idx < steps.length - 1 && (
-                    <div
-                      className={`flex-1 h-0.5 mx-2 ${
-                        isPast ? 'bg-blue-300' : 'bg-slate-200'
-                      }`}
-                    />
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </div>
+                {idx < steps.length - 1 && (
+                  <div
+                    className={`flex-1 h-px min-w-3 max-w-10 ${
+                      isPast ? 'bg-slate-300' : 'bg-slate-200'
+                    }`}
+                  />
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
       </div>
 
-      {/* Step Contents */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-xs">
+      {/* Step Body */}
+      <div className="bg-white rounded-2xl border border-slate-200/70 p-5 sm:p-7 shadow-2xs">
         {currentStep === 1 && (
           <Step1Objective
             selectedObjective={activeDraft?.objective || 'messages'}
@@ -283,4 +272,3 @@ export const CampaignWizard: React.FC = () => {
     </div>
   );
 };
-

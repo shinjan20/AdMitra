@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Info, ShieldCheck } from 'lucide-react';
+import { Info } from 'lucide-react';
 
 interface DemoNoticeBadgeProps {
   compact?: boolean;
@@ -13,27 +13,25 @@ export const DemoNoticeBadge: React.FC<DemoNoticeBadgeProps> = ({
   if (compact) {
     return (
       <span
-        className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-800 border border-amber-200/80 ${className}`}
+        className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200/80 ${className}`}
         title="Simulated Demo Launch: Real advertising APIs can be connected in Phase 2"
       >
-        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-        Demo Prototype
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        Demo Mode
       </span>
     );
   }
 
   return (
     <div
-      className={`bg-amber-50/90 border border-amber-200/90 rounded-lg p-3 text-xs text-amber-900 flex items-start gap-2.5 ${className}`}
+      className={`bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-xs text-slate-600 flex items-start gap-2.5 ${className}`}
     >
-      <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+      <Info className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
       <div className="leading-relaxed">
-        <strong className="font-semibold text-amber-950">Prototype Simulation Notice:</strong>{' '}
-        Campaign launches and analytics in this MVP are simulated in high fidelity for testing. No
-        actual ad spend is charged to credit cards, and ads are not live on external platforms until
-        real Ad APIs are enabled in Phase 2.
+        <span className="font-semibold text-slate-800">Simulated MVP:</span>{' '}
+        Campaign launches and analytics are simulated in high fidelity for testing. No
+        real money is spent, and ads are not published to external platforms until API integration in Phase 2.
       </div>
     </div>
   );
 };
-
