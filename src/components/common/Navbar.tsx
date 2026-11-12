@@ -104,14 +104,14 @@ export const Navbar: React.FC = () => {
                   onClick={() => setIsUserMenuOpen((open) => !open)}
                   className="flex min-h-11 items-center gap-2 rounded-lg px-1.5 text-sm font-medium text-[color:var(--ink)] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[color:var(--brand)]"
                   aria-expanded={isUserMenuOpen}
-                  aria-label={`${tr('Account menu for {name}', { name: user.name })}`}
+                  aria-label={`${tr('Account menu for {name}', { name: activeBusiness.businessName || user.name })}`}
                 >
                   <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-[color:var(--ink)] text-xs font-bold text-[color:var(--paper)]">
                     {user.avatarUrl ? (
                       <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
-                    ) : user.name[0]}
+                    ) : (activeBusiness.businessName || user.name)[0]}
                   </span>
-                  <span className="hidden max-w-28 truncate sm:inline ml-1">{user.name}</span>
+                  <span className="hidden max-w-28 truncate sm:inline ml-1">{activeBusiness.businessName || user.name}</span>
                 </button>
                 {isUserMenuOpen && (
                   <>
