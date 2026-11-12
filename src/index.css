@@ -3,21 +3,60 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: light;
+    /* Warm paper, warm black, marigold. Deliberately not slate-on-slate. */
+    --paper: #faf7f0;
+    --paper-deep: #f2ebdd;
+    --surface: #ffffff;
+    --ink: #1a1815;
+    --ink-soft: #5c574f;
+    --line: #e7dfd0;
+    --line-strong: #d8cdb8;
+    --marigold: #f5b324;
+    --marigold-soft: #fff2cf;
+    --marigold-ink: #8a5600;
+    --leaf: #12715a;
+    --leaf-soft: #e3f3ee;
+    --brand: #b45309;
+  }
+
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
+
   body {
-    @apply bg-[#F9FAFB] text-slate-900 selection:bg-slate-200 selection:text-slate-900;
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    background: var(--paper);
+    color: var(--ink);
+    font-family:
+      "Plus Jakarta Sans",
+      Hind,
+      "Noto Sans Devanagari",
+      "Noto Sans",
+      "Noto Sans Bengali",
+      "Noto Sans Tamil",
+      "Noto Sans Telugu",
+      "Noto Sans Malayalam",
+      "Noto Sans Gurmukhi",
+      "Noto Sans Gujarati",
+      "Noto Sans Kannada",
+      "Noto Sans Arabic",
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      sans-serif;
+    @apply selection:bg-amber-100 selection:text-slate-900;
   }
 }
 
-/* Tactile button press feedback following design engineering principles */
 button:active:not(:disabled) {
   transform: scale(0.98);
 }
+
 button {
   transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1),
               background-color 150ms ease-out,
@@ -25,7 +64,198 @@ button {
               box-shadow 150ms ease-out;
 }
 
-/* Quiet, unobtrusive scrollbar */
+.landing-background {
+  background:
+    radial-gradient(48rem 30rem at 88% -12%, rgba(245, 179, 36, 0.22), transparent 62%),
+    radial-gradient(36rem 24rem at -10% 30%, rgba(18, 113, 90, 0.07), transparent 60%),
+    var(--paper);
+}
+
+.preview-frame {
+  border: 1px solid var(--line);
+}
+
+.surface-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+/* ---------- Shared primitives ---------- */
+
+.surface-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+}
+
+.surface-raised {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  box-shadow:
+    0 1px 0 rgba(26, 24, 21, 0.03),
+    0 24px 48px -36px rgba(26, 24, 21, 0.5);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0 1.25rem;
+  border-radius: 0.85rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #2c2822;
+}
+
+.btn-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3.25rem;
+  padding: 0 1.4rem;
+  border-radius: 0.85rem;
+  background: var(--marigold);
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: 0 10px 24px -14px rgba(138, 86, 0, 0.65);
+  transition: background-color 150ms ease-out, transform 150ms ease-out,
+    box-shadow 150ms ease-out;
+}
+
+.btn-accent:hover:not(:disabled) {
+  background: #f0a705;
+  box-shadow: 0 14px 28px -14px rgba(138, 86, 0, 0.7);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0 1.1rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #fbf7ee;
+  border-color: #c9bca3;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  background: var(--marigold-soft);
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--marigold-ink);
+}
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  border: 1px solid #f0dcae;
+  border-radius: 0.9rem;
+  background: #fffaf0;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #6b4a12;
+}
+
+.display {
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.eyebrow {
+  color: var(--ink-soft);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.brand-accent {
+  color: var(--brand);
+}
+
+.brand-button {
+  background-color: var(--ink);
+  color: var(--paper);
+}
+
+.brand-button:hover:not(:disabled) {
+  background-color: #2c2822;
+}
+
+.brand-button:focus-visible,
+.brand-field:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.creative-studio {
+  color: var(--ink);
+}
+
+/* Labeled mobile tab bar */
+.tab-bar {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  min-height: 3.25rem;
+  flex: 1 1 0%;
+  border-radius: 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.tab-item[aria-current='page'] {
+  background: var(--marigold-soft);
+  color: var(--marigold-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -34,9 +264,9 @@ button {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #E2E8F0;
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #CBD5E1;
+  background: #94a3b8;
 }

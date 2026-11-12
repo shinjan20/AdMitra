@@ -39,6 +39,10 @@ export function addDays(date: Date, days: number): Date {
 }
 
 export function toISODateOnly(date: Date): string {
-  return date.toISOString().split('T')[0];
+  // Use local date to avoid timezone issues (IST users getting yesterday's date)
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 

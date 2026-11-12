@@ -20,121 +20,94 @@ export const Step1Objective: React.FC<Step1ObjectiveProps> = ({
   onSelectObjective,
   onNext,
 }) => {
-  const { activeBusiness } = useApp();
-
+  const { tr } = useApp();
   const objectives: {
     id: CampaignObjective;
     title: string;
     description: string;
-    example: string;
     icon: React.ReactNode;
-    channel: string;
     bestFor: string;
   }[] = [
     {
       id: 'messages',
-      title: 'Get WhatsApp Enquiries',
-      description:
-        'Customers tap your ad to start a chat directly on WhatsApp. Best for price estimates, custom requests, and booking appointments.',
-      example: `Example: ${activeBusiness.businessName} getting WhatsApp chats from customers asking about pricing and availability.`,
+      title: 'Get WhatsApp messages',
+      description: 'People can message you to ask questions or book an appointment.',
       icon: <MessageSquare className="w-5 h-5 text-emerald-600" />,
-      channel: 'WhatsApp Direct Chat',
-      bestFor: 'Recommended for Salons, Bakeries & Local Services',
+      bestFor: 'Good for salons, restaurants, and local services',
     },
     {
       id: 'leads',
-      title: 'Collect Direct Leads & Phone Numbers',
-      description:
-        'Customers submit their name and phone number directly in the ad. Best for callbacks, consultations, and high-intent bookings.',
-      example:
-        'Example: Parents or students requesting a free counseling call or campus visit.',
+      title: 'Get phone enquiries',
+      description: 'People share their name and number so you can call them back.',
       icon: <Users className="w-5 h-5 text-blue-600" />,
-      channel: 'Lead Form & Direct Callback',
-      bestFor: 'Recommended for Coaching, Gyms & Clinics',
+      bestFor: 'Good for classes, gyms, and clinics',
     },
     {
       id: 'awareness',
-      title: 'Attract Local Store Footfall',
-      description:
-        'Maximize visibility among nearby residents within 5–10 km to build local recognition and drive visits to your physical location.',
-      example:
-        'Example: A restaurant or boutique promoting weekend specials or grand opening.',
+      title: 'Help local people find your shop',
+      description: 'Show nearby people what you offer and where to find you.',
       icon: <Eye className="w-5 h-5 text-slate-700" />,
-      channel: 'Feeds & Stories',
-      bestFor: 'Recommended for Restaurants & Retail Stores',
+      bestFor: 'Good for shops, cafes, and restaurants',
     },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-slate-900 tracking-tight">
-          What is the primary goal for this campaign?
+        <h2 className="display text-2xl font-bold">
+          {tr('What would you like people to do?')}
         </h2>
-        <p className="text-xs text-slate-500 mt-0.5">
-          Choose what you want customers to do. AI will tailor your ad copy, CTAs, and audience targeting to this goal.
+        <p className="mt-1 text-sm text-[color:var(--ink-soft)]">
+          {tr('Pick the option that suits your business. You can change it later.')}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+      <div className="grid grid-cols-1 gap-3.5 md:grid-cols-3">
         {objectives.map((obj) => {
           const isSelected = selectedObjective === obj.id;
           return (
-            <div
+            <button
+              type="button"
               key={obj.id}
               onClick={() => onSelectObjective(obj.id)}
-              className={`relative p-4 rounded-xl border text-left cursor-pointer transition-all flex flex-col justify-between ${
+              aria-pressed={isSelected}
+              className={`relative flex min-h-48 w-full flex-col justify-start rounded-2xl border p-4 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--brand)] ${
                 isSelected
-                  ? 'border-slate-900 bg-slate-50/50 shadow-2xs ring-1 ring-slate-900'
-                  : 'border-slate-200/80 bg-white hover:border-slate-300'
+                  ? 'border-[color:var(--marigold)] bg-[color:var(--marigold-soft)]/60 shadow-sm'
+                  : 'border-[color:var(--line)] bg-white hover:border-[color:var(--line-strong)] hover:bg-[color:var(--paper)]/40'
               }`}
             >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-9 h-9 rounded-lg bg-white border border-slate-200/80 flex items-center justify-center">
-                    {obj.icon}
-                  </div>
-                  {isSelected ? (
-                    <div className="w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center">
-                      <Check className="w-3 h-3 text-white" />
-                    </div>
-                  ) : (
-                    <div className="w-5 h-5 rounded-full border border-slate-300" />
-                  )}
-                </div>
-
-                <span className="text-[10px] font-medium text-slate-500 block mb-1">
-                  {obj.bestFor}
+              <span className="flex w-full items-center justify-between">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[color:var(--line)] bg-white">
+                  {obj.icon}
                 </span>
+                {isSelected ? (
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--marigold)] text-[color:var(--ink)]">
+                    <Check className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                ) : (
+                  <span className="h-6 w-6 rounded-full border border-[color:var(--line-strong)]" />
+                )}
+              </span>
 
-                <h3 className="text-sm font-semibold text-slate-900">{obj.title}</h3>
+              <span className="mt-4 block text-xs font-semibold text-[color:var(--ink-soft)]">
+                {tr(obj.bestFor)}
+              </span>
 
-                <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-                  {obj.description}
-                </p>
-              </div>
+              <span className="mt-1 block text-base font-bold text-[color:var(--ink)]">{tr(obj.title)}</span>
 
-              <div className="mt-4 pt-3 border-t border-slate-100 text-xs">
-                <p className="text-[11px] text-slate-500 italic bg-slate-100/70 p-2 rounded-lg">
-                  {obj.example}
-                </p>
-                <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
-                  <span>Channel:</span>
-                  <span className="font-medium text-slate-700">{obj.channel}</span>
-                </div>
-              </div>
-            </div>
+              <span className="mt-2 block text-sm leading-relaxed text-[color:var(--ink-soft)]">
+                {tr(obj.description)}
+              </span>
+            </button>
           );
         })}
       </div>
 
-      <div className="flex items-center justify-end pt-3 border-t border-slate-100">
-        <button
-          onClick={onNext}
-          className="inline-flex items-center gap-1.5 px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-lg shadow-2xs transition-all"
-        >
-          Next: Strategy
-          <ArrowRight className="w-3.5 h-3.5" />
+      <div className="flex items-center justify-end border-t border-[color:var(--line)] pt-4">
+        <button onClick={onNext} className="btn-primary text-sm">
+          {tr('Continue')}
+          <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>

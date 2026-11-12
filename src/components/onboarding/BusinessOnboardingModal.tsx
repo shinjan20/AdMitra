@@ -95,7 +95,7 @@ export const BusinessOnboardingModal: React.FC = () => {
       isOpen={showOnboardingModal}
       onClose={() => setShowOnboardingModal(false)}
       title="Business Profile Onboarding"
-      subtitle="Establish your business identity to guide AI campaign recommendations and creatives"
+      subtitle="Add your business details to personalize campaign and ad copy suggestions."
       maxWidth="3xl"
     >
       <div className="space-y-6">
@@ -130,8 +130,7 @@ export const BusinessOnboardingModal: React.FC = () => {
         {!useCustom ? (
           <div>
             <p className="text-xs text-slate-500 mb-3">
-              Select one of our curated local Indian business examples to immediately see realistic
-              AI recommendations, targeting, and ad creatives:
+              Choose a sample business to explore the demo, or create a profile for your business:
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
               {INDIAN_SMB_PRESETS.map((preset) => {

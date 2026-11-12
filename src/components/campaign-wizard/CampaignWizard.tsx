@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Campaign, CampaignObjective } from '../../types';
+import { toISODateOnly } from '../../utils/date';
 import { Step1Objective } from './Step1Objective';
 import { Step2Strategy } from './Step2Strategy';
 import { Step3Creative } from './Step3Creative';
 import { Step4Audience } from './Step4Audience';
 import { Step5Budget } from './Step5Budget';
 import { Step6Review } from './Step6Review';
-import { generateMockMetrics } from '../../services/storage';
+import { DemoNoticeBadge } from '../common/DemoNoticeBadge';
 import {
   RotateCcw,
   X,
-  Target,
-  Sparkles,
-  Palette,
-  Users,
-  IndianRupee,
-  CheckCircle,
 } from 'lucide-react';
 
 export const CampaignWizard: React.FC = () => {
@@ -29,33 +24,126 @@ export const CampaignWizard: React.FC = () => {
     logFunnel,
     showToast,
     activeBusiness,
+    tr,
   } = useApp();
 
-  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [currentStep, setCurrentStep] = useState<number>(() => {
+    // First check for one-time start step (from marketing plan)
+    const storedStep = localStorage.getItem('admitra:wizard-start-step');
+    if (storedStep) {
+      const step = parseInt(storedStep, 10);
+      localStorage.removeItem('admitra:wizard-start-step');
+      return step;
+    }
+    // Then check for persisted step (resume)
+    const persistedStep = localStorage.getItem('admitra:wizard-current-step');
+    if (persistedStep) {
+      return parseInt(persistedStep, 10);
+    }
+    return 1;
+  });
 
-  // Initialize draft if empty
+  // Persist current step on change
   useEffect(() => {
-    if (!activeDraft || !activeDraft.businessId) {
+    localStorage.setItem('admitra:wizard-current-step', currentStep.toString());
+  }, [currentStep]);
+
+  // Initialize draft if empty or missing key fields
+  useEffect(() => {
+    if (!activeDraft || !activeDraft.businessId || !activeDraft.objective) {
+      // Check for demo scenario data
+      let demoScenarioData = null;
+      try {
+        const stored = localStorage.getItem('admitra:demo-scenario');
+        if (stored) {
+          demoScenarioData = JSON.parse(stored);
+          localStorage.removeItem('admitra:demo-scenario');
+        }
+      } catch (e) {
+        console.error('Failed to parse demo scenario:', e);
+      }
+
+      const budget = demoScenarioData?.budget || 5000;
+      const duration = demoScenarioData?.duration || 10;
+
+      // Get local date string (not UTC) to avoid timezone issues
+      const now = new Date();
+      const localDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+      // Step 3: Full creative with all required fields including imageUrl
+      const creative = demoScenarioData?.headline ? {
+        id: `cr-${Date.now()}`,
+        campaignId: '',
+        headline: demoScenarioData.headline,
+        description: demoScenarioData.description || '',
+        cta: (demoScenarioData.cta || 'Send WhatsApp Message') as any,
+        imageUrl: demoScenarioData.imageUrl || '', // Ensure imageUrl is populated
+        approvalStatus: 'approved' as const,
+        createdAt: new Date().toISOString(),
+      } : undefined;
+
+      // Step 4: Full audience with all required fields
+      const audience = demoScenarioData?.city ? {
+        id: `aud-${Date.now()}`,
+        campaignId: '',
+        locationCity: demoScenarioData.city,
+        locationArea: demoScenarioData.area || '',
+        radiusKm: demoScenarioData.radiusKm || 5,
+        ageRangeMin: 20,
+        ageRangeMax: 55,
+        gender: 'all' as const,
+        interests: [],
+        estimatedAudienceSize: '50K - 100K',
+        rationale: `People within ${demoScenarioData.radiusKm || 5}km of ${demoScenarioData.area || demoScenarioData.city}, ${demoScenarioData.city}`,
+      } : undefined;
+
+      // Step 2: AI recommendation
+      const recommendation = demoScenarioData?.campaignName ? {
+        id: `rec-${Date.now()}`,
+        campaignName: demoScenarioData.campaignName,
+        strategySummary: `Reach local audience in ${demoScenarioData.city} with focus on ${demoScenarioData.objective}`,
+        targetAudienceRationale: `Target people aged 20-55 interested in your services within ${demoScenarioData.radiusKm || 5}km radius`,
+        suggestedDurationDays: duration,
+        suggestedDailyBudget: Math.round(budget / duration),
+        suggestedTotalBudget: budget,
+        recommendedCTA: (demoScenarioData.cta || 'Send WhatsApp Message') as any,
+        keyMarketingHook: demoScenarioData.offer || 'Exclusive offer this month',
+        creativeThemes: ['local', 'promotional', 'engagement'],
+        suggestedInterests: ['local_businesses', demoScenarioData.objective],
+      } : undefined;
+
       updateActiveDraft({
         businessId: activeBusiness.id,
-        objective: 'messages',
-        totalBudget: 5000,
-        dailyBudget: 500,
-        durationDays: 10,
-        startDate: new Date().toISOString().split('T')[0],
+        objective: demoScenarioData?.objective || 'messages',
+        campaignName: demoScenarioData?.campaignName || 'Demo Campaign',
+        creativePrompt: demoScenarioData?.offer,
+        totalBudget: budget,
+        dailyBudget: Math.round(budget / duration),
+        durationDays: duration,
+        startDate: localDate,
         status: 'draft',
+        channel: (demoScenarioData?.channel || 'meta') as any,
+        destinationType: (demoScenarioData?.objective === 'messages' ? 'whatsapp' : 'phone') as any,
+        destinationValue: '+91 98765 43210', // Demo placeholder
+        strategy: demoScenarioData?.offer || 'Sample advertising plan',
+        // Step 3: Creative
+        creative,
+        // Step 4: Audience
+        audience,
+        // Step 2: Recommendation
+        recommendation,
       });
       logFunnel('campaign_goal_selected', undefined, { step: 1 });
     }
   }, [activeBusiness.id]);
 
   const steps = [
-    { number: 1, label: 'Objective' },
-    { number: 2, label: 'Strategy' },
-    { number: 3, label: 'Creative' },
-    { number: 4, label: 'Audience' },
-    { number: 5, label: 'Budget' },
-    { number: 6, label: 'Review' },
+    { number: 1, label: tr('Goal') },
+    { number: 2, label: tr('Plan') },
+    { number: 3, label: tr('Ad') },
+    { number: 4, label: tr('Area') },
+    { number: 5, label: tr('Budget') },
+    { number: 6, label: tr('Review') },
   ];
 
   const handleNextStep = (next: number) => {
@@ -75,35 +163,29 @@ export const CampaignWizard: React.FC = () => {
   };
 
   const handleLaunchSuccess = (launchedCampaign: Campaign) => {
-    const metrics = generateMockMetrics(
-      launchedCampaign.id,
-      launchedCampaign.totalBudget,
-      launchedCampaign.objective,
-      1
-    );
-
-    const fullCampaign: Campaign = {
+    const savedCampaign: Campaign = {
       ...launchedCampaign,
-      metrics,
+      status: 'simulated',
+      executionMode: 'simulated',
     };
 
-    saveCampaign(fullCampaign);
-    logFunnel('campaign_launch_confirmed', fullCampaign.id);
-    logFunnel('campaign_created', fullCampaign.id);
+    saveCampaign(savedCampaign);
+    logFunnel('campaign_approved', savedCampaign.id);
+    logFunnel('campaign_plan_saved', savedCampaign.id);
 
     clearActiveDraft();
 
     showToast({
       type: 'success',
-      title: 'Campaign Launched',
-      message: `"${fullCampaign.campaignName}" is now active in demo mode.`,
+      title: tr('Simulated plan saved'),
+      message: tr('"{name}" is saved. Nothing was published and no money was spent.', { name: savedCampaign.campaignName }),
     });
 
-    navigateTo('dashboard', fullCampaign.id);
+    navigateTo('dashboard', savedCampaign.id);
   };
 
   const handleResetDraft = () => {
-    if (window.confirm('Discard this campaign draft and start fresh?')) {
+    if (window.confirm(tr('Clear this ad and start again?'))) {
       clearActiveDraft();
       setCurrentStep(1);
     }
@@ -112,30 +194,31 @@ export const CampaignWizard: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-5 pb-16">
       {/* Quiet Top Navigation & Step Tracker */}
-      <div className="bg-white rounded-2xl border border-slate-200/70 p-4 shadow-2xs space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div className="surface-card space-y-4 p-4">
+        <div className="flex items-center justify-between border-b border-[color:var(--line)] pb-3">
           <div>
-            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">
-              Guided Campaign Setup
+            <span className="chip">
+              {tr('Plan an ad')}
             </span>
-            <h1 className="text-base font-semibold text-slate-900 mt-0.5">
-              New Campaign for {activeBusiness.businessName}
+            <h1 className="display mt-2 text-2xl font-bold sm:text-3xl">
+              {tr('For {business}', { business: activeBusiness.businessName })}
             </h1>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={handleResetDraft}
-              className="text-xs text-slate-400 hover:text-slate-700 font-medium px-2 py-1 rounded transition-colors flex items-center gap-1"
-              title="Start fresh"
+              className="min-h-10 rounded-lg px-3 text-sm font-medium text-[color:var(--ink-soft)] transition-colors hover:bg-[color:var(--paper)] hover:text-[color:var(--ink)]"
+              title={tr('Clear this ad and start again')}
             >
-              <RotateCcw className="w-3.5 h-3.5" />
-              Reset
+              <RotateCcw className="mr-1 inline h-3.5 w-3.5" aria-hidden="true" />
+              {tr('Start over')}
             </button>
             <button
               onClick={() => navigateTo('dashboard')}
-              className="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-50 transition-colors"
-              title="Close and save as draft"
+              className="rounded-lg p-1.5 text-[color:var(--ink-soft)] transition-colors hover:bg-[color:var(--paper)] hover:text-[color:var(--ink)]"
+              title={tr('Close and save your progress')}
+              aria-label={tr('Close and save your progress')}
             >
               <X className="w-4 h-4" />
             </button>
@@ -143,7 +226,7 @@ export const CampaignWizard: React.FC = () => {
         </div>
 
         {/* Minimalist Step Pills */}
-        <div className="flex items-center justify-between gap-1 overflow-x-auto pt-1 pb-0.5">
+        <div className="grid min-w-0 grid-cols-3 gap-2 pt-1 pb-0.5 sm:flex sm:items-center sm:justify-between sm:gap-1">
           {steps.map((st, idx) => {
             const isCurrent = currentStep === st.number;
             const isPast = currentStep > st.number;
@@ -154,21 +237,21 @@ export const CampaignWizard: React.FC = () => {
                     if (isPast) setCurrentStep(st.number);
                   }}
                   disabled={!isPast && !isCurrent}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex min-h-10 w-full items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-semibold transition-all sm:w-auto sm:justify-start sm:px-3 ${
                     isCurrent
-                      ? 'bg-slate-900 text-white shadow-2xs'
+                      ? 'bg-[color:var(--marigold-soft)] text-[color:var(--marigold-ink)]'
                       : isPast
-                      ? 'bg-slate-100 text-slate-700 hover:bg-slate-200/70 cursor-pointer'
-                      : 'text-slate-400 bg-slate-50 cursor-not-allowed'
+                      ? 'bg-white text-[color:var(--ink)] ring-1 ring-[color:var(--line)] hover:bg-[color:var(--paper)] cursor-pointer'
+                      : 'bg-transparent text-[color:var(--ink-soft)]/50 cursor-not-allowed'
                   }`}
                 >
                   <span
-                    className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-semibold ${
+                    className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
                       isCurrent
-                        ? 'bg-white text-slate-900'
+                        ? 'bg-[color:var(--marigold)] text-[color:var(--ink)]'
                         : isPast
-                        ? 'bg-slate-300 text-slate-800'
-                        : 'bg-slate-200 text-slate-400'
+                        ? 'bg-[color:var(--leaf-soft)] text-[color:var(--leaf)]'
+                        : 'bg-[color:var(--paper-deep)] text-[color:var(--ink-soft)]/60'
                     }`}
                   >
                     {st.number}
@@ -178,7 +261,7 @@ export const CampaignWizard: React.FC = () => {
 
                 {idx < steps.length - 1 && (
                   <div
-                    className={`flex-1 h-px min-w-3 max-w-10 ${
+                    className={`hidden h-px min-w-3 max-w-10 flex-1 sm:flex ${
                       isPast ? 'bg-slate-300' : 'bg-slate-200'
                     }`}
                   />
@@ -189,13 +272,21 @@ export const CampaignWizard: React.FC = () => {
         </div>
       </div>
 
+      <DemoNoticeBadge />
+
       {/* Step Body */}
-      <div className="bg-white rounded-2xl border border-slate-200/70 p-5 sm:p-7 shadow-2xs">
+      <div className="surface-raised rounded-2xl p-5 sm:p-7">
         {currentStep === 1 && (
           <Step1Objective
             selectedObjective={activeDraft?.objective || 'messages'}
             onSelectObjective={(obj) => {
-              updateActiveDraft({ objective: obj });
+              updateActiveDraft((draft) => ({
+                ...draft,
+                objective: obj,
+                ...(draft?.objective !== obj
+                  ? { recommendation: undefined, creative: undefined }
+                  : {}),
+              }));
               logFunnel('campaign_goal_selected', undefined, { objective: obj });
             }}
             onNext={() => handleNextStep(2)}
@@ -217,6 +308,8 @@ export const CampaignWizard: React.FC = () => {
             }
             campaignName={activeDraft?.campaignName || ''}
             onUpdateCampaignName={(name) => updateActiveDraft({ campaignName: name })}
+            channel={activeDraft?.channel}
+            onUpdateChannel={(channel) => updateActiveDraft({ channel })}
             onNext={() => handleNextStep(3)}
             onBack={() => setCurrentStep(1)}
           />
@@ -226,6 +319,14 @@ export const CampaignWizard: React.FC = () => {
           <Step3Creative
             objective={activeDraft?.objective || 'messages'}
             creative={activeDraft?.creative || null}
+            creativePrompt={activeDraft?.creativePrompt || ''}
+            onUpdateCreativePrompt={(prompt) =>
+              updateActiveDraft((draft) => ({
+                ...draft,
+                creativePrompt: prompt,
+                ...(prompt !== (draft?.creativePrompt || '') ? { creative: undefined } : {}),
+              }))
+            }
             onUpdateCreative={(cr) => updateActiveDraft({ creative: cr })}
             onNext={() => handleNextStep(4)}
             onBack={() => setCurrentStep(2)}
@@ -246,7 +347,7 @@ export const CampaignWizard: React.FC = () => {
             objective={activeDraft?.objective || 'messages'}
             totalBudget={activeDraft?.totalBudget || 5000}
             durationDays={activeDraft?.durationDays || 10}
-            startDate={activeDraft?.startDate || new Date().toISOString().split('T')[0]}
+            startDate={activeDraft?.startDate || toISODateOnly(new Date())}
             onUpdateBudget={(budget, duration, start) => {
               updateActiveDraft({
                 totalBudget: budget,

@@ -10,6 +10,7 @@ import {
 } from 'recharts';
 import { DailyMetricPoint, CampaignObjective } from '../../types';
 import { formatINR } from '../../utils/currency';
+import { useApp } from '../../context/AppContext';
 
 interface PerformanceChartProps {
   data: DailyMetricPoint[];
@@ -17,10 +18,12 @@ interface PerformanceChartProps {
 }
 
 export const PerformanceChart: React.FC<PerformanceChartProps> = ({ data, objective }) => {
+  const { tr } = useApp();
+
   if (!data || data.length === 0) {
     return (
       <div className="h-64 flex items-center justify-center text-xs text-slate-400 bg-slate-50 rounded-xl">
-        No metric data points recorded yet.
+        {tr('No metric data points recorded yet.')}
       </div>
     );
   }
@@ -37,18 +40,18 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({ data, object
   });
 
   const outcomeLabel =
-    objective === 'messages' ? 'WhatsApp Chats' : objective === 'leads' ? 'Leads' : 'Clicks';
+    objective === 'messages' ? tr('WhatsApp Chats') : objective === 'leads' ? tr('Leads') : tr('Clicks');
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between text-xs">
         <span className="font-bold text-slate-700 uppercase tracking-wider">
-          Daily Spend vs. {outcomeLabel}
+          {tr('Daily Spend vs. {metric}', { metric: outcomeLabel })}
         </span>
         <div className="flex items-center gap-4 text-xs">
           <span className="flex items-center gap-1.5 font-medium text-slate-600">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-            Spend (₹)
+            <span className="w-2.5 h-2.5 rounded-full bg-slate-700" />
+            {tr('Spend (₹)')}
           </span>
           <span className="flex items-center gap-1.5 font-medium text-slate-600">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
@@ -62,8 +65,8 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({ data, object
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="colorSpend" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
-                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0} />
+                <stop offset="5%" stopColor="#334155" stopOpacity={0.2} />
+                <stop offset="95%" stopColor="#334155" stopOpacity={0.0} />
               </linearGradient>
               <linearGradient id="colorOutcomes" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
@@ -102,8 +105,8 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({ data, object
                   return (
                     <div className="bg-slate-900 text-white text-xs p-2.5 rounded-xl shadow-xl space-y-1">
                       <p className="font-bold text-slate-300">{label}</p>
-                      <p className="text-blue-400 font-semibold">
-                        Daily Spend: {formatINR(Number(spendVal))}
+                      <p className="text-slate-300 font-semibold">
+                        {tr('Daily Spend:')} {formatINR(Number(spendVal))}
                       </p>
                       <p className="text-emerald-400 font-semibold">
                         {outcomeLabel}: {outcomeVal}
@@ -118,7 +121,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({ data, object
               yAxisId="spendAxis"
               type="monotone"
               dataKey="spend"
-              stroke="#3b82f6"
+              stroke="#334155"
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#colorSpend)"

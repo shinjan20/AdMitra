@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
 
 interface ModalProps {
   isOpen: boolean;
@@ -18,6 +19,8 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   maxWidth = '2xl',
 }) => {
+  const { tr } = useApp();
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -56,13 +59,13 @@ export const Modal: React.FC<ModalProps> = ({
       >
         <div className="px-6 py-4.5 border-b border-slate-100 flex items-start justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-            {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+            <h3 className="text-lg font-semibold text-slate-900">{tr(title)}</h3>
+            {subtitle && <p className="text-xs text-slate-500 mt-0.5">{tr(subtitle)}</p>}
           </div>
           <button
             onClick={onClose}
             className="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-            aria-label="Close modal"
+            aria-label={tr('Close modal')}
           >
             <X className="w-5 h-5" />
           </button>

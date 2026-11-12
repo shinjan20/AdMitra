@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { CampaignObjective, AIRecommendation } from '../../types';
+import { CampaignObjective, AIRecommendation, ChannelProvider } from '../../types';
 import { useApp } from '../../context/AppContext';
 import { AIEngine } from '../../services/aiEngine';
-import { formatINR } from '../../utils/currency';
+import { BudgetEngine } from '../../services/budgetEngine';
+import { DemoNoticeBadge } from '../common/DemoNoticeBadge';
 import {
   Sparkles,
   ArrowRight,
@@ -10,7 +11,8 @@ import {
   RotateCw,
   Check,
   Edit2,
-  HelpCircle,
+  Search,
+  Megaphone,
 } from 'lucide-react';
 
 interface Step2StrategyProps {
@@ -19,6 +21,8 @@ interface Step2StrategyProps {
   onUpdateRecommendation: (rec: AIRecommendation) => void;
   campaignName: string;
   onUpdateCampaignName: (name: string) => void;
+  channel?: ChannelProvider;
+  onUpdateChannel: (channel: ChannelProvider) => void;
   onNext: () => void;
   onBack: () => void;
 }
@@ -29,18 +33,35 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
   onUpdateRecommendation,
   campaignName,
   onUpdateCampaignName,
+  channel,
+  onUpdateChannel,
   onNext,
   onBack,
 }) => {
-  const { activeBusiness, settings } = useApp();
+  const { activeBusiness, showToast, tr } = useApp();
   const [loading, setLoading] = useState(false);
   const [isEditingHook, setIsEditingHook] = useState(false);
+
+  const suggestedPlan = BudgetEngine.buildPlan({
+    business: activeBusiness,
+    objective,
+    budget: 5000,
+    durationDays: 10,
+  });
+  const suggestedChannel = suggestedPlan.allocations[0]?.provider || 'meta';
+  const selectedChannel = channel || suggestedChannel;
 
   useEffect(() => {
     if (!recommendation) {
       handleGenerate();
     }
   }, [objective, activeBusiness]);
+
+  useEffect(() => {
+    if (!channel) {
+      onUpdateChannel(suggestedChannel);
+    }
+  }, [channel, suggestedChannel]);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -50,7 +71,6 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
         objective,
         budget: 5000,
         durationDays: 10,
-        openAIApiKey: settings.openAIApiKey,
       });
       onUpdateRecommendation(rec);
       if (!campaignName || campaignName.trim() === '') {
@@ -58,6 +78,11 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
       }
     } catch (err) {
       console.error(err);
+      showToast({
+        type: 'error',
+        title: tr('Could not make a suggestion'),
+        message: tr('Please try again.'),
+      });
     } finally {
       setLoading(false);
     }
@@ -65,13 +90,14 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
 
   return (
     <div className="space-y-6">
+      <DemoNoticeBadge />
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-lg font-semibold text-slate-900 tracking-tight">
-            Recommended Campaign Strategy
+            {tr('A starting idea')}
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Tailored for {activeBusiness.businessName} in {activeBusiness.location.city}.
+            {tr('A suggestion for {business}. Change it or try another.', { business: activeBusiness.businessName })}
           </p>
         </div>
 
@@ -81,67 +107,68 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors disabled:opacity-50"
         >
           <RotateCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          {loading ? 'Generating...' : 'Regenerate'}
+          {loading ? tr('Working...') : tr('Try another plan')}
         </button>
       </div>
 
       {loading && !recommendation ? (
         <div className="py-12 text-center space-y-2 bg-slate-50 rounded-xl border border-slate-200/60">
           <Sparkles className="w-5 h-5 text-slate-600 animate-spin mx-auto" />
-          <p className="text-xs font-medium text-slate-700">
-            Synthesizing strategy for {activeBusiness.category}...
-          </p>
+          <p className="text-sm font-medium text-slate-700">{tr('Making a suggestion...')}</p>
         </div>
       ) : recommendation ? (
         <div className="space-y-4">
-          {/* Campaign Name Field */}
-          <div className="p-4 bg-white rounded-xl border border-slate-200/80 space-y-1">
-            <label className="block text-xs font-medium text-slate-700">
-              Campaign Name
+          <details className="rounded-xl border border-slate-200 bg-white px-4 py-3">
+            <summary className="cursor-pointer text-sm font-medium text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900">
+              {tr('Give this ad a name')} <span className="font-normal text-slate-500">{tr('(optional)')}</span>
+            </summary>
+            <label htmlFor="campaign-name" className="mt-3 block text-sm text-slate-700">
+              {tr('Ad name')}
             </label>
             <input
+              id="campaign-name"
               type="text"
               value={campaignName || recommendation.campaignName}
               onChange={(e) => onUpdateCampaignName(e.target.value)}
-              className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900"
-              placeholder="e.g. Wedding Season Special"
+              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+              placeholder={tr('For example: Summer offer')}
             />
-          </div>
+          </details>
 
-          {/* AI Strategy Overview */}
           <div className="p-5 bg-white rounded-xl border border-slate-200/80 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <span className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
-                Strategic Approach
-              </span>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 flex items-center gap-1">
+              <span className="text-sm font-semibold text-slate-900">{tr('Suggested idea')}</span>
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-50 text-emerald-800 flex items-center gap-1">
                 <Check className="w-3 h-3 text-emerald-600" />
-                {recommendation.confidenceScore}% Local Fit
+                {tr('Suggested')}
               </span>
             </div>
 
-            <p className="text-xs text-slate-700 leading-relaxed">
-              {recommendation.strategySummary}
+            <p className="text-sm text-slate-700 leading-relaxed">
+              {tr(recommendation.strategySummary, {
+                area: activeBusiness.location.area || activeBusiness.location.city,
+                city: activeBusiness.location.city,
+              })}
             </p>
 
-            {/* Editable Marketing Hook */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 space-y-1">
+            <div className="space-y-2 border-t border-slate-100 pt-4">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-semibold text-slate-700 uppercase tracking-wide">
-                  Core Offer / Marketing Hook
+                <span className="text-sm font-semibold text-slate-700">
+                  {tr('Main message')}
                 </span>
                 <button
                   type="button"
                   onClick={() => setIsEditingHook(!isEditingHook)}
-                  className="text-[11px] text-blue-600 hover:underline flex items-center gap-1 font-medium"
+                  className="min-h-10 rounded-lg px-3 text-sm font-medium text-slate-700 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-slate-900"
                 >
-                  <Edit2 className="w-3 h-3" />
-                  {isEditingHook ? 'Done' : 'Edit'}
+                  <Edit2 className="mr-1 inline h-3.5 w-3.5" aria-hidden="true" />
+                  {isEditingHook ? tr('Done') : tr('Change')}
                 </button>
               </div>
 
               {isEditingHook ? (
                 <textarea
+                  aria-label={tr('Main message')}
                   rows={2}
                   value={recommendation.keyMarketingHook}
                   onChange={(e) =>
@@ -150,46 +177,83 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
                       keyMarketingHook: e.target.value,
                     })
                   }
-                  className="w-full mt-1 p-2 text-xs border border-slate-300 rounded-lg bg-white"
+                  className="mt-1 w-full rounded-lg border border-slate-300 bg-white p-3 text-sm"
                 />
               ) : (
-                <p className="text-xs text-slate-900 font-medium leading-relaxed">
-                  "{recommendation.keyMarketingHook}"
+                <p className="text-sm font-medium leading-relaxed text-slate-900">
+                  {tr(recommendation.keyMarketingHook)}
                 </p>
               )}
             </div>
 
-            {/* Targeting Rationale */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs text-slate-600 leading-relaxed flex items-start gap-2">
-              <HelpCircle className="w-3.5 h-3.5 text-slate-400 mt-0.5 flex-shrink-0" />
+            <div className="border-t border-slate-100 pt-4 text-sm leading-relaxed text-slate-600">
               <span>
-                <strong className="text-slate-800">Targeting Rationale: </strong>
-                {recommendation.targetAudienceRationale}
+                <strong className="text-slate-800">{tr('Why this might suit your business:')} </strong>
+                {tr(recommendation.targetAudienceRationale)}
               </span>
-            </div>
-
-            {/* Strategy Highlights Pills */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-center">
-              <div className="p-2 rounded-lg bg-slate-50 border border-slate-100">
-                <span className="block text-[10px] text-slate-400 uppercase font-medium">CTA Button</span>
-                <span className="text-xs font-semibold text-slate-900">{recommendation.recommendedCTA}</span>
-              </div>
-              <div className="p-2 rounded-lg bg-slate-50 border border-slate-100">
-                <span className="block text-[10px] text-slate-400 uppercase font-medium">Duration</span>
-                <span className="text-xs font-semibold text-slate-900">{recommendation.suggestedDurationDays} Days</span>
-              </div>
-              <div className="p-2 rounded-lg bg-slate-50 border border-slate-100">
-                <span className="block text-[10px] text-slate-400 uppercase font-medium">Daily Budget</span>
-                <span className="text-xs font-semibold text-slate-900">{formatINR(recommendation.suggestedDailyBudget)}</span>
-              </div>
-              <div className="p-2 rounded-lg bg-slate-50 border border-slate-100">
-                <span className="block text-[10px] text-slate-400 uppercase font-medium">Total Budget</span>
-                <span className="text-xs font-semibold text-emerald-700">{formatINR(recommendation.suggestedTotalBudget)}</span>
-              </div>
             </div>
           </div>
         </div>
       ) : null}
+
+      {recommendation && (
+        <div className="space-y-3 border-t border-slate-100 pt-4">
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900">{tr('Where this ad could appear')}</h3>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500">
+              {tr('We suggest a channel based on what you want and what you sell. People who click a Google ad are not automatically shown your Facebook or Instagram ad.')}
+            </p>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {[
+              {
+                provider: 'meta' as ChannelProvider,
+                title: 'Meta ads (Facebook / Instagram)',
+                description: 'Local discovery and message enquiries from nearby audiences.',
+                icon: <Megaphone className="h-4 w-4" aria-hidden="true" />,
+              },
+              {
+                provider: 'google_search' as ChannelProvider,
+                title: 'Google Search',
+                description: 'Capture people already searching for this service nearby.',
+                icon: <Search className="h-4 w-4" aria-hidden="true" />,
+              },
+            ].map((option) => {
+              const isSelected = selectedChannel === option.provider;
+              return (
+                <button
+                  key={option.provider}
+                  type="button"
+                  onClick={() => onUpdateChannel(option.provider)}
+                  aria-pressed={isSelected}
+                  className={`min-h-24 rounded-xl border p-3 text-left transition-colors ${
+                    isSelected
+                      ? 'border-slate-900 bg-slate-50 ring-1 ring-slate-900'
+                      : 'border-slate-200 bg-white hover:border-slate-300'
+                  }`}
+                >
+                  <span className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                    {option.icon}
+                    {tr(option.title)}
+                  </span>
+                  <span className="mt-1 block text-xs leading-relaxed text-slate-600">
+                    {tr(option.description)}
+                  </span>
+                  {option.provider === suggestedChannel && (
+                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800">
+                      <Check className="h-3 w-3" aria-hidden="true" />
+                      {tr('Suggested first test')}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <p className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs leading-relaxed text-slate-600">
+            {tr('WhatsApp is treated as a conversation destination, not a standalone paid channel. Google Business Profile is a free local listing and receives no paid media budget.')}
+          </p>
+        </div>
+      )}
 
       <div className="flex items-center justify-between pt-3 border-t border-slate-100">
         <button
@@ -197,7 +261,7 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
           className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          Back
+          {tr('Back')}
         </button>
 
         <button
@@ -205,7 +269,7 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
           disabled={loading || !recommendation}
           className="inline-flex items-center gap-1.5 px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-lg shadow-2xs transition-all disabled:opacity-50"
         >
-          Next: Creatives
+          {tr('Next: write your ad')}
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>

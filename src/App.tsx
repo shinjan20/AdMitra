@@ -1,116 +1,86 @@
 import React from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Navbar } from './components/common/Navbar';
-import { Sidebar } from './components/common/Sidebar';
 import { ToastContainer } from './components/common/Toast';
-import { BusinessOnboardingModal } from './components/onboarding/BusinessOnboardingModal';
 import { AuthModal } from './components/auth/AuthModal';
-import { JTBDLauncher } from './components/dashboard/JTBDLauncher';
-import { DashboardOverview } from './components/dashboard/DashboardOverview';
-import { CampaignList } from './components/dashboard/CampaignList';
-import { RecentActivity } from './components/dashboard/RecentActivity';
-import { CampaignWizard } from './components/campaign-wizard/CampaignWizard';
-import { CampaignDetailModal } from './components/campaign-details/CampaignDetailModal';
 import { CreativeStudioPage } from './components/creative-studio/CreativeStudioPage';
 import { BusinessProfilePage } from './components/business-profile/BusinessProfilePage';
+import { ProductTour } from './components/common/ProductTour';
+import { LandingPage } from './components/common/LandingPage';
+import { ShopSetupPage } from './components/onboarding/ShopSetupPage';
+import { CampaignWizard } from './components/campaign-wizard/CampaignWizard';
+import { CampaignDashboardPage } from './components/dashboard/CampaignDashboardPage';
+import { MarketingPlanPage } from './components/marketing-plan/MarketingPlanPage';
+import { ConnectedAccountsPage } from './components/connected-accounts/ConnectedAccountsPage';
 import { SettingsPage } from './components/settings/SettingsPage';
-import { ShieldCheck, LogIn, Sparkles } from 'lucide-react';
 
 const MainContent: React.FC = () => {
   const {
     activePage,
-    selectedCampaignId,
     navigateTo,
-    activeBusiness,
-    user,
     showAuthModal,
     setShowAuthModal,
+    showProductTour,
+    completeProductTour,
+    showShopSetup,
+    setPostAuthPage,
   } = useApp();
 
+  // Debug logging
+  React.useEffect(() => {
+    console.log('[MainContent] showAuthModal changed:', showAuthModal);
+  }, [showAuthModal]);
+
+  const isLandingPage = activePage === 'landing';
+
+  const handleSignIn = () => {
+    console.log('[MainContent] handleSignIn called');
+    setPostAuthPage(null);
+    console.log('[MainContent] About to call setShowAuthModal(true)');
+    setShowAuthModal(true);
+    console.log('[MainContent] Called setShowAuthModal(true)');
+  };
+
+  const handleCreateCampaign = () => {
+    console.log('[MainContent] handleCreateCampaign called');
+    setPostAuthPage('create-campaign');
+    setShowAuthModal(true);
+  };
+
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex flex-col font-sans">
-      <Navbar />
+    <div className="min-h-screen bg-[var(--paper)] flex flex-col font-sans">
+      {showShopSetup ? (
+        <ShopSetupPage />
+      ) : isLandingPage ? (
+        <LandingPage
+          onSignIn={handleSignIn}
+          onCreateCampaign={handleCreateCampaign}
+        />
+      ) : (
+        <>
+          <Navbar />
+          <main className="w-full flex-1 px-4 pb-28 pt-6 sm:px-6 sm:pt-8 md:pb-10">
+            {activePage === 'business-profile' ? (
+              <BusinessProfilePage />
+            ) : activePage === 'marketing-plan' ? (
+              <MarketingPlanPage />
+            ) : activePage === 'connected-accounts' ? (
+              <ConnectedAccountsPage />
+            ) : activePage === 'settings' ? (
+              <SettingsPage />
+            ) : activePage === 'create-campaign' ? (
+              <CampaignWizard />
+            ) : activePage === 'dashboard' || activePage === 'campaign-details' ? (
+              <CampaignDashboardPage />
+            ) : (
+              <CreativeStudioPage />
+            )}
+          </main>
+        </>
+      )}
 
-      <div className="flex-1 flex">
-        <Sidebar />
-
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto w-full">
-          {/* Guest notification pill if logged out */}
-          {!user && (
-            <div className="mb-5 p-3 rounded-xl bg-slate-900 text-white flex items-center justify-between text-xs shadow-sm">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                <span>
-                  You are exploring CampaignPilot as a guest. Sign in with username/password or Google to save custom campaigns.
-                </span>
-              </div>
-              <button
-                onClick={() => setShowAuthModal(true)}
-                className="px-3 py-1 bg-white text-slate-900 font-semibold rounded-lg hover:bg-slate-100 flex items-center gap-1.5 whitespace-nowrap ml-3"
-              >
-                <LogIn className="w-3.5 h-3.5" /> Sign In
-              </button>
-            </div>
-          )}
-
-          {/* VIEW 1: DASHBOARD */}
-          {activePage === 'dashboard' && (
-            <div className="space-y-6">
-              {/* Major JTBD Flow: Prominent 1-Click Goal Launcher */}
-              <JTBDLauncher />
-
-              {/* Minimalist Overview Metrics */}
-              <DashboardOverview />
-
-              {/* Campaign Table & Activity Split */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-                <div className="lg:col-span-8">
-                  <CampaignList
-                    onSelectCampaign={(id) => navigateTo('dashboard', id)}
-                  />
-                </div>
-                <div className="lg:col-span-4 space-y-4">
-                  <RecentActivity />
-
-                  {/* Plain English SMB Conversion Insight */}
-                  <div className="p-4 bg-white rounded-2xl border border-slate-200/70 shadow-2xs space-y-1.5">
-                    <span className="text-[11px] font-semibold text-slate-800 flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-                      Tip for {activeBusiness.category} in {activeBusiness.location.city}
-                    </span>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                      Direct WhatsApp ads convert 3x faster than traditional websites because local customers prefer asking questions before visiting in person.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Drilldown Modal if campaign is selected */}
-              {selectedCampaignId && (
-                <CampaignDetailModal
-                  campaignId={selectedCampaignId}
-                  onClose={() => navigateTo('dashboard', undefined)}
-                />
-              )}
-            </div>
-          )}
-
-          {/* VIEW 2: CREATE CAMPAIGN WIZARD */}
-          {activePage === 'create-campaign' && <CampaignWizard />}
-
-          {/* VIEW 3: CREATIVE STUDIO */}
-          {activePage === 'creative-studio' && <CreativeStudioPage />}
-
-          {/* VIEW 4: BUSINESS PROFILE */}
-          {activePage === 'business-profile' && <BusinessProfilePage />}
-
-          {/* VIEW 5: SETTINGS */}
-          {activePage === 'settings' && <SettingsPage />}
-        </main>
-      </div>
-
-      <BusinessOnboardingModal />
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      {showProductTour && <ProductTour onComplete={completeProductTour} />}
       <ToastContainer />
     </div>
   );

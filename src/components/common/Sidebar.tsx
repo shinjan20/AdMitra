@@ -3,68 +3,52 @@ import { useApp, NavigationPage } from '../../context/AppContext';
 import {
   LayoutDashboard,
   Sparkles,
-  Palette,
-  Building2,
-  Settings,
-  Circle,
+  MessageSquareText,
 } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
-  const { activePage, navigateTo, campaigns, activeDraft } = useApp();
-
-  const activeCampaignsCount = campaigns.filter((c) => c.status === 'active').length;
+  const { activePage, navigateTo, activeDraft } = useApp();
 
   const navItems: { id: NavigationPage; label: string; icon: React.ReactNode; badge?: string }[] = [
     {
       id: 'dashboard',
-      label: 'Dashboard',
+      label: 'Home',
       icon: <LayoutDashboard className="w-4 h-4" />,
     },
     {
       id: 'create-campaign',
-      label: 'Create Campaign',
+      label: activeDraft ? 'Continue your ad' : 'Create an ad',
       icon: <Sparkles className="w-4 h-4" />,
-      badge: activeDraft ? 'Draft' : undefined,
     },
     {
       id: 'creative-studio',
-      label: 'Creative Studio',
-      icon: <Palette className="w-4 h-4" />,
-    },
-    {
-      id: 'business-profile',
-      label: 'Business Profile',
-      icon: <Building2 className="w-4 h-4" />,
-    },
-    {
-      id: 'settings',
-      label: 'Settings',
-      icon: <Settings className="w-4 h-4" />,
+      label: 'Ad text ideas',
+      icon: <MessageSquareText className="w-4 h-4" />,
     },
   ];
 
   return (
-    <aside className="w-56 bg-[#F9FAFB] border-r border-slate-200/60 min-h-[calc(100vh-3.5rem)] p-3 flex flex-col justify-between hidden md:flex select-none">
-      <div className="space-y-4">
-        <nav className="space-y-0.5">
+    <aside className="hidden min-h-[calc(100vh-3.5rem)] w-52 select-none flex-col border-r border-slate-200/60 bg-[#F9FAFB] p-3 md:flex">
+      <nav aria-label="Main navigation" className="space-y-1">
           {navItems.map((item) => {
             const isActive = activePage === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => navigateTo(item.id)}
-                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                className={`min-h-11 w-full flex items-center justify-between rounded-lg px-3 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-white text-slate-900 shadow-2xs border border-slate-200/60'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
+                    ? 'border border-slate-200/60 bg-white text-slate-900 shadow-2xs'
+                    : 'text-slate-600 hover:bg-slate-100/70 hover:text-slate-900'
                 }`}
+                aria-current={isActive ? 'page' : undefined}
               >
-                <div className="flex items-center gap-2.5">
+                <span className="flex items-center gap-3">
                   <span className={isActive ? 'text-slate-900' : 'text-slate-400'}>
                     {item.icon}
                   </span>
                   <span>{item.label}</span>
-                </div>
+                </span>
                 {item.badge && (
                   <span className="px-1.5 py-0.2 rounded text-[10px] font-medium bg-blue-50 text-blue-700">
                     {item.badge}
@@ -73,22 +57,7 @@ export const Sidebar: React.FC = () => {
               </button>
             );
           })}
-        </nav>
-      </div>
-
-      {/* Quiet Status Footer */}
-      <div className="p-2.5 bg-white rounded-xl border border-slate-200/60 text-xs space-y-1">
-        <div className="flex items-center justify-between text-slate-500">
-          <span className="text-[11px] font-medium">Active Ads</span>
-          <span className="flex items-center gap-1 font-semibold text-slate-900 text-xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            {activeCampaignsCount} Live
-          </span>
-        </div>
-        <p className="text-[10px] text-slate-400 leading-normal">
-          Simulated local audience delivery.
-        </p>
-      </div>
+      </nav>
     </aside>
   );
 };

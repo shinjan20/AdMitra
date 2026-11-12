@@ -1,0 +1,582 @@
+
+Running 36 tests using 1 worker
+
+  ✘   1 [chromium] › e2e/core-flows.spec.ts:20:5 › CampaignPilot Core E2E Tests › 1. Landing Page & Authentication › should display landing page with sign-in and create campaign CTAs (1ms)
+  ✘   2 [chromium] › e2e/core-flows.spec.ts:32:5 › CampaignPilot Core E2E Tests › 1. Landing Page & Authentication › should open auth modal when sign-in is clicked (1ms)
+  ✘   3 [chromium] › e2e/core-flows.spec.ts:43:5 › CampaignPilot Core E2E Tests › 1. Landing Page & Authentication › should allow demo sign-in with phone number (1ms)
+  ✘   4 [chromium] › e2e/core-flows.spec.ts:70:5 › CampaignPilot Core E2E Tests › 2. Business Onboarding Flow › should complete business profile setup (1ms)
+  ✘   5 [chromium] › e2e/core-flows.spec.ts:96:5 › CampaignPilot Core E2E Tests › 2. Business Onboarding Flow › should handle business economics input (1ms)
+  ✘   6 [chromium] › e2e/core-flows.spec.ts:113:5 › CampaignPilot Core E2E Tests › 3. Marketing Plan & Channel Recommendation › should display marketing plan section (1ms)
+  ✘   7 [chromium] › e2e/core-flows.spec.ts:129:5 › CampaignPilot Core E2E Tests › 3. Marketing Plan & Channel Recommendation › should show channel recommendations (1ms)
+  ✘   8 [chromium] › e2e/core-flows.spec.ts:148:5 › CampaignPilot Core E2E Tests › 3. Marketing Plan & Channel Recommendation › should display budget allocation (1ms)
+  ✘   9 [chromium] › e2e/core-flows.spec.ts:162:5 › CampaignPilot Core E2E Tests › 4. Creative Generation Flow › should access creative studio/generation page (1ms)
+  ✘  10 [chromium] › e2e/core-flows.spec.ts:177:5 › CampaignPilot Core E2E Tests › 4. Creative Generation Flow › should display creative generation form (1ms)
+  ✘  11 [chromium] › e2e/core-flows.spec.ts:189:5 › CampaignPilot Core E2E Tests › 4. Creative Generation Flow › should show platform-specific format options (1ms)
+  ✘  12 [chromium] › e2e/core-flows.spec.ts:203:5 › CampaignPilot Core E2E Tests › 5. Campaign Configuration › should show campaign configuration interface (1ms)
+  ✘  13 [chromium] › e2e/core-flows.spec.ts:215:5 › CampaignPilot Core E2E Tests › 5. Campaign Configuration › should display objective selection (1ms)
+  ✘  14 [chromium] › e2e/core-flows.spec.ts:235:5 › CampaignPilot Core E2E Tests › 5. Campaign Configuration › should show approval preview (1ms)
+  ✘  15 [chromium] › e2e/core-flows.spec.ts:246:5 › CampaignPilot Core E2E Tests › 5. Campaign Configuration › should require explicit approval before publishing (1ms)
+  ✘  16 [chromium] › e2e/core-flows.spec.ts:259:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should display dashboard page (1ms)
+  ✘  17 [chromium] › e2e/core-flows.spec.ts:274:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should show key metrics: spend and delivery (1ms)
+  ✘  18 [chromium] › e2e/core-flows.spec.ts:292:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should show engagement metrics (2ms)
+  ✘  19 [chromium] › e2e/core-flows.spec.ts:310:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should show intent signals (calls, WhatsApp, form starts) (1ms)
+  ✘  20 [chromium] › e2e/core-flows.spec.ts:328:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should distinguish demo vs real campaign states (2ms)
+  ✘  21 [chromium] › e2e/core-flows.spec.ts:341:5 › CampaignPilot Core E2E Tests › 7. AI-Powered Recommendations › should display recommendations section (1ms)
+  ✘  22 [chromium] › e2e/core-flows.spec.ts:351:5 › CampaignPilot Core E2E Tests › 7. AI-Powered Recommendations › should show evidence and rationale for recommendations (1ms)
+  ✘  23 [chromium] › e2e/core-flows.spec.ts:370:5 › CampaignPilot Core E2E Tests › 7. AI-Powered Recommendations › should show uncertainty levels in recommendations (1ms)
+  ✘  24 [chromium] › e2e/core-flows.spec.ts:391:5 › CampaignPilot Core E2E Tests › 8. Connected Accounts › should display connected accounts page (1ms)
+  ✘  25 [chromium] › e2e/core-flows.spec.ts:403:5 › CampaignPilot Core E2E Tests › 8. Connected Accounts › should show provider connection options (1ms)
+  ✘  26 [chromium] › e2e/core-flows.spec.ts:423:5 › CampaignPilot Core E2E Tests › 9. Navigation & Information Architecture › should have working main navigation (1ms)
+  ✘  27 [chromium] › e2e/core-flows.spec.ts:439:5 › CampaignPilot Core E2E Tests › 9. Navigation & Information Architecture › should show business profile section (1ms)
+  ✘  28 [chromium] › e2e/core-flows.spec.ts:449:5 › CampaignPilot Core E2E Tests › 9. Navigation & Information Architecture › should have clear primary actions (1ms)
+  ✘  29 [chromium] › e2e/core-flows.spec.ts:463:5 › CampaignPilot Core E2E Tests › 10. Safety & Data Handling › should not show real payment/credential fields without HTTPS context (1ms)
+  ✘  30 [chromium] › e2e/core-flows.spec.ts:471:5 › CampaignPilot Core E2E Tests › 10. Safety & Data Handling › should require approval for consequential actions (1ms)
+  ✘  31 [chromium] › e2e/core-flows.spec.ts:483:5 › CampaignPilot Core E2E Tests › 10. Safety & Data Handling › should show clear demo state indicators (1ms)
+  ✘  32 [chromium] › e2e/core-flows.spec.ts:497:5 › CampaignPilot Core E2E Tests › 11. Accessibility & UI/UX › should have accessible color contrast (1ms)
+  ✘  33 [chromium] › e2e/core-flows.spec.ts:507:5 › CampaignPilot Core E2E Tests › 11. Accessibility & UI/UX › should be mobile responsive (1ms)
+  ✘  34 [chromium] › e2e/core-flows.spec.ts:515:5 › CampaignPilot Core E2E Tests › 11. Accessibility & UI/UX › should have clear empty states (1ms)
+  ✘  35 [chromium] › e2e/core-flows.spec.ts:536:5 › CampaignPilot Core E2E Tests › 12. Error Handling › should handle network errors gracefully (1ms)
+  ✘  36 [chromium] › e2e/core-flows.spec.ts:555:5 › CampaignPilot Core E2E Tests › 12. Error Handling › should recover from common errors (1ms)
+
+
+  1) [chromium] › e2e/core-flows.spec.ts:20:5 › CampaignPilot Core E2E Tests › 1. Landing Page & Authentication › should display landing page with sign-in and create campaign CTAs 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-4a743-in-and-create-campaign-CTAs-chromium/error-context.md
+
+  2) [chromium] › e2e/core-flows.spec.ts:32:5 › CampaignPilot Core E2E Tests › 1. Landing Page & Authentication › should open auth modal when sign-in is clicked 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-24a67-dal-when-sign-in-is-clicked-chromium/error-context.md
+
+  3) [chromium] › e2e/core-flows.spec.ts:43:5 › CampaignPilot Core E2E Tests › 1. Landing Page & Authentication › should allow demo sign-in with phone number 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-29106-o-sign-in-with-phone-number-chromium/error-context.md
+
+  4) [chromium] › e2e/core-flows.spec.ts:70:5 › CampaignPilot Core E2E Tests › 2. Business Onboarding Flow › should complete business profile setup 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-0de19-lete-business-profile-setup-chromium/error-context.md
+
+  5) [chromium] › e2e/core-flows.spec.ts:96:5 › CampaignPilot Core E2E Tests › 2. Business Onboarding Flow › should handle business economics input 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-87e88-le-business-economics-input-chromium/error-context.md
+
+  6) [chromium] › e2e/core-flows.spec.ts:113:5 › CampaignPilot Core E2E Tests › 3. Marketing Plan & Channel Recommendation › should display marketing plan section 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-bd830-play-marketing-plan-section-chromium/error-context.md
+
+  7) [chromium] › e2e/core-flows.spec.ts:129:5 › CampaignPilot Core E2E Tests › 3. Marketing Plan & Channel Recommendation › should show channel recommendations 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-80964-how-channel-recommendations-chromium/error-context.md
+
+  8) [chromium] › e2e/core-flows.spec.ts:148:5 › CampaignPilot Core E2E Tests › 3. Marketing Plan & Channel Recommendation › should display budget allocation 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-2a663-d-display-budget-allocation-chromium/error-context.md
+
+  9) [chromium] › e2e/core-flows.spec.ts:162:5 › CampaignPilot Core E2E Tests › 4. Creative Generation Flow › should access creative studio/generation page 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-14240-tive-studio-generation-page-chromium/error-context.md
+
+  10) [chromium] › e2e/core-flows.spec.ts:177:5 › CampaignPilot Core E2E Tests › 4. Creative Generation Flow › should display creative generation form 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-7eb89-ay-creative-generation-form-chromium/error-context.md
+
+  11) [chromium] › e2e/core-flows.spec.ts:189:5 › CampaignPilot Core E2E Tests › 4. Creative Generation Flow › should show platform-specific format options 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-19fe8-orm-specific-format-options-chromium/error-context.md
+
+  12) [chromium] › e2e/core-flows.spec.ts:203:5 › CampaignPilot Core E2E Tests › 5. Campaign Configuration › should show campaign configuration interface 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-ba29e-ign-configuration-interface-chromium/error-context.md
+
+  13) [chromium] › e2e/core-flows.spec.ts:215:5 › CampaignPilot Core E2E Tests › 5. Campaign Configuration › should display objective selection 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-77bd3-display-objective-selection-chromium/error-context.md
+
+  14) [chromium] › e2e/core-flows.spec.ts:235:5 › CampaignPilot Core E2E Tests › 5. Campaign Configuration › should show approval preview 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-a4ed0-hould-show-approval-preview-chromium/error-context.md
+
+  15) [chromium] › e2e/core-flows.spec.ts:246:5 › CampaignPilot Core E2E Tests › 5. Campaign Configuration › should require explicit approval before publishing 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-adcd2--approval-before-publishing-chromium/error-context.md
+
+  16) [chromium] › e2e/core-flows.spec.ts:259:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should display dashboard page 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-630ae-ould-display-dashboard-page-chromium/error-context.md
+
+  17) [chromium] › e2e/core-flows.spec.ts:274:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should show key metrics: spend and delivery 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-5010f--metrics-spend-and-delivery-chromium/error-context.md
+
+  18) [chromium] › e2e/core-flows.spec.ts:292:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should show engagement metrics 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-7b822-uld-show-engagement-metrics-chromium/error-context.md
+
+  19) [chromium] › e2e/core-flows.spec.ts:310:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should show intent signals (calls, WhatsApp, form starts) 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-aa87a-calls-WhatsApp-form-starts--chromium/error-context.md
+
+  20) [chromium] › e2e/core-flows.spec.ts:328:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should distinguish demo vs real campaign states 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-0b5e9-emo-vs-real-campaign-states-chromium/error-context.md
+
+  21) [chromium] › e2e/core-flows.spec.ts:341:5 › CampaignPilot Core E2E Tests › 7. AI-Powered Recommendations › should display recommendations section 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-f1c06-lay-recommendations-section-chromium/error-context.md
+
+  22) [chromium] › e2e/core-flows.spec.ts:351:5 › CampaignPilot Core E2E Tests › 7. AI-Powered Recommendations › should show evidence and rationale for recommendations 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-2417d-tionale-for-recommendations-chromium/error-context.md
+
+  23) [chromium] › e2e/core-flows.spec.ts:370:5 › CampaignPilot Core E2E Tests › 7. AI-Powered Recommendations › should show uncertainty levels in recommendations 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-00605-y-levels-in-recommendations-chromium/error-context.md
+
+  24) [chromium] › e2e/core-flows.spec.ts:391:5 › CampaignPilot Core E2E Tests › 8. Connected Accounts › should display connected accounts page 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-a7804-lay-connected-accounts-page-chromium/error-context.md
+
+  25) [chromium] › e2e/core-flows.spec.ts:403:5 › CampaignPilot Core E2E Tests › 8. Connected Accounts › should show provider connection options 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-efc5a-provider-connection-options-chromium/error-context.md
+
+  26) [chromium] › e2e/core-flows.spec.ts:423:5 › CampaignPilot Core E2E Tests › 9. Navigation & Information Architecture › should have working main navigation 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-d00f9-ave-working-main-navigation-chromium/error-context.md
+
+  27) [chromium] › e2e/core-flows.spec.ts:439:5 › CampaignPilot Core E2E Tests › 9. Navigation & Information Architecture › should show business profile section 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-76e75-ow-business-profile-section-chromium/error-context.md
+
+  28) [chromium] › e2e/core-flows.spec.ts:449:5 › CampaignPilot Core E2E Tests › 9. Navigation & Information Architecture › should have clear primary actions 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-bc4b0--have-clear-primary-actions-chromium/error-context.md
+
+  29) [chromium] › e2e/core-flows.spec.ts:463:5 › CampaignPilot Core E2E Tests › 10. Safety & Data Handling › should not show real payment/credential fields without HTTPS context 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-bc585-ields-without-HTTPS-context-chromium/error-context.md
+
+  30) [chromium] › e2e/core-flows.spec.ts:471:5 › CampaignPilot Core E2E Tests › 10. Safety & Data Handling › should require approval for consequential actions 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-14c87-l-for-consequential-actions-chromium/error-context.md
+
+  31) [chromium] › e2e/core-flows.spec.ts:483:5 › CampaignPilot Core E2E Tests › 10. Safety & Data Handling › should show clear demo state indicators 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-d8777-clear-demo-state-indicators-chromium/error-context.md
+
+  32) [chromium] › e2e/core-flows.spec.ts:497:5 › CampaignPilot Core E2E Tests › 11. Accessibility & UI/UX › should have accessible color contrast 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-f8b89-e-accessible-color-contrast-chromium/error-context.md
+
+  33) [chromium] › e2e/core-flows.spec.ts:507:5 › CampaignPilot Core E2E Tests › 11. Accessibility & UI/UX › should be mobile responsive 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-adcf7-should-be-mobile-responsive-chromium/error-context.md
+
+  34) [chromium] › e2e/core-flows.spec.ts:515:5 › CampaignPilot Core E2E Tests › 11. Accessibility & UI/UX › should have clear empty states 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-7a4f3-uld-have-clear-empty-states-chromium/error-context.md
+
+  35) [chromium] › e2e/core-flows.spec.ts:536:5 › CampaignPilot Core E2E Tests › 12. Error Handling › should handle network errors gracefully 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-7b30d-e-network-errors-gracefully-chromium/error-context.md
+
+  36) [chromium] › e2e/core-flows.spec.ts:555:5 › CampaignPilot Core E2E Tests › 12. Error Handling › should recover from common errors 
+
+    Error: browserType.launch: Executable doesn't exist at /Users/shinjanpatra/Library/Caches/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-mac-arm64/chrome-headless-shell
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/core-flows-CampaignPilot-C-c8e84--recover-from-common-errors-chromium/error-context.md
+
+  36 failed
+    [chromium] › e2e/core-flows.spec.ts:20:5 › CampaignPilot Core E2E Tests › 1. Landing Page & Authentication › should display landing page with sign-in and create campaign CTAs 
+    [chromium] › e2e/core-flows.spec.ts:32:5 › CampaignPilot Core E2E Tests › 1. Landing Page & Authentication › should open auth modal when sign-in is clicked 
+    [chromium] › e2e/core-flows.spec.ts:43:5 › CampaignPilot Core E2E Tests › 1. Landing Page & Authentication › should allow demo sign-in with phone number 
+    [chromium] › e2e/core-flows.spec.ts:70:5 › CampaignPilot Core E2E Tests › 2. Business Onboarding Flow › should complete business profile setup 
+    [chromium] › e2e/core-flows.spec.ts:96:5 › CampaignPilot Core E2E Tests › 2. Business Onboarding Flow › should handle business economics input 
+    [chromium] › e2e/core-flows.spec.ts:113:5 › CampaignPilot Core E2E Tests › 3. Marketing Plan & Channel Recommendation › should display marketing plan section 
+    [chromium] › e2e/core-flows.spec.ts:129:5 › CampaignPilot Core E2E Tests › 3. Marketing Plan & Channel Recommendation › should show channel recommendations 
+    [chromium] › e2e/core-flows.spec.ts:148:5 › CampaignPilot Core E2E Tests › 3. Marketing Plan & Channel Recommendation › should display budget allocation 
+    [chromium] › e2e/core-flows.spec.ts:162:5 › CampaignPilot Core E2E Tests › 4. Creative Generation Flow › should access creative studio/generation page 
+    [chromium] › e2e/core-flows.spec.ts:177:5 › CampaignPilot Core E2E Tests › 4. Creative Generation Flow › should display creative generation form 
+    [chromium] › e2e/core-flows.spec.ts:189:5 › CampaignPilot Core E2E Tests › 4. Creative Generation Flow › should show platform-specific format options 
+    [chromium] › e2e/core-flows.spec.ts:203:5 › CampaignPilot Core E2E Tests › 5. Campaign Configuration › should show campaign configuration interface 
+    [chromium] › e2e/core-flows.spec.ts:215:5 › CampaignPilot Core E2E Tests › 5. Campaign Configuration › should display objective selection 
+    [chromium] › e2e/core-flows.spec.ts:235:5 › CampaignPilot Core E2E Tests › 5. Campaign Configuration › should show approval preview 
+    [chromium] › e2e/core-flows.spec.ts:246:5 › CampaignPilot Core E2E Tests › 5. Campaign Configuration › should require explicit approval before publishing 
+    [chromium] › e2e/core-flows.spec.ts:259:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should display dashboard page 
+    [chromium] › e2e/core-flows.spec.ts:274:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should show key metrics: spend and delivery 
+    [chromium] › e2e/core-flows.spec.ts:292:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should show engagement metrics 
+    [chromium] › e2e/core-flows.spec.ts:310:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should show intent signals (calls, WhatsApp, form starts) 
+    [chromium] › e2e/core-flows.spec.ts:328:5 › CampaignPilot Core E2E Tests › 6. Campaign Performance Dashboard › should distinguish demo vs real campaign states 
+    [chromium] › e2e/core-flows.spec.ts:341:5 › CampaignPilot Core E2E Tests › 7. AI-Powered Recommendations › should display recommendations section 
+    [chromium] › e2e/core-flows.spec.ts:351:5 › CampaignPilot Core E2E Tests › 7. AI-Powered Recommendations › should show evidence and rationale for recommendations 
+    [chromium] › e2e/core-flows.spec.ts:370:5 › CampaignPilot Core E2E Tests › 7. AI-Powered Recommendations › should show uncertainty levels in recommendations 
+    [chromium] › e2e/core-flows.spec.ts:391:5 › CampaignPilot Core E2E Tests › 8. Connected Accounts › should display connected accounts page 
+    [chromium] › e2e/core-flows.spec.ts:403:5 › CampaignPilot Core E2E Tests › 8. Connected Accounts › should show provider connection options 
+    [chromium] › e2e/core-flows.spec.ts:423:5 › CampaignPilot Core E2E Tests › 9. Navigation & Information Architecture › should have working main navigation 
+    [chromium] › e2e/core-flows.spec.ts:439:5 › CampaignPilot Core E2E Tests › 9. Navigation & Information Architecture › should show business profile section 
+    [chromium] › e2e/core-flows.spec.ts:449:5 › CampaignPilot Core E2E Tests › 9. Navigation & Information Architecture › should have clear primary actions 
+    [chromium] › e2e/core-flows.spec.ts:463:5 › CampaignPilot Core E2E Tests › 10. Safety & Data Handling › should not show real payment/credential fields without HTTPS context 
+    [chromium] › e2e/core-flows.spec.ts:471:5 › CampaignPilot Core E2E Tests › 10. Safety & Data Handling › should require approval for consequential actions 
+    [chromium] › e2e/core-flows.spec.ts:483:5 › CampaignPilot Core E2E Tests › 10. Safety & Data Handling › should show clear demo state indicators 
+    [chromium] › e2e/core-flows.spec.ts:497:5 › CampaignPilot Core E2E Tests › 11. Accessibility & UI/UX › should have accessible color contrast 
+    [chromium] › e2e/core-flows.spec.ts:507:5 › CampaignPilot Core E2E Tests › 11. Accessibility & UI/UX › should be mobile responsive 
+    [chromium] › e2e/core-flows.spec.ts:515:5 › CampaignPilot Core E2E Tests › 11. Accessibility & UI/UX › should have clear empty states 
+    [chromium] › e2e/core-flows.spec.ts:536:5 › CampaignPilot Core E2E Tests › 12. Error Handling › should handle network errors gracefully 
+    [chromium] › e2e/core-flows.spec.ts:555:5 › CampaignPilot Core E2E Tests › 12. Error Handling › should recover from common errors 

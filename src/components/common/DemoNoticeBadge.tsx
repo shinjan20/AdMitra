@@ -1,5 +1,6 @@
 import React from 'react';
 import { Info } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
 
 interface DemoNoticeBadgeProps {
   compact?: boolean;
@@ -10,27 +11,26 @@ export const DemoNoticeBadge: React.FC<DemoNoticeBadgeProps> = ({
   compact = false,
   className = '',
 }) => {
+  const { tr } = useApp();
+
   if (compact) {
     return (
       <span
-        className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200/80 ${className}`}
-        title="Simulated Demo Launch: Real advertising APIs can be connected in Phase 2"
+        className={`inline-flex items-center gap-1.5 rounded-full border border-[#f0dcae] bg-[#fff7e6] px-2.5 py-1 text-[0.6875rem] font-semibold text-[color:var(--marigold-ink)] ${className}`}
+        title={tr('This is a sample plan. Nothing goes live and no money is spent.')}
       >
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-        Demo Mode
+        <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--marigold)]" aria-hidden="true" />
+        {tr('Practice only')}
       </span>
     );
   }
 
   return (
-    <div
-      className={`bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-xs text-slate-600 flex items-start gap-2.5 ${className}`}
-    >
-      <Info className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
+    <div className={`notice ${className}`}>
+      <Info className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--brand)]" aria-hidden="true" />
       <div className="leading-relaxed">
-        <span className="font-semibold text-slate-800">Simulated MVP:</span>{' '}
-        Campaign launches and analytics are simulated in high fidelity for testing. No
-        real money is spent, and ads are not published to external platforms until API integration in Phase 2.
+        <span className="font-bold text-[#5a3c05]">{tr('This is a sample plan.')}</span>{' '}
+        {tr('Nothing goes live, the numbers are examples, and no money is spent.')}
       </div>
     </div>
   );

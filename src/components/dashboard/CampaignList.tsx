@@ -7,12 +7,8 @@ import {
   MessageSquare,
   Users,
   Eye,
-  Play,
-  Pause,
-  Square,
   Trash2,
   ExternalLink,
-  Plus,
   Search,
 } from 'lucide-react';
 
@@ -24,9 +20,9 @@ export const CampaignList: React.FC<CampaignListProps> = ({ onSelectCampaign }) 
   const {
     campaigns,
     activeBusiness,
-    updateCampaignStatus,
     deleteCampaign,
     navigateTo,
+    tr,
   } = useApp();
 
   const [statusFilter, setStatusFilter] = useState<'all' | CampaignStatus>('all');
@@ -52,11 +48,22 @@ export const CampaignList: React.FC<CampaignListProps> = ({ onSelectCampaign }) 
   const getObjectiveIcon = (obj: CampaignObjective) => {
     switch (obj) {
       case 'messages':
-        return <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />;
+        return <MessageSquare className="h-3.5 w-3.5 text-emerald-600" aria-hidden="true" />;
       case 'leads':
-        return <Users className="w-3.5 h-3.5 text-blue-600" />;
+        return <Users className="h-3.5 w-3.5 text-blue-600" aria-hidden="true" />;
       case 'awareness':
-        return <Eye className="w-3.5 h-3.5 text-slate-500" />;
+        return <Eye className="h-3.5 w-3.5 text-slate-500" aria-hidden="true" />;
+    }
+  };
+
+  const getObjectiveLabel = (obj: CampaignObjective) => {
+    switch (obj) {
+      case 'messages':
+        return tr('WhatsApp enquiries');
+      case 'leads':
+        return tr('Phone enquiries');
+      case 'awareness':
+        return tr('Shop visits');
     }
   };
 
@@ -64,255 +71,212 @@ export const CampaignList: React.FC<CampaignListProps> = ({ onSelectCampaign }) 
     switch (status) {
       case 'active':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            Active
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-[0.6875rem] font-semibold text-emerald-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+            {tr('Live')}
           </span>
         );
       case 'paused':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600">
-            Paused
+          <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[0.6875rem] font-semibold text-slate-600">
+            {tr('Paused')}
           </span>
         );
       case 'completed':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-500">
-            Completed
+          <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[0.6875rem] font-semibold text-slate-500">
+            {tr('Completed')}
           </span>
         );
       case 'draft':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-400">
-            Draft
+          <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[0.6875rem] font-semibold text-slate-600">
+            {tr('Draft')}
+          </span>
+        );
+      case 'pending_approval':
+        return (
+          <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[0.6875rem] font-semibold text-blue-800">
+            {tr('Pending approval')}
+          </span>
+        );
+      case 'failed':
+        return (
+          <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2 py-0.5 text-[0.6875rem] font-semibold text-rose-800">
+            {tr('Failed')}
+          </span>
+        );
+      case 'simulated':
+        return (
+          <span className="inline-flex items-center gap-1 rounded-full border border-[#f0dcae] bg-[#fff7e6] px-2 py-0.5 text-[0.6875rem] font-semibold text-[color:var(--marigold-ink)]">
+            {tr('Sample plan')}
           </span>
         );
     }
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/70 shadow-2xs overflow-hidden">
-      {/* Controls Bar */}
-      <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div data-tour="campaigns" className="surface-card overflow-hidden">
+      <div className="flex flex-col gap-3 border-b border-[color:var(--line)] p-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-slate-900 tracking-tight">
-            Campaign Performance
-          </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Active and past campaigns for {activeBusiness.businessName}
+          <h2 className="text-base font-bold tracking-tight">{tr('Ad plans')}</h2>
+          <p className="mt-0.5 text-xs text-[color:var(--ink-soft)]">
+            {tr('Plans for {business}. Nothing goes live and nothing is charged.', { business: activeBusiness.businessName })}
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Search */}
-          <div className="relative">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+          <div className="relative w-full sm:w-auto">
+            <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[color:var(--ink-soft)]" aria-hidden="true" />
             <input
               type="text"
-              placeholder="Filter ads..."
+              placeholder={tr('Find an ad')}
+              aria-label={tr('Find an ad')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 pr-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 w-36 sm:w-40"
+              className="min-h-10 w-full rounded-lg border border-[color:var(--line-strong)] bg-white py-1.5 pl-8 pr-3 text-sm text-[color:var(--ink)] placeholder:text-[color:var(--ink-soft)]/70 focus:outline-none focus:ring-2 focus:ring-[color:var(--brand)] sm:w-44"
             />
           </div>
 
-          {/* Status Filter */}
           <select
+            aria-label={tr('Any status')}
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white text-slate-600 font-medium"
+            className="min-h-10 min-w-0 flex-1 rounded-lg border border-[color:var(--line-strong)] bg-white px-2.5 text-sm font-medium text-[color:var(--ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--brand)] sm:flex-none"
           >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="paused">Paused</option>
-            <option value="completed">Completed</option>
+            <option value="all">{tr('Any status')}</option>
+            <option value="simulated">{tr('Sample plan')}</option>
+            <option value="draft">{tr('Draft')}</option>
+            <option value="pending_approval">{tr('Pending approval')}</option>
+            <option value="failed">{tr('Failed')}</option>
           </select>
 
-          {/* Objective Filter */}
           <select
+            aria-label={tr('Any customer action')}
             value={objectiveFilter}
             onChange={(e) => setObjectiveFilter(e.target.value as any)}
-            className="px-2.5 py-1.5 text-xs border border-slate-200 rounded-lg bg-white text-slate-600 font-medium"
+            className="min-h-10 min-w-0 flex-1 rounded-lg border border-[color:var(--line-strong)] bg-white px-2.5 text-sm font-medium text-[color:var(--ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--brand)] sm:flex-none"
           >
-            <option value="all">All Goals</option>
-            <option value="messages">WhatsApp Chats</option>
-            <option value="leads">Direct Leads</option>
-            <option value="awareness">Store Views</option>
+            <option value="all">{tr('Any customer action')}</option>
+            <option value="messages">{tr('WhatsApp enquiries')}</option>
+            <option value="leads">{tr('Phone enquiries')}</option>
+            <option value="awareness">{tr('Shop visits')}</option>
           </select>
-
-          <button
-            onClick={() => navigateTo('create-campaign')}
-            className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium rounded-lg shadow-2xs transition-colors"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            New
-          </button>
         </div>
       </div>
 
       {filteredCampaigns.length === 0 ? (
-        <div className="py-12 px-4 text-center space-y-3">
-          <p className="text-xs text-slate-400 max-w-sm mx-auto">
+        <div className="space-y-3 px-4 py-12 text-center">
+          <p className="mx-auto max-w-sm text-sm text-[color:var(--ink-soft)]">
             {searchQuery || statusFilter !== 'all' || objectiveFilter !== 'all'
-              ? 'No campaigns match your current filters.'
-              : 'No campaigns created yet. Choose a goal above to get started.'}
+              ? tr('No ads match those choices.')
+              : tr('No ads yet. Start with one offer.')}
           </p>
           <button
-            onClick={() => navigateTo('create-campaign')}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 text-white text-xs font-medium rounded-lg"
+            onClick={() => navigateTo('creative-studio')}
+            className="btn-primary min-h-11 text-sm"
           >
-            <Plus className="w-3.5 h-3.5" /> Create Campaign
+            {tr('Make an ad')}
           </button>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-slate-100 text-[11px] font-medium text-slate-400 uppercase tracking-wider">
-                <th className="py-2.5 px-4">Campaign</th>
-                <th className="py-2.5 px-4">Goal</th>
-                <th className="py-2.5 px-4">Status</th>
-                <th className="py-2.5 px-4">Spent / Budget</th>
-                <th className="py-2.5 px-4">Outcome</th>
-                <th className="py-2.5 px-4">Duration</th>
-                <th className="py-2.5 px-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 text-xs">
-              {filteredCampaigns.map((c) => {
-                const spend = c.metrics?.totalSpend || 0;
-                const leads = c.metrics?.totalLeads || 0;
-                const messages = c.metrics?.totalMessages || 0;
-                const impressions = c.metrics?.totalImpressions || 0;
+        <ul className="divide-y divide-[color:var(--line)]">
+          {filteredCampaigns.map((c) => {
+            const spend = c.metrics?.totalSpend;
+            const leads = c.metrics?.totalLeads || 0;
+            const messages = c.metrics?.totalMessages || 0;
+            const impressions = c.metrics?.totalImpressions;
 
-                return (
-                  <tr
-                    key={c.id}
-                    className="hover:bg-slate-50/60 transition-colors group cursor-pointer"
-                    onClick={() => onSelectCampaign(c.id)}
-                  >
-                    {/* Campaign & Thumbnail */}
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={c.creative?.imageUrl}
-                          alt=""
-                          className="w-10 h-10 rounded-lg object-cover border border-slate-200/80 flex-shrink-0"
-                        />
-                        <div className="min-w-0">
-                          <p className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors truncate max-w-xs">
-                            {c.campaignName}
-                          </p>
-                          <span className="text-[11px] text-slate-400 block truncate">
-                            {c.audience?.locationCity} · {c.audience?.radiusKm} km radius
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Objective */}
-                    <td className="py-3 px-4 whitespace-nowrap">
-                      <div className="flex items-center gap-1.5 font-medium text-slate-600 capitalize">
-                        {getObjectiveIcon(c.objective)}
-                        <span>{c.objective}</span>
-                      </div>
-                    </td>
-
-                    {/* Status */}
-                    <td className="py-3 px-4 whitespace-nowrap">
-                      {getStatusBadge(c.status)}
-                    </td>
-
-                    {/* Spent / Budget */}
-                    <td className="py-3 px-4 whitespace-nowrap">
-                      <span className="font-semibold text-slate-900">{formatINR(spend)}</span>
-                      <span className="text-[11px] text-slate-400"> / {formatINR(c.totalBudget)}</span>
-                    </td>
-
-                    {/* Outcome */}
-                    <td className="py-3 px-4 whitespace-nowrap">
-                      {c.objective === 'messages' && (
-                        <div>
-                          <p className="font-semibold text-emerald-700">{messages} WhatsApp chats</p>
-                          <p className="text-[10px] text-slate-400">
-                            ~{formatINR(spend > 0 && messages > 0 ? spend / messages : 0)} / chat
-                          </p>
-                        </div>
-                      )}
-                      {c.objective === 'leads' && (
-                        <div>
-                          <p className="font-semibold text-blue-700">{leads} Leads</p>
-                          <p className="text-[10px] text-slate-400">
-                            ~{formatINR(spend > 0 && leads > 0 ? spend / leads : 0)} / lead
-                          </p>
-                        </div>
-                      )}
-                      {c.objective === 'awareness' && (
-                        <div>
-                          <p className="font-semibold text-slate-800">
-                            {impressions.toLocaleString('en-IN')} Views
-                          </p>
-                          <p className="text-[10px] text-slate-400">Local Reach</p>
-                        </div>
-                      )}
-                    </td>
-
-                    {/* Duration */}
-                    <td className="py-3 px-4 whitespace-nowrap text-slate-500 text-[11px]">
-                      <div>{formatDate(c.startDate)}</div>
-                      <div className="text-slate-400">to {formatDate(c.endDate)}</div>
-                    </td>
-
-                    {/* Actions */}
-                    <td
-                      className="py-3 px-4 text-right whitespace-nowrap"
-                      onClick={(e) => e.stopPropagation()}
+            return (
+              <li key={c.id}>
+                <div
+                  className="group flex cursor-pointer items-start gap-3 p-4 transition-colors hover:bg-[color:var(--paper)]/60"
+                  onClick={() => onSelectCampaign(c.id)}
+                >
+                  <img
+                    src={c.creative?.imageUrl}
+                    alt=""
+                    className="h-12 w-12 shrink-0 rounded-xl border border-[color:var(--line)] object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectCampaign(c.id);
+                      }}
+                      className="block w-full truncate text-left text-sm font-semibold group-hover:text-[color:var(--brand)]"
                     >
-                      <div className="flex items-center justify-end gap-1">
-                        {c.status === 'active' && (
-                          <button
-                            onClick={() => updateCampaignStatus(c.id, 'paused')}
-                            className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-                            title="Pause Campaign"
-                          >
-                            <Pause className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                        {c.status === 'paused' && (
-                          <button
-                            onClick={() => updateCampaignStatus(c.id, 'active')}
-                            className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-                            title="Resume Campaign"
-                          >
-                            <Play className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                        <button
-                          onClick={() => onSelectCampaign(c.id)}
-                          className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-                          title="View Analytics"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (window.confirm(`Delete campaign "${c.campaignName}"?`)) {
-                              deleteCampaign(c.id);
-                            }
-                          }}
-                          className="p-1.5 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
-                          title="Delete Campaign"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                      {tr(c.campaignName)}
+                    </button>
+                    <p className="mt-0.5 truncate text-xs text-[color:var(--ink-soft)]">
+                      {c.channel === 'google_search' ? tr('Google Search') : c.channel === 'meta' ? tr('Meta ads') : tr('Channel not set')}
+                      {' · '}
+                      {c.audience?.locationCity}
+                      {' · '}
+                      {tr('nearby {radius} km', { radius: c.audience?.radiusKm ?? 0 })}
+                    </p>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                      {getStatusBadge(c.status)}
+                      <span className="inline-flex items-center gap-1 rounded-full bg-[color:var(--paper)] px-2 py-0.5 text-[0.6875rem] font-semibold text-[color:var(--ink-soft)]">
+                        {getObjectiveIcon(c.objective)}
+                        {getObjectiveLabel(c.objective)}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-[0.6875rem] text-[color:var(--ink-soft)]">
+                      {!c.metrics
+                        ? tr('No live results')
+                        : c.objective === 'messages'
+                          ? tr('{count} sample WhatsApp chats', { count: messages })
+                          : c.objective === 'leads'
+                            ? tr('{count} sample leads', { count: leads })
+                            : tr('{count} sample views', { count: impressions?.toLocaleString('en-IN') ?? 0 })}
+                    </p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <p className="text-sm font-bold tabular-nums">
+                      {spend === undefined ? formatINR(c.totalBudget) : formatINR(spend)}
+                    </p>
+                    <p className="mt-0.5 text-[0.6875rem] text-[color:var(--ink-soft)]">
+                      {spend === undefined ? tr('Not run') : tr('{amount} proposed', { amount: formatINR(c.totalBudget) })}
+                    </p>
+                    <p className="mt-1 text-[0.6875rem] text-[color:var(--ink-soft)]">
+                      {formatDate(c.startDate)}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectCampaign(c.id);
+                      }}
+                      className="rounded-lg p-2 text-[color:var(--ink-soft)] transition-colors hover:bg-white hover:text-[color:var(--ink)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[color:var(--brand)]"
+                      title={tr('View plan')}
+                      aria-label={tr('View plan')}
+                    >
+                      <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm(tr('Delete campaign "{name}"?', { name: c.campaignName }))) {
+                          deleteCampaign(c.id);
+                        }
+                      }}
+                      className="rounded-lg p-2 text-[color:var(--line-strong)] transition-colors hover:bg-rose-50 hover:text-rose-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-rose-600"
+                      title={tr('Delete campaign')}
+                      aria-label={tr('Delete campaign')}
+                    >
+                      <Trash2 className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       )}
     </div>
   );

@@ -1,9 +1,25 @@
 import { User, BusinessProfile } from '../types';
-import { StorageService, INITIAL_USER, INITIAL_BUSINESS } from './storage';
+import { StorageService, INITIAL_USER } from './storage';
 import { getSupabaseClient, isSupabaseConfigured } from './supabaseClient';
 
 const AUTH_STORAGE_KEY = 'cp_auth_session';
 const REGISTERED_USERS_KEY = 'cp_registered_users';
+
+/** The mobile number and code that work in this demo without an SMS provider. */
+export const DEMO_PHONE_NUMBER = '9876543210';
+export const DEMO_PHONE_OTP = '123456';
+
+export const isDemoPhone = (phone: string): boolean =>
+  phone.replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '') === DEMO_PHONE_NUMBER;
+
+const DEMO_PHONE_USER: User = {
+  id: 'usr-phone-demo',
+  email: 'demo.owner@admitra.local',
+  username: DEMO_PHONE_NUMBER,
+  name: 'Demo shop owner',
+  authProvider: 'phone',
+  createdAt: '2026-01-01T09:00:00Z',
+};
 
 interface RegisteredAccount {
   user: User;
@@ -46,11 +62,7 @@ export const AuthService = {
 
   getCurrentUser(): User | null {
     const session = localStorage.getItem(AUTH_STORAGE_KEY);
-    if (!session) {
-      // By default for demo smoothness, we start with INITIAL_USER logged in
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(INITIAL_USER));
-      return INITIAL_USER;
-    }
+    if (!session) return null;
     try {
       return JSON.parse(session);
     } catch {
@@ -61,42 +73,44 @@ export const AuthService = {
   async loginWithCredentials(
     usernameOrEmail: string,
     password: string
-  ): Promise<{ user: User; error?: string }> {
+  ): Promise<{ user: User | null; error?: string }> {
     // Artificial small delay for realistic UX feedback
     await new Promise((resolve) => setTimeout(resolve, 600));
 
     if (!usernameOrEmail.trim()) {
-      return { user: null as any, error: 'Please enter your username or email address' };
+      return { user: null, error: 'Please enter your username or email address' };
     }
     if (!password || password.length < 4) {
-      return { user: null as any, error: 'Password must be at least 4 characters' };
+      return { user: null, error: 'Password must be at least 4 characters' };
     }
 
     // Try Supabase auth if configured
     if (isSupabaseConfigured()) {
       const supabase = getSupabaseClient();
-      if (supabase) {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: usernameOrEmail,
-          password,
-        });
-        if (error) {
-          return { user: null as any, error: error.message };
-        }
-        if (data.user) {
-          const u: User = {
-            id: data.user.id,
-            email: data.user.email || usernameOrEmail,
-            name: data.user.user_metadata?.full_name || usernameOrEmail.split('@')[0],
-            username: usernameOrEmail.split('@')[0],
-            authProvider: 'email',
-            createdAt: data.user.created_at,
-          };
-          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(u));
-          StorageService.setUser(u);
-          return { user: u };
-        }
+      if (!supabase) {
+        return { user: null, error: 'Could not connect to sign-in. Please try again.' };
       }
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: usernameOrEmail,
+        password,
+      });
+      if (error) {
+        return { user: null, error: error.message };
+      }
+      if (data.user) {
+        const u: User = {
+          id: data.user.id,
+          email: data.user.email || usernameOrEmail,
+          name: data.user.user_metadata?.full_name || usernameOrEmail.split('@')[0],
+          username: usernameOrEmail.split('@')[0],
+          authProvider: 'email',
+          createdAt: data.user.created_at,
+        };
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(u));
+        StorageService.setUser(u);
+        return { user: u };
+      }
+      return { user: null, error: 'Sign-in did not return an account. Please try again.' };
     }
 
     // Local / Offline storage authentication
@@ -116,7 +130,7 @@ export const AuthService = {
         StorageService.setUser(matched.user);
         return { user: matched.user };
       } else {
-        return { user: null as any, error: 'Invalid password. (Hint: use password123 for demo)' };
+        return { user: null, error: 'Invalid password. (Hint: use password123 for demo)' };
       }
     }
 
@@ -138,23 +152,25 @@ export const AuthService = {
     return { user: newUser };
   },
 
-  async loginWithGoogle(): Promise<{ user: User; error?: string }> {
+  async loginWithGoogle(): Promise<{ user: User | null; error?: string }> {
     // Artificial small delay for realistic UX feedback
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     if (isSupabaseConfigured()) {
       const supabase = getSupabaseClient();
-      if (supabase) {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: window.location.origin,
-          },
-        });
-        if (error) {
-          return { user: null as any, error: error.message };
-        }
+      if (!supabase) {
+        return { user: null, error: 'Could not connect to sign-in. Please try again.' };
       }
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+      if (error) {
+        return { user: null, error: error.message };
+      }
+      return { user: null };
     }
 
     // Google Sign-In Demo User
@@ -174,6 +190,89 @@ export const AuthService = {
     return { user: googleUser };
   },
 
+  async sendPhoneOtp(
+    phone: string,
+    fullName: string,
+    shouldCreateUser: boolean
+  ): Promise<{ error?: string; demo?: boolean }> {
+    // The demo number works with a fixed code, even when no SMS provider is set up.
+    if (isDemoPhone(phone)) {
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      return { demo: true };
+    }
+
+    if (!isSupabaseConfigured()) {
+      return {
+        error: `This demo only supports the test number ${DEMO_PHONE_NUMBER}. In a live shop, a real SMS would be sent.`,
+      };
+    }
+
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      return { error: 'Could not connect to mobile sign-in. Please try again.' };
+    }
+
+    const { error } = await supabase.auth.signInWithOtp({
+      phone,
+      options: {
+        shouldCreateUser,
+        data: shouldCreateUser ? { full_name: fullName.trim() } : undefined,
+      },
+    });
+    if (error) return { error: error.message };
+    return {};
+  },
+
+  async verifyPhoneOtp(
+    phone: string,
+    token: string
+  ): Promise<{ user: User | null; error?: string }> {
+    if (isDemoPhone(phone)) {
+      if (token !== DEMO_PHONE_OTP) {
+        return {
+          user: null,
+          error: `That code is not correct. For this demo, use ${DEMO_PHONE_OTP}.`,
+        };
+      }
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(DEMO_PHONE_USER));
+      StorageService.setUser(DEMO_PHONE_USER);
+      return { user: DEMO_PHONE_USER };
+    }
+
+    if (!isSupabaseConfigured()) {
+      return {
+        user: null,
+        error: `This demo only supports the test number ${DEMO_PHONE_NUMBER}.`,
+      };
+    }
+
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      return { user: null, error: 'Could not connect to mobile sign-in. Please try again.' };
+    }
+
+    const { data, error } = await supabase.auth.verifyOtp({
+      phone,
+      token,
+      type: 'sms',
+    });
+    if (error) return { user: null, error: error.message };
+    if (!data.user) return { user: null, error: 'The code could not be verified. Please try again.' };
+
+    const user: User = {
+      id: data.user.id,
+      email: data.user.email || '',
+      username: data.user.phone || phone,
+      name: data.user.user_metadata?.full_name || data.user.phone || phone,
+      authProvider: 'phone',
+      createdAt: data.user.created_at,
+    };
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+    StorageService.setUser(user);
+    return { user };
+  },
+
   async register({
     name,
     username,
@@ -182,16 +281,80 @@ export const AuthService = {
     businessName,
   }: {
     name: string;
-    username: string;
+    username?: string;
     email: string;
     password: string;
-    businessName: string;
-  }): Promise<{ user: User; business: BusinessProfile; error?: string }> {
+    businessName?: string;
+  }): Promise<{ user: User | null; business: BusinessProfile | null; error?: string }> {
     await new Promise((resolve) => setTimeout(resolve, 700));
 
-    if (!name.trim()) return { user: null as any, business: null as any, error: 'Name is required' };
-    if (!email.trim() || !email.includes('@')) return { user: null as any, business: null as any, error: 'Valid email is required' };
-    if (!password || password.length < 6) return { user: null as any, business: null as any, error: 'Password must be at least 6 characters' };
+    if (!name.trim()) return { user: null, business: null, error: 'Name is required' };
+    if (!email.trim() || !email.includes('@')) return { user: null, business: null, error: 'Valid email is required' };
+    if (!password || password.length < 6) return { user: null, business: null, error: 'Password must be at least 6 characters' };
+
+    if (isSupabaseConfigured()) {
+      const supabase = getSupabaseClient();
+      if (!supabase) {
+        return {
+          user: null,
+          business: null,
+          error: 'Could not connect to sign-up. Please try again.',
+        };
+      }
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        options: {
+          data: {
+            full_name: name.trim(),
+            business_name: businessName?.trim() || '',
+            username: username?.trim() || '',
+          },
+        },
+      });
+      if (error) {
+        return { user: null, business: null, error: error.message };
+      }
+      if (!data.user) {
+        return {
+          user: null,
+          business: null,
+          error: 'Sign-up did not return an account. Please try again.',
+        };
+      }
+
+      const newUser: User = {
+        id: data.user.id,
+        name: name.trim(),
+        username: (username || email.split('@')[0]).trim(),
+        email: data.user.email || email.trim().toLowerCase(),
+        authProvider: 'email',
+        createdAt: data.user.created_at,
+      };
+      const newBusiness: BusinessProfile = {
+        id: `biz-${Date.now()}`,
+        userId: newUser.id,
+        businessName: businessName?.trim() || '',
+        category: '',
+        description: '',
+        location: { city: '', area: '' },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      if (!data.session) {
+        StorageService.setActiveBusiness(newBusiness);
+        return {
+          user: null,
+          business: null,
+          error: 'Account created. Check your email to confirm it, then sign in.',
+        };
+      }
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(newUser));
+      StorageService.setUser(newUser);
+      StorageService.setActiveBusiness(newBusiness);
+      return { user: newUser, business: newBusiness };
+    }
 
     const newUser: User = {
       id: `usr-${Date.now()}`,
@@ -205,12 +368,12 @@ export const AuthService = {
     const newBusiness: BusinessProfile = {
       id: `biz-${Date.now()}`,
       userId: newUser.id,
-      businessName: businessName.trim() || `${name}'s Business`,
-      category: 'Beauty & Wellness',
-      description: `Local business operated by ${name}.`,
+      businessName: businessName?.trim() || '',
+      category: '',
+      description: '',
       location: {
-        city: 'Lucknow',
-        area: 'City Centre',
+        city: '',
+        area: '',
       },
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -227,13 +390,18 @@ export const AuthService = {
     return { user: newUser, business: newBusiness };
   },
 
-  logout(): void {
+  async logout(): Promise<void> {
     if (isSupabaseConfigured()) {
       const supabase = getSupabaseClient();
-      if (supabase) {
-        supabase.auth.signOut().catch(() => {});
+      if (!supabase) {
+        throw new Error('Could not connect to sign-out. Please try again.');
+      }
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        throw error;
       }
     }
     localStorage.removeItem(AUTH_STORAGE_KEY);
+    StorageService.clearUser();
   },
 };

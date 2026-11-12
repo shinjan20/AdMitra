@@ -7,20 +7,24 @@ import {
 } from '../../types';
 import { useApp } from '../../context/AppContext';
 import { AIEngine } from '../../services/aiEngine';
+import { adImageErrorText, generateAdImage } from '../../services/adImage';
+import { DemoNoticeBadge } from '../common/DemoNoticeBadge';
 import {
   ArrowRight,
   ArrowLeft,
   RotateCw,
   Check,
   Edit2,
-  Image as ImageIcon,
   MessageCircle,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 
 interface Step3CreativeProps {
   objective: CampaignObjective;
   creative: Creative | null;
+  creativePrompt: string;
+  onUpdateCreativePrompt: (prompt: string) => void;
   onUpdateCreative: (cr: Creative) => void;
   onNext: () => void;
   onBack: () => void;
@@ -29,12 +33,15 @@ interface Step3CreativeProps {
 export const Step3Creative: React.FC<Step3CreativeProps> = ({
   objective,
   creative,
+  creativePrompt,
+  onUpdateCreativePrompt,
   onUpdateCreative,
   onNext,
   onBack,
 }) => {
-  const { activeBusiness, showToast } = useApp();
+  const { activeBusiness, showToast, tr } = useApp();
   const [loading, setLoading] = useState(false);
+  const [needsRegeneration, setNeedsRegeneration] = useState(false);
   const [variations, setVariations] = useState<CreativeVariation[]>([]);
   const [selectedVariationIndex, setSelectedVariationIndex] = useState<number>(0);
   const [activeFormat, setActiveFormat] = useState<'feed' | 'whatsapp' | 'story'>('feed');
@@ -45,6 +52,8 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
   const [cta, setCta] = useState<CTAType>('Send WhatsApp Message');
   const [imageUrl, setImageUrl] = useState('');
   const [isGeneratingCustomImage, setIsGeneratingCustomImage] = useState(false);
+  const [imageGenerationError, setImageGenerationError] = useState<string | null>(null);
+  const [lastGeneratedTimestamp, setLastGeneratedTimestamp] = useState<number | null>(null);
 
   useEffect(() => {
     if (creative && creative.headline) {
@@ -68,8 +77,10 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
       const vars = await AIEngine.generateCreatives({
         business: activeBusiness,
         objective,
+        customPrompt: creativePrompt,
       });
       setVariations(vars);
+      setNeedsRegeneration(false);
       if (vars.length > 0) {
         const first = vars[0];
         setHeadline(first.headline);
@@ -87,12 +98,16 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
           imageUrl: first.imageUrl,
           approvalStatus: 'approved',
           variations: vars,
-          isAIGenerated: true,
           createdAt: new Date().toISOString(),
         });
       }
     } catch (err) {
       console.error(err);
+      showToast({
+        type: 'error',
+        title: tr('Could not generate ad copy'),
+        message: tr('Please try again.'),
+      });
     } finally {
       setLoading(false);
     }
@@ -116,7 +131,6 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
         imageUrl: selected.imageUrl,
         approvalStatus: 'approved',
         variations,
-        isAIGenerated: true,
         createdAt: creative?.createdAt || new Date().toISOString(),
       });
     }
@@ -132,76 +146,155 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
       imageUrl,
       approvalStatus: 'approved',
       variations,
-      isAIGenerated: true,
       createdAt: creative?.createdAt || new Date().toISOString(),
     });
   };
 
   const handleSwapImage = async () => {
+    if (isGeneratingCustomImage) return;
     setIsGeneratingCustomImage(true);
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    setImageGenerationError(null);
 
-    const samplePool = [
-      'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop&q=80',
-    ];
+    try {
+      const result = await generateAdImage({
+        businessName: activeBusiness.businessName,
+        category: activeBusiness.category,
+        city: activeBusiness.location.city,
+        area: activeBusiness.location.area,
+        offer: creativePrompt.trim() || description,
+        headline,
+        description,
+        cta: tr(cta),
+        tone: 'Friendly',
+      });
 
-    const nextImage = samplePool[Math.floor(Math.random() * samplePool.length)];
-    setImageUrl(nextImage);
-    setIsGeneratingCustomImage(false);
-    showToast({
-      type: 'info',
-      title: 'Image Swapped',
-      message: 'Updated visual preview.',
-    });
+      setImageUrl(result.imageDataUrl);
+      setLastGeneratedTimestamp(Date.now());
+
+      const updatedVariations = variations.map((variation, index) =>
+        index === selectedVariationIndex
+          ? { ...variation, imageUrl: result.imageDataUrl }
+          : variation
+      );
+      setVariations(updatedVariations);
+
+      onUpdateCreative({
+        id: creative?.id || `cr-${Date.now()}`,
+        campaignId: creative?.campaignId || '',
+        headline,
+        description,
+        cta,
+        imageUrl: result.imageDataUrl,
+        approvalStatus: 'approved',
+        variations: updatedVariations,
+        createdAt: creative?.createdAt || new Date().toISOString(),
+      });
+
+      showToast({
+        type: 'success',
+        title: tr('New picture ready'),
+        message: tr('Google Gemini made this picture from your ad. Check it looks like your real shop before you share it.'),
+      });
+    } catch (error) {
+      const errorMessage = adImageErrorText(error);
+      setImageGenerationError(errorMessage);
+      console.error('Could not make a new picture:', error);
+      
+      // Show error toast with retry hint
+      showToast({
+        type: 'error',
+        title: tr('Could not make a picture'),
+        message: errorMessage + ' ' + tr('Click "Make a new picture" to try again.'),
+      });
+    } finally {
+      setIsGeneratingCustomImage(false);
+    }
   };
 
   return (
     <div className="space-y-6">
+      <DemoNoticeBadge />
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-lg font-semibold text-slate-900 tracking-tight">
-            Ad Creative & Message
+            {tr('Write your ad')}
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Select a copy variation below and customize any text or call to action.
+            {tr('Pick one of these ideas, then change any words you like.')}
           </p>
         </div>
 
         <button
           onClick={handleGenerateVariations}
           disabled={loading}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors disabled:opacity-50"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-slate-100 px-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-200 disabled:opacity-50"
         >
           <RotateCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          {loading ? 'Writing...' : 'Regenerate'}
+          {loading ? tr('Writing...') : tr('Try new ad ideas')}
         </button>
       </div>
+
+      <details
+        open={Boolean(creativePrompt)}
+        className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+      >
+        <summary className="cursor-pointer text-sm font-medium text-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900">
+          {tr('Add a message idea')} <span className="font-normal text-slate-500">{tr('(optional)')}</span>
+        </summary>
+        <div className="pt-3">
+          <label
+            htmlFor="wizard-creative-prompt"
+            className="block text-xs font-medium text-slate-700 mb-1.5"
+          >
+            {tr('What should customers know?')}
+          </label>
+          <textarea
+            id="wizard-creative-prompt"
+            value={creativePrompt}
+            onChange={(event) => {
+              onUpdateCreativePrompt(event.target.value);
+              setVariations([]);
+              setNeedsRegeneration(true);
+            }}
+            rows={2}
+            maxLength={500}
+            placeholder={tr('For example: Mention weekend appointments or use a friendly tone.')}
+            className="w-full resize-y rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900"
+          />
+          <p className="mt-1 text-xs text-slate-500">
+            {tr('Write it the way you would say it to a customer.')}
+          </p>
+        </div>
+      </details>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Left: Variations & In-Place Editor (7 cols) */}
         <div className="lg:col-span-7 space-y-4">
           <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider block">
-            Suggested Variations
+            {tr('Ad ideas')}
           </span>
 
           {loading ? (
             <div className="p-8 text-center bg-slate-50 rounded-xl border border-slate-200/60">
-              <p className="text-xs text-slate-500">Writing copy variations...</p>
+              <p className="text-sm text-slate-500">{tr('Writing a few ad ideas...')}</p>
+            </div>
+          ) : needsRegeneration ? (
+            <div className="p-6 text-center bg-slate-50 rounded-xl border border-slate-200/60">
+              <p className="text-sm text-slate-600">
+                {tr('Your message changed. Choose “Try new ad ideas” to update these suggestions.')}
+              </p>
             </div>
           ) : (
             <div className="space-y-2.5">
               {variations.map((v, idx) => {
                 const isSelected = selectedVariationIndex === idx;
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={v.id || idx}
                     onClick={() => handleSelectVariation(idx)}
-                    className={`p-3 rounded-xl border text-left cursor-pointer transition-all flex items-start gap-3 ${
+                    aria-pressed={isSelected}
+                    className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left transition-all ${
                       isSelected
                         ? 'border-slate-900 bg-slate-50/60 ring-1 ring-slate-900'
                         : 'border-slate-200/80 bg-white hover:border-slate-300'
@@ -216,23 +309,27 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-0.5">
                         <span className="text-[10px] font-medium text-slate-400">
-                          {v.badgeText || `Option ${idx + 1}`}
+                          {v.badgeText && /^Ad idea \d+$/.test(v.badgeText)
+                            ? tr('Ad idea {n}', { n: idx + 1 })
+                            : v.badgeText
+                              ? tr(v.badgeText)
+                              : tr('Option {n}', { n: idx + 1 })}
                         </span>
                         {isSelected && (
                           <span className="text-[11px] font-medium text-slate-900 flex items-center gap-1">
-                            <Check className="w-3 h-3" /> Selected
+                            <Check className="w-3 h-3" /> {tr('Selected')}
                           </span>
                         )}
                       </div>
-                      <h4 className="text-xs font-semibold text-slate-900 truncate">{v.headline}</h4>
+                      <h4 className="text-xs font-semibold text-slate-900 truncate">{tr(v.headline)}</h4>
                       <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">
-                        {v.description}
+                        {tr(v.description)}
                       </p>
                       <span className="inline-block text-[10px] text-slate-500 mt-1 font-medium">
-                        CTA: {v.cta}
+                        {tr('Button: {cta}', { cta: tr(v.cta) })}
                       </span>
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>
@@ -243,22 +340,51 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <span className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
                 <Edit2 className="w-3 h-3 text-slate-500" />
-                Customize Copy
+                {tr('Edit your ad')}
               </span>
               <button
                 type="button"
                 onClick={handleSwapImage}
                 disabled={isGeneratingCustomImage}
-                className="text-[11px] text-blue-600 font-medium hover:underline flex items-center gap-1"
+                className={`inline-flex min-h-11 items-center gap-1 rounded px-2 text-sm font-medium transition-all ${
+                  imageGenerationError
+                    ? 'text-rose-600 hover:bg-rose-50'
+                    : 'text-slate-700 hover:bg-slate-100'
+                }`}
               >
-                <ImageIcon className="w-3 h-3" />
-                {isGeneratingCustomImage ? 'Swapping...' : 'Swap Image Asset'}
+                <Sparkles
+                  className={`h-3 w-3 ${
+                    isGeneratingCustomImage
+                      ? 'text-[color:var(--brand)] animate-pulse'
+                      : imageGenerationError
+                        ? 'text-rose-500'
+                        : lastGeneratedTimestamp
+                          ? 'text-emerald-500'
+                          : 'text-[color:var(--brand)]'
+                  }`}
+                  aria-hidden="true"
+                />
+                {isGeneratingCustomImage
+                  ? tr('Making a new picture…')
+                  : imageGenerationError
+                    ? tr('Try again')
+                    : tr('Make a new picture')}
               </button>
             </div>
 
+            {imageGenerationError && (
+              <div className="rounded-lg border border-rose-200 bg-rose-50 p-2.5">
+                <p className="text-xs text-rose-700">
+                  <span className="font-medium">⚠️ {tr('Picture generation issue')}</span>
+                  <br />
+                  {imageGenerationError}
+                </p>
+              </div>
+            )}
+
             <div>
               <label className="block text-[11px] font-medium text-slate-600 mb-1">
-                Headline
+                {tr('Main line')}
               </label>
               <input
                 type="text"
@@ -271,7 +397,7 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
 
             <div>
               <label className="block text-[11px] font-medium text-slate-600 mb-1">
-                Description
+                {tr('Ad message')}
               </label>
               <textarea
                 rows={2}
@@ -284,7 +410,7 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
 
             <div>
               <label className="block text-[11px] font-medium text-slate-600 mb-1">
-                Call-To-Action (CTA)
+                {tr('Button text')}
               </label>
               <select
                 value={cta}
@@ -300,23 +426,22 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
                     imageUrl,
                     approvalStatus: 'approved',
                     variations,
-                    isAIGenerated: true,
                     createdAt: creative?.createdAt || new Date().toISOString(),
                   });
                 }}
                 className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-900 bg-white font-medium"
               >
-                <option value="Send WhatsApp Message">Send WhatsApp Message (Recommended)</option>
-                <option value="Book Now">Book Now</option>
-                <option value="Call Now">Call Now</option>
-                <option value="Get Offer">Get Offer</option>
-                <option value="Learn More">Learn More</option>
+                <option value="Send WhatsApp Message">{tr('Send WhatsApp message')}</option>
+                <option value="Book Now">{tr('Book Now')}</option>
+                <option value="Call Now">{tr('Call Now')}</option>
+                <option value="Get Offer">{tr('Get Offer')}</option>
+                <option value="Learn More">{tr('Learn More')}</option>
               </select>
             </div>
 
             <div className="pt-1 flex items-center gap-1.5 text-[11px] text-slate-400">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-              <span>Guardrail: Text checked for verified local claims and transparency.</span>
+              <span>{tr('Check that prices, offers, and details are correct before using this ad.')}</span>
             </div>
           </div>
         </div>
@@ -325,24 +450,24 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
         <div className="lg:col-span-5 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
-              Preview Mockup
+              {tr('Ad preview (sample)')}
             </span>
             <div className="flex items-center bg-slate-100 p-0.5 rounded-lg text-xs font-medium">
               <button
                 type="button"
                 onClick={() => setActiveFormat('feed')}
-                className={`px-2 py-0.5 rounded-md transition-all ${
+                className={`min-h-11 px-3 rounded-md transition-all ${
                   activeFormat === 'feed'
                     ? 'bg-white text-slate-900 font-semibold shadow-2xs'
                     : 'text-slate-500 hover:text-slate-900'
                 }`}
               >
-                Feed
+                {tr('Ad post')}
               </button>
               <button
                 type="button"
                 onClick={() => setActiveFormat('whatsapp')}
-                className={`px-2 py-0.5 rounded-md transition-all ${
+                className={`min-h-11 px-3 rounded-md transition-all ${
                   activeFormat === 'whatsapp'
                     ? 'bg-white text-slate-900 font-semibold shadow-2xs'
                     : 'text-slate-500 hover:text-slate-900'
@@ -353,13 +478,13 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveFormat('story')}
-                className={`px-2 py-0.5 rounded-md transition-all ${
+                className={`min-h-11 px-3 rounded-md transition-all ${
                   activeFormat === 'story'
                     ? 'bg-white text-slate-900 font-semibold shadow-2xs'
                     : 'text-slate-500 hover:text-slate-900'
                 }`}
               >
-                Story
+                {tr('Story')}
               </button>
             </div>
           </div>
@@ -379,7 +504,7 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
                         <p className="text-[11px] font-semibold text-slate-900 leading-tight">
                           {activeBusiness.businessName}
                         </p>
-                        <p className="text-[9px] text-slate-400">Sponsored · {activeBusiness.location.city}</p>
+                        <p className="text-[9px] text-slate-400">{tr('Sample ad')} · {activeBusiness.location.city}</p>
                       </div>
                     </div>
                   </div>
@@ -388,18 +513,18 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
 
                   <div className="px-2.5 py-1.5 bg-slate-50 border-t border-b border-slate-100 flex items-center justify-between">
                     <div className="truncate mr-2">
-                      <p className="text-[11px] font-semibold text-slate-900 truncate">{headline}</p>
-                      <p className="text-[9px] text-slate-400 truncate">{activeBusiness.websiteUrl || 'Local Business'}</p>
+                      <p className="text-[11px] font-semibold text-slate-900 truncate">{tr(headline)}</p>
+                      <p className="text-[9px] text-slate-400 truncate">{activeBusiness.websiteUrl || tr('Local Business')}</p>
                     </div>
                     <button className="px-2.5 py-1 bg-slate-900 text-white text-[10px] font-medium rounded-md whitespace-nowrap">
-                      {cta}
+                      {tr(cta)}
                     </button>
                   </div>
 
                   <div className="p-2.5 text-[11px] text-slate-700 space-y-1">
                     <p className="line-clamp-2">
                       <strong>{activeBusiness.businessName} </strong>
-                      {description}
+                      {tr(description)}
                     </p>
                   </div>
                 </div>
@@ -415,16 +540,16 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
                   <div className="bg-white rounded-xl overflow-hidden shadow-xs border border-slate-200/80 my-2">
                     <img src={imageUrl} alt="" className="w-full h-32 object-cover" />
                     <div className="p-2.5 space-y-1">
-                      <h4 className="text-[11px] font-semibold text-slate-900">{headline}</h4>
-                      <p className="text-[10px] text-slate-600 line-clamp-2">{description}</p>
+                      <h4 className="text-[11px] font-semibold text-slate-900">{tr(headline)}</h4>
+                      <p className="text-[10px] text-slate-600 line-clamp-2">{tr(description)}</p>
                     </div>
                     <div className="p-2 bg-emerald-600 text-white text-center text-[11px] font-medium flex items-center justify-center gap-1">
-                      <MessageCircle className="w-3 h-3" /> Chat on WhatsApp
+                      <MessageCircle className="w-3 h-3" /> {tr('Chat on WhatsApp')}
                     </div>
                   </div>
 
                   <p className="text-[9px] text-center text-slate-400">
-                    Customers open a direct chat with {activeBusiness.whatsappNumber || '+91 98765 43210'}.
+                    {tr('Customers open a chat with {number}.', { number: activeBusiness.whatsappNumber || tr('your WhatsApp number') })}
                   </p>
                 </div>
               )}
@@ -437,10 +562,10 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
                     {activeBusiness.businessName}
                   </div>
                   <div className="relative z-10 space-y-1 text-center">
-                    <h3 className="text-xs font-bold">{headline}</h3>
+                    <h3 className="text-xs font-bold">{tr(headline)}</h3>
                     <div className="pt-1">
                       <span className="inline-block px-3 py-1 rounded-full bg-white text-slate-900 font-semibold text-[10px]">
-                        {cta}
+                        {tr(cta)}
                       </span>
                     </div>
                   </div>
@@ -454,10 +579,10 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
       <div className="flex items-center justify-between pt-3 border-t border-slate-100">
         <button
           onClick={onBack}
-          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900"
+          className="inline-flex min-h-11 items-center gap-1.5 px-3 text-sm font-medium text-slate-600 hover:text-slate-900"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          Back
+          {tr('Back')}
         </button>
 
         <button
@@ -465,9 +590,11 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
             handleApplyEdits();
             onNext();
           }}
-          className="inline-flex items-center gap-1.5 px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-lg shadow-2xs transition-all"
+          disabled={loading || needsRegeneration || !creative?.headline}
+          title={needsRegeneration ? tr('Pick an idea above to continue') : ''}
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-slate-900 px-5 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Approve Creative & Next: Audience
+          {tr('Use this ad & continue')}
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>

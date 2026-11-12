@@ -1,0 +1,1714 @@
+{
+  "config": {
+    "argv": [
+      "/usr/local/bin/node",
+      "/Users/shinjanpatra/CampaignPilot/node_modules/.bin/playwright",
+      "test",
+      "e2e/core-flows.spec.ts"
+    ],
+    "configFile": "/Users/shinjanpatra/CampaignPilot/playwright.config.ts",
+    "rootDir": "/Users/shinjanpatra/CampaignPilot/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/shinjanpatra/CampaignPilot/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/shinjanpatra/CampaignPilot/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/shinjanpatra/CampaignPilot/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "chromium",
+        "testDir": "/Users/shinjanpatra/CampaignPilot/e2e",
+        "snapshotDir": "/Users/shinjanpatra/CampaignPilot/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3003",
+          "trace": "on-first-retry",
+          "screenshot": "only-on-failure",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/158.0.8127.18 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.65.0",
+    "workers": 1,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3003",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "core-flows.spec.ts",
+      "file": "core-flows.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "CampaignPilot Core E2E Tests",
+          "file": "core-flows.spec.ts",
+          "line": 12,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "1. Landing Page & Authentication",
+              "file": "core-flows.spec.ts",
+              "line": 19,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should display landing page with sign-in and create campaign CTAs",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 0,
+                          "parallelIndex": 0,
+                          "status": "failed",
+                          "duration": 6164,
+                          "error": {
+                            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('h1, h2, h3').first()\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" locator('h1, h2, h3').first() with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('h1, h2, h3').first()\u001b[22m\n",
+                            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('h1, h2, h3').first()\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" locator('h1, h2, h3').first() with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('h1, h2, h3').first()\u001b[22m\n\n    at /Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts:23:29",
+                            "location": {
+                              "file": "/Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts",
+                              "column": 29,
+                              "line": 23
+                            },
+                            "snippet": " \u001b[90m 21 |\u001b[39m       \u001b[90m// Check for landing page elements\u001b[39m\n \u001b[90m 22 |\u001b[39m       \u001b[36mconst\u001b[39m heading \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'h1, h2, h3'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 23 |\u001b[39m       \u001b[36mawait\u001b[39m expect(heading)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 24 |\u001b[39m       \n \u001b[90m 25 |\u001b[39m       \u001b[90m// Check for sign-in button\u001b[39m\n \u001b[90m 26 |\u001b[39m       \u001b[36mconst\u001b[39m signInBtn \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button'\u001b[39m\u001b[33m,\u001b[39m { hasText\u001b[33m:\u001b[39m \u001b[35m/sign in|login|get started/i\u001b[39m })\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "/Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts",
+                                "column": 29,
+                                "line": 23
+                              },
+                              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('h1, h2, h3').first()\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" locator('h1, h2, h3').first() with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('h1, h2, h3').first()\u001b[22m\n\n\n  21 |       // Check for landing page elements\n  22 |       const heading = page.locator('h1, h2, h3').first();\n> 23 |       await expect(heading).toBeVisible();\n     |                             ^\n  24 |       \n  25 |       // Check for sign-in button\n  26 |       const signInBtn = page.locator('button', { hasText: /sign in|login|get started/i }).first();\n    at /Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts:23:29"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:02:24.864Z",
+                          "annotations": [],
+                          "attachments": [
+                            {
+                              "name": "screenshot",
+                              "contentType": "image/png",
+                              "path": "/Users/shinjanpatra/CampaignPilot/test-results/core-flows-CampaignPilot-C-4a743-in-and-create-campaign-CTAs-chromium/test-failed-1.png"
+                            },
+                            {
+                              "name": "error-context",
+                              "contentType": "text/markdown",
+                              "path": "/Users/shinjanpatra/CampaignPilot/test-results/core-flows-CampaignPilot-C-4a743-in-and-create-campaign-CTAs-chromium/error-context.md"
+                            }
+                          ],
+                          "errorLocation": {
+                            "file": "/Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts",
+                            "column": 29,
+                            "line": 23
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-8c0b7da7b6873cd7e9b1",
+                  "file": "core-flows.spec.ts",
+                  "line": 20,
+                  "column": 5
+                },
+                {
+                  "title": "should open auth modal when sign-in is clicked",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 1,
+                          "parallelIndex": 0,
+                          "status": "timedOut",
+                          "duration": 30079,
+                          "error": {
+                            "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                            "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                          },
+                          "errors": [
+                            {
+                              "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                            },
+                            {
+                              "location": {
+                                "file": "/Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts",
+                                "column": 23,
+                                "line": 34
+                              },
+                              "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button').filter({ hasText: /sign in|login|get started/i }).first()\u001b[22m\n\n\n  32 |     test('should open auth modal when sign-in is clicked', async ({ page }) => {\n  33 |       const signInBtn = page.locator('button', { hasText: /sign in|login|get started/i }).first();\n> 34 |       await signInBtn.click();\n     |                       ^\n  35 |       \n  36 |       // Auth modal should appear\n  37 |       const authModal = page.locator('[role=\"dialog\"], .modal, .auth-modal').first();\n    at /Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts:34:23"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:02:32.253Z",
+                          "annotations": [],
+                          "attachments": [
+                            {
+                              "name": "screenshot",
+                              "contentType": "image/png",
+                              "path": "/Users/shinjanpatra/CampaignPilot/test-results/core-flows-CampaignPilot-C-24a67-dal-when-sign-in-is-clicked-chromium/test-failed-1.png"
+                            },
+                            {
+                              "name": "error-context",
+                              "contentType": "text/markdown",
+                              "path": "/Users/shinjanpatra/CampaignPilot/test-results/core-flows-CampaignPilot-C-24a67-dal-when-sign-in-is-clicked-chromium/error-context.md"
+                            }
+                          ]
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-7f1d66062cc517b55233",
+                  "file": "core-flows.spec.ts",
+                  "line": 32,
+                  "column": 5
+                },
+                {
+                  "title": "should allow demo sign-in with phone number",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 2,
+                          "parallelIndex": 0,
+                          "status": "timedOut",
+                          "duration": 30053,
+                          "error": {
+                            "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                            "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                          },
+                          "errors": [
+                            {
+                              "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                            },
+                            {
+                              "location": {
+                                "file": "/Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts",
+                                "column": 23,
+                                "line": 46
+                              },
+                              "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button').filter({ hasText: /sign in|login|get started/i }).first()\u001b[22m\n\n\n  44 |       // Click sign-in\n  45 |       const signInBtn = page.locator('button', { hasText: /sign in|login|get started/i }).first();\n> 46 |       await signInBtn.click();\n     |                       ^\n  47 |       \n  48 |       // Wait for auth modal\n  49 |       const authModal = page.locator('[role=\"dialog\"], .modal, .auth-modal').first();\n    at /Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts:46:23"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:02.861Z",
+                          "annotations": [],
+                          "attachments": [
+                            {
+                              "name": "screenshot",
+                              "contentType": "image/png",
+                              "path": "/Users/shinjanpatra/CampaignPilot/test-results/core-flows-CampaignPilot-C-29106-o-sign-in-with-phone-number-chromium/test-failed-1.png"
+                            },
+                            {
+                              "name": "error-context",
+                              "contentType": "text/markdown",
+                              "path": "/Users/shinjanpatra/CampaignPilot/test-results/core-flows-CampaignPilot-C-29106-o-sign-in-with-phone-number-chromium/error-context.md"
+                            }
+                          ]
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-3254855c22918f251fb3",
+                  "file": "core-flows.spec.ts",
+                  "line": 43,
+                  "column": 5
+                }
+              ]
+            },
+            {
+              "title": "2. Business Onboarding Flow",
+              "file": "core-flows.spec.ts",
+              "line": 69,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should complete business profile setup",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 877,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Business form not found on page\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:33.434Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-ae9aef5f8c4c97c065c1",
+                  "file": "core-flows.spec.ts",
+                  "line": 70,
+                  "column": 5
+                },
+                {
+                  "title": "should handle business economics input",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 769,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Economics inputs not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:34.460Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-67b5622ad3ca12986ab0",
+                  "file": "core-flows.spec.ts",
+                  "line": 96,
+                  "column": 5
+                }
+              ]
+            },
+            {
+              "title": "3. Marketing Plan & Channel Recommendation",
+              "file": "core-flows.spec.ts",
+              "line": 112,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should display marketing plan section",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 752,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Marketing plan link not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:35.237Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-8a9b9af509057b8b8c34",
+                  "file": "core-flows.spec.ts",
+                  "line": 113,
+                  "column": 5
+                },
+                {
+                  "title": "should show channel recommendations",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 760,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Channel recommendations not visible\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:36.001Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-b7f5471c0906429d51d7",
+                  "file": "core-flows.spec.ts",
+                  "line": 129,
+                  "column": 5
+                },
+                {
+                  "title": "should display budget allocation",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 730,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Budget allocation not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:36.768Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-a5ba8809db96d4ddc092",
+                  "file": "core-flows.spec.ts",
+                  "line": 148,
+                  "column": 5
+                }
+              ]
+            },
+            {
+              "title": "4. Creative Generation Flow",
+              "file": "core-flows.spec.ts",
+              "line": 161,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should access creative studio/generation page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 810,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Creative link not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:37.509Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-a072157501181a373e05",
+                  "file": "core-flows.spec.ts",
+                  "line": 162,
+                  "column": 5
+                },
+                {
+                  "title": "should display creative generation form",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 733,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Creative generation form not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:38.326Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-c922ece22a540b212737",
+                  "file": "core-flows.spec.ts",
+                  "line": 177,
+                  "column": 5
+                },
+                {
+                  "title": "should show platform-specific format options",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 738,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Platform format options not visible\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:39.066Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-79395b83551fa2bf6ef8",
+                  "file": "core-flows.spec.ts",
+                  "line": 189,
+                  "column": 5
+                }
+              ]
+            },
+            {
+              "title": "5. Campaign Configuration",
+              "file": "core-flows.spec.ts",
+              "line": 202,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should show campaign configuration interface",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 737,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Campaign configuration interface not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:39.811Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-31a6879df853d4c10c25",
+                  "file": "core-flows.spec.ts",
+                  "line": 203,
+                  "column": 5
+                },
+                {
+                  "title": "should display objective selection",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 769,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Campaign objectives not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:40.559Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-b6af349cecf77eba4c2c",
+                  "file": "core-flows.spec.ts",
+                  "line": 215,
+                  "column": 5
+                },
+                {
+                  "title": "should show approval preview",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 893,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Campaign preview section not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:41.341Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-46d0d049dae8637086a7",
+                  "file": "core-flows.spec.ts",
+                  "line": 235,
+                  "column": 5
+                },
+                {
+                  "title": "should require explicit approval before publishing",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 761,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Approval button not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:42.241Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-4128f34b291e1f4ec443",
+                  "file": "core-flows.spec.ts",
+                  "line": 246,
+                  "column": 5
+                }
+              ]
+            },
+            {
+              "title": "6. Campaign Performance Dashboard",
+              "file": "core-flows.spec.ts",
+              "line": 258,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should display dashboard page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 742,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Dashboard link not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:43.011Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-adc3fe80333792f002e9",
+                  "file": "core-flows.spec.ts",
+                  "line": 259,
+                  "column": 5
+                },
+                {
+                  "title": "should show key metrics: spend and delivery",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 742,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Metrics not visible on dashboard\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:43.760Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-e226102a29a0c8b8d463",
+                  "file": "core-flows.spec.ts",
+                  "line": 274,
+                  "column": 5
+                },
+                {
+                  "title": "should show engagement metrics",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 743,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Engagement metrics not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:44.509Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-f5591863d625a0fb1e60",
+                  "file": "core-flows.spec.ts",
+                  "line": 292,
+                  "column": 5
+                },
+                {
+                  "title": "should show intent signals (calls, WhatsApp, form starts)",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 736,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Intent signals not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:45.259Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-bff283c0945e00fdf48d",
+                  "file": "core-flows.spec.ts",
+                  "line": 310,
+                  "column": 5
+                },
+                {
+                  "title": "should distinguish demo vs real campaign states",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 745,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Demo/real state indicators not clearly visible\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:46.003Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-3b9cd43d2c08383fb0e4",
+                  "file": "core-flows.spec.ts",
+                  "line": 328,
+                  "column": 5
+                }
+              ]
+            },
+            {
+              "title": "7. AI-Powered Recommendations",
+              "file": "core-flows.spec.ts",
+              "line": 340,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should display recommendations section",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 714,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Recommendations section not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:46.756Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-09450a26d8c1b6096a68",
+                  "file": "core-flows.spec.ts",
+                  "line": 341,
+                  "column": 5
+                },
+                {
+                  "title": "should show evidence and rationale for recommendations",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 761,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Rationale not clearly shown in recommendations\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:47.479Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-8d371ee42c4b3bc88eda",
+                  "file": "core-flows.spec.ts",
+                  "line": 351,
+                  "column": 5
+                },
+                {
+                  "title": "should show uncertainty levels in recommendations",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 903,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Uncertainty not clearly communicated\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:48.248Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-70b69f1ef44c4a932e9c",
+                  "file": "core-flows.spec.ts",
+                  "line": 370,
+                  "column": 5
+                }
+              ]
+            },
+            {
+              "title": "8. Connected Accounts",
+              "file": "core-flows.spec.ts",
+              "line": 390,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should display connected accounts page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 745,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Connected accounts link not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:49.158Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-be9dba6d9c15c2e1911b",
+                  "file": "core-flows.spec.ts",
+                  "line": 391,
+                  "column": 5
+                },
+                {
+                  "title": "should show provider connection options",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 722,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Provider options not visible\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:49.911Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-f00ca0aa2b11b4abf143",
+                  "file": "core-flows.spec.ts",
+                  "line": 403,
+                  "column": 5
+                }
+              ]
+            },
+            {
+              "title": "9. Navigation & Information Architecture",
+              "file": "core-flows.spec.ts",
+              "line": 422,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should have working main navigation",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 3,
+                          "parallelIndex": 0,
+                          "status": "failed",
+                          "duration": 5750,
+                          "error": {
+                            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('nav, [role=\"navigation\"], header').first()\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" locator('nav, [role=\"navigation\"], header').first() with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav, [role=\"navigation\"], header').first()\u001b[22m\n",
+                            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('nav, [role=\"navigation\"], header').first()\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" locator('nav, [role=\"navigation\"], header').first() with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav, [role=\"navigation\"], header').first()\u001b[22m\n\n    at /Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts:426:28",
+                            "location": {
+                              "file": "/Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts",
+                              "column": 28,
+                              "line": 426
+                            },
+                            "snippet": " \u001b[90m 424 |\u001b[39m       \u001b[90m// Check for navbar/navigation\u001b[39m\n \u001b[90m 425 |\u001b[39m       \u001b[36mconst\u001b[39m navbar \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'nav, [role=\"navigation\"], header'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 426 |\u001b[39m       \u001b[36mawait\u001b[39m expect(navbar)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                            \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 427 |\u001b[39m       \n \u001b[90m 428 |\u001b[39m       \u001b[90m// Count navigation items\u001b[39m\n \u001b[90m 429 |\u001b[39m       \u001b[36mconst\u001b[39m navItems \u001b[33m=\u001b[39m navbar\u001b[33m.\u001b[39mlocator(\u001b[32m'a, button'\u001b[39m)\u001b[33m.\u001b[39mcount()\u001b[33m;\u001b[39m"
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "/Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts",
+                                "column": 28,
+                                "line": 426
+                              },
+                              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('nav, [role=\"navigation\"], header').first()\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" locator('nav, [role=\"navigation\"], header').first() with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav, [role=\"navigation\"], header').first()\u001b[22m\n\n\n  424 |       // Check for navbar/navigation\n  425 |       const navbar = page.locator('nav, [role=\"navigation\"], header').first();\n> 426 |       await expect(navbar).toBeVisible();\n      |                            ^\n  427 |       \n  428 |       // Count navigation items\n  429 |       const navItems = navbar.locator('a, button').count();\n    at /Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts:426:28"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:50.640Z",
+                          "annotations": [],
+                          "attachments": [
+                            {
+                              "name": "screenshot",
+                              "contentType": "image/png",
+                              "path": "/Users/shinjanpatra/CampaignPilot/test-results/core-flows-CampaignPilot-C-d00f9-ave-working-main-navigation-chromium/test-failed-1.png"
+                            },
+                            {
+                              "name": "error-context",
+                              "contentType": "text/markdown",
+                              "path": "/Users/shinjanpatra/CampaignPilot/test-results/core-flows-CampaignPilot-C-d00f9-ave-working-main-navigation-chromium/error-context.md"
+                            }
+                          ],
+                          "errorLocation": {
+                            "file": "/Users/shinjanpatra/CampaignPilot/e2e/core-flows.spec.ts",
+                            "column": 28,
+                            "line": 426
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-c58251a3b66539405af9",
+                  "file": "core-flows.spec.ts",
+                  "line": 423,
+                  "column": 5
+                },
+                {
+                  "title": "should show business profile section",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 4,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 832,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Business profile not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:56.907Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-82e59ddf3b52af020319",
+                  "file": "core-flows.spec.ts",
+                  "line": 439,
+                  "column": 5
+                },
+                {
+                  "title": "should have clear primary actions",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 4,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 741,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ No action buttons found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:57.989Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-4dc6db4870c6969016c6",
+                  "file": "core-flows.spec.ts",
+                  "line": 449,
+                  "column": 5
+                }
+              ]
+            },
+            {
+              "title": "10. Safety & Data Handling",
+              "file": "core-flows.spec.ts",
+              "line": 462,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should not show real payment/credential fields without HTTPS context",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 4,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 772,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "✓ Running on localhost (development OK)\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:58.737Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-ea8a3a5f5938a5ce65b9",
+                  "file": "core-flows.spec.ts",
+                  "line": 463,
+                  "column": 5
+                },
+                {
+                  "title": "should require approval for consequential actions",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 4,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 771,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Limited confirmation mechanisms found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:03:59.518Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-5ac5fd5a7ed02d29b313",
+                  "file": "core-flows.spec.ts",
+                  "line": 471,
+                  "column": 5
+                },
+                {
+                  "title": "should show clear demo state indicators",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 4,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 818,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Demo state not clearly marked\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:04:00.304Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-28d36ceec47950d6de5d",
+                  "file": "core-flows.spec.ts",
+                  "line": 483,
+                  "column": 5
+                }
+              ]
+            },
+            {
+              "title": "11. Accessibility & UI/UX",
+              "file": "core-flows.spec.ts",
+              "line": 496,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should have accessible color contrast",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 4,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 807,
+                          "errors": [],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:04:01.135Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-07408d3b543cd006f9f0",
+                  "file": "core-flows.spec.ts",
+                  "line": 497,
+                  "column": 5
+                },
+                {
+                  "title": "should be mobile responsive",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 4,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 741,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "✓ Page rendered at 1280x720\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:04:01.951Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-2254bace262dc5a17c9e",
+                  "file": "core-flows.spec.ts",
+                  "line": 507,
+                  "column": 5
+                },
+                {
+                  "title": "should have clear empty states",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 4,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 784,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Empty state messages not found\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:04:02.704Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-5bf603c66ef064918501",
+                  "file": "core-flows.spec.ts",
+                  "line": 515,
+                  "column": 5
+                }
+              ]
+            },
+            {
+              "title": "12. Error Handling",
+              "file": "core-flows.spec.ts",
+              "line": 535,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should handle network errors gracefully",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 4,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 794,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Network error handling not visible\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:04:03.497Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-3ae71b614bcbcdf03468",
+                  "file": "core-flows.spec.ts",
+                  "line": 536,
+                  "column": 5
+                },
+                {
+                  "title": "should recover from common errors",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 4,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 775,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "⊘ Error recovery options not clearly visible\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-11-11T23:04:04.300Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "28695e5e3430c54ac89e-efa57b5d89438f31abe6",
+                  "file": "core-flows.spec.ts",
+                  "line": 555,
+                  "column": 5
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-11T23:02:24.179Z",
+    "duration": 100977.12599999999,
+    "expected": 32,
+    "skipped": 0,
+    "unexpected": 4,
+    "flaky": 0
+  }
+}

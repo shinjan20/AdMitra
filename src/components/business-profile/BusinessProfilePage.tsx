@@ -1,253 +1,528 @@
 import React, { useState } from 'react';
+import { ArrowLeft, Building2, IndianRupee, Info, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { INDIAN_CITIES, INDIAN_SMB_PRESETS } from '../../utils/presets';
-import {
-  Building2,
-  MapPin,
-  Phone,
-  MessageSquare,
-  Camera,
-  Globe,
-  Sparkles,
-  Save,
-  CheckCircle2,
-  Store,
-} from 'lucide-react';
+import { BUSINESS_CATEGORIES } from '../../services/language';
+
+const numberOrUndefined = (value: string): number | undefined => {
+  if (value.trim() === '') return undefined;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+};
 
 export const BusinessProfilePage: React.FC = () => {
-  const {
-    activeBusiness,
-    updateBusiness,
-    setShowOnboardingModal,
-    showToast,
-  } = useApp();
-
+  const { activeBusiness, updateBusiness, navigateTo, t, tr } = useApp();
   const [formData, setFormData] = useState({
     businessName: activeBusiness.businessName,
     category: activeBusiness.category,
     description: activeBusiness.description,
     city: activeBusiness.location.city,
     area: activeBusiness.location.area || '',
-    address: activeBusiness.location.address || '',
-    websiteUrl: activeBusiness.websiteUrl || '',
-    phone: activeBusiness.phone || '',
     whatsappNumber: activeBusiness.whatsappNumber || '',
+    phone: activeBusiness.phone || '',
+    websiteUrl: activeBusiness.digitalPresence?.website || activeBusiness.websiteUrl || '',
     instagramHandle: activeBusiness.instagramHandle || '',
+    operatingHours: activeBusiness.operatingHours || '',
+    serviceAreaKm: activeBusiness.serviceAreaKm?.toString() || '',
+    primaryContactMethod: activeBusiness.primaryContactMethod || 'whatsapp',
+    tone: activeBusiness.tone || '',
+    prohibitedClaims: activeBusiness.prohibitedClaims || '',
+    languages: (activeBusiness.preferredLanguages || []).join(', '),
+    averageOrderValue: activeBusiness.economics?.averageOrderValue?.toString() || '',
+    grossMarginPct: activeBusiness.economics?.grossMarginPct?.toString() || '',
+    acceptableCostPerLead: activeBusiness.economics?.acceptableCostPerLead?.toString() || '',
+    capacityLeadsPerMonth: activeBusiness.economics?.capacityLeadsPerMonth?.toString() || '',
+    targetLeadsPerMonth: activeBusiness.economics?.targetLeadsPerMonth?.toString() || '',
+    monthlyBudget: activeBusiness.investment?.monthlyBudget?.toString() || '',
+    comfortableStart: activeBusiness.investment?.comfortableStart?.toString() || '',
+    maximumSpend: activeBusiness.investment?.maximumSpend?.toString() || '',
+    cadence: activeBusiness.investment?.cadence || 'monthly',
+    confidence: activeBusiness.investment?.confidence || 'medium',
+    willingToTest: activeBusiness.investment?.willingToTest ?? true,
+    googleBusinessProfile: activeBusiness.digitalPresence?.googleBusinessProfile ?? false,
+    facebookPage: activeBusiness.digitalPresence?.facebookPage ?? false,
+    instagram: activeBusiness.digitalPresence?.instagram ?? false,
+    hasAdAccounts: activeBusiness.digitalPresence?.hasAdAccounts ?? false,
   });
 
-  const [isSaved, setIsSaved] = useState(false);
+  const update = (field: keyof typeof formData, value: string | boolean) =>
+    setFormData((previous) => ({ ...previous, [field]: value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     updateBusiness({
       ...activeBusiness,
-      businessName: formData.businessName,
+      businessName: formData.businessName.trim(),
       category: formData.category,
-      description: formData.description,
+      description: formData.description.trim(),
       location: {
-        city: formData.city,
-        area: formData.area,
-        address: formData.address,
+        ...activeBusiness.location,
+        city: formData.city.trim(),
+        area: formData.area.trim(),
       },
-      websiteUrl: formData.websiteUrl,
-      phone: formData.phone,
-      whatsappNumber: formData.whatsappNumber,
-      instagramHandle: formData.instagramHandle,
+      whatsappNumber: formData.whatsappNumber.trim(),
+      phone: formData.phone.trim(),
+      websiteUrl: formData.websiteUrl.trim() || undefined,
+      instagramHandle: formData.instagramHandle.trim() || undefined,
+      operatingHours: formData.operatingHours.trim() || undefined,
+      serviceAreaKm: numberOrUndefined(formData.serviceAreaKm),
+      primaryContactMethod: formData.primaryContactMethod as typeof activeBusiness.primaryContactMethod,
+      tone: formData.tone.trim() || undefined,
+      prohibitedClaims: formData.prohibitedClaims.trim() || undefined,
+      preferredLanguages: formData.languages
+        .split(',')
+        .map((language) => language.trim())
+        .filter(Boolean),
+      economics: {
+        averageOrderValue: numberOrUndefined(formData.averageOrderValue),
+        grossMarginPct: numberOrUndefined(formData.grossMarginPct),
+        acceptableCostPerLead: numberOrUndefined(formData.acceptableCostPerLead),
+        capacityLeadsPerMonth: numberOrUndefined(formData.capacityLeadsPerMonth),
+        targetLeadsPerMonth: numberOrUndefined(formData.targetLeadsPerMonth),
+      },
+      investment: {
+        monthlyBudget: numberOrUndefined(formData.monthlyBudget),
+        comfortableStart: numberOrUndefined(formData.comfortableStart),
+        maximumSpend: numberOrUndefined(formData.maximumSpend),
+        cadence: formData.cadence as 'daily' | 'monthly',
+        confidence: formData.confidence as 'low' | 'medium' | 'high',
+        willingToTest: formData.willingToTest,
+      },
+      digitalPresence: {
+        website: formData.websiteUrl.trim() || undefined,
+        googleBusinessProfile: formData.googleBusinessProfile,
+        facebookPage: formData.facebookPage,
+        instagram: formData.instagram,
+        hasAdAccounts: formData.hasAdAccounts,
+      },
     });
-
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 2500);
   };
 
+  const inputClass =
+    'min-h-11 w-full rounded-lg border border-slate-300 px-3 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900';
+
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-16">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-blue-50 text-blue-600">
-              <Building2 className="w-4 h-4" />
-            </span>
-            <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">
-              Business Profile
-            </span>
-          </div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight mt-1">
-            {activeBusiness.businessName}
-          </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Your business details provide essential context for AI campaign recommendations.
-          </p>
+    <div className="mx-auto max-w-3xl space-y-6 pb-16">
+      <button
+        type="button"
+        onClick={() => navigateTo('marketing-plan')}
+        className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+      >
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        {t('back')}
+      </button>
+
+      <header>
+        <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
+          <Building2 className="h-4 w-4" aria-hidden="true" />
+          {tr('Business profile')}
         </div>
+        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+          {tr('A few details about your shop')}
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
+          {tr('These details help the suggestions fit your shop. If you do not know a number, leave it blank. We will not make one up.')}
+        </p>
+      </header>
 
-        <button
-          onClick={() => setShowOnboardingModal(true)}
-          className="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xl transition-colors"
-        >
-          <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-          Switch SMB Demo Preset
-        </button>
-      </div>
-
-      {/* Profile Form */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-6">
-        <div className="border-b border-slate-100 pb-4">
-          <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-            <Store className="w-4 h-4 text-blue-600" />
-            Basic Business Details
-          </h3>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Identity and core offering used for AI copy generation
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <section className="surface-panel space-y-5 rounded-xl p-5 sm:p-7">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Business Name <span className="text-rose-500">*</span>
+            <h2 className="text-sm font-semibold text-slate-900">{tr('Business basics')}</h2>
+            <p className="mt-1 text-sm text-slate-500">{tr('Used to choose the offer, language and service area.')}</p>
+          </div>
+
+          <div>
+            <label htmlFor="business-name" className="mb-1.5 block text-sm font-medium text-slate-800">
+              {t('businessName')}
             </label>
             <input
-              type="text"
+              id="business-name"
               value={formData.businessName}
-              onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(event) => update('businessName', event.target.value)}
+              maxLength={100}
               required
+              className={inputClass}
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Category <span className="text-rose-500">*</span>
+            <label htmlFor="business-type" className="mb-1.5 block text-sm font-medium text-slate-800">
+              {t('businessType')}
             </label>
             <select
+              id="business-type"
               value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              onChange={(event) => update('category', event.target.value)}
+              required
+              className={`${inputClass} bg-white`}
             >
-              <option value="Beauty & Wellness">Beauty & Wellness (Salon, Spa, Makeup)</option>
-              <option value="Education & Coaching">Education & Coaching (IIT, Board, Prep)</option>
-              <option value="Restaurant & Dining">Restaurant & Dining (Cafe, Bakery, Kitchen)</option>
-              <option value="Fitness & Gym">Fitness & Gym (CrossFit, Gym, Yoga)</option>
-              <option value="Retail & Fashion">Retail & Fashion (Boutique, Footwear)</option>
-              <option value="Healthcare & Clinic">Healthcare & Clinic (Dental, Eyecare)</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            Description & Core Offerings <span className="text-rose-500">*</span>
-          </label>
-          <textarea
-            rows={3}
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="border-b border-slate-100 pb-2 pt-2">
-          <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-blue-600" />
-            Location & Physical Address
-          </h3>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">City</label>
-            <select
-              value={formData.city}
-              onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-            >
-              {INDIAN_CITIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
+              <option value="" disabled>{t('businessType')}</option>
+              {!BUSINESS_CATEGORIES.some((item) => item.value === formData.category) && (
+                <option value={formData.category}>{formData.category}</option>
+              )}
+              {BUSINESS_CATEGORIES.map(({ key, value }) => (
+                <option key={value} value={value}>{t(key)}</option>
               ))}
             </select>
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Area / Landmark</label>
-            <input
-              type="text"
-              value={formData.area}
-              onChange={(e) => setFormData({ ...formData, area: e.target.value })}
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="business-city" className="mb-1.5 block text-sm font-medium text-slate-800">
+                {t('city')}
+              </label>
+              <input
+                id="business-city"
+                value={formData.city}
+                onChange={(event) => update('city', event.target.value)}
+                maxLength={100}
+                required
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="business-area" className="mb-1.5 block text-sm font-medium text-slate-800">
+                {t('area')}
+              </label>
+              <input
+                id="business-area"
+                value={formData.area}
+                onChange={(event) => update('area', event.target.value)}
+                maxLength={100}
+                className={inputClass}
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Street Address</label>
-            <input
-              type="text"
-              value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-
-        <div className="border-b border-slate-100 pb-2 pt-2">
-          <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-            <Phone className="w-4 h-4 text-blue-600" />
-            Customer Contact Channels
-          </h3>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center gap-1">
-              <Phone className="w-3.5 h-3.5 text-slate-400" /> Phone
+            <label htmlFor="business-description" className="mb-1.5 block text-sm font-medium text-slate-800">
+              {tr('What do you offer?')}
             </label>
-            <input
-              type="text"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg"
+            <textarea
+              id="business-description"
+              value={formData.description}
+              onChange={(event) => update('description', event.target.value)}
+              rows={3}
+              maxLength={500}
+              className="w-full resize-y rounded-lg border border-slate-300 px-3 py-2 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
             />
           </div>
 
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div>
+              <label htmlFor="business-hours" className="mb-1.5 block text-sm font-medium text-slate-800">
+                {tr('Operating hours')}
+              </label>
+              <input
+                id="business-hours"
+                value={formData.operatingHours}
+                onChange={(event) => update('operatingHours', event.target.value)}
+                placeholder={tr('Mon–Sun, 10:00–20:00')}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="business-radius" className="mb-1.5 block text-sm font-medium text-slate-800">
+                {tr('Service area (km)')}
+              </label>
+              <input
+                id="business-radius"
+                type="number"
+                min="0"
+                max="100"
+                value={formData.serviceAreaKm}
+                onChange={(event) => update('serviceAreaKm', event.target.value)}
+                placeholder="12"
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="business-contact" className="mb-1.5 block text-sm font-medium text-slate-800">
+                {tr('Primary contact')}
+              </label>
+              <select
+                id="business-contact"
+                value={formData.primaryContactMethod}
+                onChange={(event) => update('primaryContactMethod', event.target.value)}
+                className={`${inputClass} bg-white`}
+              >
+                <option value="whatsapp">{tr('WhatsApp')}</option>
+                <option value="phone">{tr('Phone')}</option>
+                <option value="website">{tr('Website')}</option>
+                <option value="form">{tr('Lead form')}</option>
+                <option value="booking">{tr('Booking link')}</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section className="surface-panel space-y-5 rounded-xl p-5 sm:p-7">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center gap-1">
-              <MessageSquare className="w-3.5 h-3.5 text-emerald-600" /> WhatsApp Number
-            </label>
-            <input
-              type="text"
-              value={formData.whatsappNumber}
-              onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg"
-            />
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <ShieldCheck className="h-4 w-4 text-slate-500" aria-hidden="true" />
+              {tr('Contact and digital presence')}
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              {tr('These destinations determine which channels are feasible. Leave a field blank if it does not exist.')}
+            </p>
           </div>
 
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="business-phone" className="mb-1.5 block text-sm font-medium text-slate-800">
+                {tr('Phone number')}
+              </label>
+              <input
+                id="business-phone"
+                type="tel"
+                value={formData.phone}
+                onChange={(event) => update('phone', event.target.value)}
+                placeholder="+91"
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="business-whatsapp" className="mb-1.5 block text-sm font-medium text-slate-800">
+                {t('whatsapp')}
+              </label>
+              <input
+                id="business-whatsapp"
+                type="tel"
+                value={formData.whatsappNumber}
+                onChange={(event) => update('whatsappNumber', event.target.value)}
+                placeholder="+91"
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="business-website" className="mb-1.5 block text-sm font-medium text-slate-800">
+                {tr('Website or landing page')}
+              </label>
+              <input
+                id="business-website"
+                type="url"
+                value={formData.websiteUrl}
+                onChange={(event) => update('websiteUrl', event.target.value)}
+                placeholder="https://"
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="business-instagram" className="mb-1.5 block text-sm font-medium text-slate-800">
+                {tr('Instagram handle')}
+              </label>
+              <input
+                id="business-instagram"
+                value={formData.instagramHandle}
+                onChange={(event) => update('instagramHandle', event.target.value)}
+                placeholder="@yourshop"
+                className={inputClass}
+              />
+            </div>
+          </div>
+
+          <fieldset>
+            <legend className="mb-2 text-sm font-medium text-slate-800">{tr('Which of these already exist?')}</legend>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {[
+                { field: 'googleBusinessProfile' as const, label: 'Google Business Profile' },
+                { field: 'facebookPage' as const, label: 'Facebook Page' },
+                { field: 'instagram' as const, label: 'Instagram account' },
+                { field: 'hasAdAccounts' as const, label: 'Google Ads or Meta ad account' },
+              ].map((item) => (
+                <label key={item.field} className="flex min-h-11 items-center gap-3 rounded-lg border border-slate-200 px-3 text-sm text-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={formData[item.field]}
+                    onChange={(event) => update(item.field, event.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 accent-slate-900"
+                  />
+                  {tr(item.label)}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        </section>
+
+        <section className="surface-panel space-y-5 rounded-xl p-5 sm:p-7">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center gap-1">
-              <Camera className="w-3.5 h-3.5 text-rose-500" /> Instagram Handle
-            </label>
-            <input
-              type="text"
-              value={formData.instagramHandle}
-              onChange={(e) => setFormData({ ...formData, instagramHandle: e.target.value })}
-              className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg"
-            />
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <IndianRupee className="h-4 w-4 text-slate-500" aria-hidden="true" />
+              {tr('Money basics')}
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              {tr('Used to judge whether an enquiry is affordable. Leave anything you do not know blank.')}
+            </p>
           </div>
-        </div>
 
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-          {isSaved && (
-            <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1 animate-in fade-in">
-              <CheckCircle2 className="w-4 h-4" /> Profile Updated
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              { field: 'averageOrderValue' as const, label: 'Average transaction value (₹)', placeholder: '4500' },
+              { field: 'grossMarginPct' as const, label: 'Gross margin (%)', placeholder: '60' },
+              { field: 'acceptableCostPerLead' as const, label: 'Acceptable cost per enquiry (₹)', placeholder: '450' },
+              { field: 'targetLeadsPerMonth' as const, label: 'Target enquiries per month', placeholder: '30' },
+              { field: 'capacityLeadsPerMonth' as const, label: 'Enquiry capacity per month', placeholder: '60' },
+            ].map((item) => (
+              <div key={item.field}>
+                <label htmlFor={item.field} className="mb-1.5 block text-sm font-medium text-slate-800">
+                  {tr(item.label)}
+                </label>
+                <input
+                  id={item.field}
+                  type="number"
+                  min="0"
+                  value={formData[item.field]}
+                  onChange={(event) => update(item.field, event.target.value)}
+                  placeholder={item.placeholder}
+                  className={inputClass}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-start gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs leading-relaxed text-slate-600">
+            <Info className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+            {tr('Budget recommendations are estimates, not guaranteed results. Capacity matters: a plan should not create more enquiries than the business can answer.')}
+          </div>
+        </section>
+
+        <section className="surface-panel space-y-5 rounded-xl p-5 sm:p-7">
+          <div>
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <SlidersHorizontal className="h-4 w-4 text-slate-500" aria-hidden="true" />
+              {tr('Investment discovery')}
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              {tr("Share a comfortable range. This is only a practice estimate, not a commitment.")}
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              { field: 'monthlyBudget' as const, label: 'Proposed monthly media budget (₹)', placeholder: '18000' },
+              { field: 'comfortableStart' as const, label: 'Comfortable starting amount (₹)', placeholder: '6000' },
+              { field: 'maximumSpend' as const, label: 'Maximum acceptable spend (₹)', placeholder: '25000' },
+            ].map((item) => (
+              <div key={item.field}>
+                <label htmlFor={item.field} className="mb-1.5 block text-sm font-medium text-slate-800">
+                  {tr(item.label)}
+                </label>
+                <input
+                  id={item.field}
+                  type="number"
+                  min="0"
+                  step="500"
+                  value={formData[item.field]}
+                  onChange={(event) => update(item.field, event.target.value)}
+                  placeholder={item.placeholder}
+                  className={inputClass}
+                />
+              </div>
+            ))}
+            <div>
+              <label htmlFor="cadence" className="mb-1.5 block text-sm font-medium text-slate-800">
+                {tr('Budget cadence')}
+              </label>
+              <select
+                id="cadence"
+                value={formData.cadence}
+                onChange={(event) => update('cadence', event.target.value)}
+                className={`${inputClass} bg-white`}
+              >
+                <option value="monthly">{tr('Monthly')}</option>
+                <option value="daily">{tr('Daily')}</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="investment-confidence" className="mb-1.5 block text-sm font-medium text-slate-800">
+                {tr('How sure are you about this range?')}
+              </label>
+              <select
+                id="investment-confidence"
+                value={formData.confidence}
+                onChange={(event) => update('confidence', event.target.value)}
+                className={`${inputClass} bg-white`}
+              >
+                <option value="low">{tr('Low — rough guess')}</option>
+                <option value="medium">{tr('Medium — likely')}</option>
+                <option value="high">{tr('High — I checked')}</option>
+              </select>
+            </div>
+          </div>
+
+          <label className="flex items-start gap-3 rounded-lg border border-slate-200 p-3 text-sm text-slate-700">
+            <input
+              type="checkbox"
+              checked={formData.willingToTest}
+              onChange={(event) => update('willingToTest', event.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 accent-slate-900"
+            />
+            <span>
+              {tr('I am willing to run a small, focused test before committing a larger budget.')}
+              <span className="mt-0.5 block text-xs text-slate-500">
+                {tr('A test-first plan spends the same budget but concentrates it on one channel.')}
+              </span>
             </span>
-          )}
+          </label>
+        </section>
+
+        <section className="surface-panel space-y-5 rounded-xl p-5 sm:p-7">
+          <div>
+            <h2 className="text-sm font-semibold text-slate-900">{tr('Brand preferences and guardrails')}</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              {tr('Used when generating copy. Prohibited claims are passed to the creative workflow as a guardrail, not treated as a suggestion.')}
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="business-languages" className="mb-1.5 block text-sm font-medium text-slate-800">
+                {tr('Preferred languages')}
+              </label>
+              <input
+                id="business-languages"
+                value={formData.languages}
+                onChange={(event) => update('languages', event.target.value)}
+                placeholder={tr('Hindi, English')}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="business-tone" className="mb-1.5 block text-sm font-medium text-slate-800">
+                {tr('Tone')}
+              </label>
+              <input
+                id="business-tone"
+                value={formData.tone}
+                onChange={(event) => update('tone', event.target.value)}
+                placeholder={tr('Warm, clear and premium')}
+                className={inputClass}
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="business-claims" className="mb-1.5 block text-sm font-medium text-slate-800">
+              {tr('Claims to avoid')}
+            </label>
+            <textarea
+              id="business-claims"
+              value={formData.prohibitedClaims}
+              onChange={(event) => update('prohibitedClaims', event.target.value)}
+              rows={2}
+              placeholder={tr('For example: guaranteed results, medical claims, superlatives without evidence')}
+              className="w-full resize-y rounded-lg border border-slate-300 px-3 py-2 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900"
+            />
+          </div>
+        </section>
+
+        <div className="flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-slate-500">
+            {tr('Saved in this browser. No ad account is connected and no financial data is sent to a provider.')}
+          </p>
           <button
             type="submit"
-            className="inline-flex items-center gap-1.5 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl shadow-xs transition-all"
+            className="brand-button inline-flex min-h-11 items-center justify-center rounded-lg px-5 text-sm font-semibold"
           >
-            <Save className="w-3.5 h-3.5" />
-            Save Profile
+            {tr('Save business context')}
           </button>
         </div>
       </form>

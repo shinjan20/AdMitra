@@ -1,0 +1,7 @@
+project_id = "admitra"
+
+[functions.generate-ad]
+verify_jwt = true
+
+[functions.generate-video]
+verify_jwt = true
