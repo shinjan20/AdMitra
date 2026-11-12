@@ -169,7 +169,8 @@ function generateLocalSampleAd(request: GenerateAdRequest): GeneratedAdResponse 
   return {
     ads,
     imageDataUrl: null,
-    imageError: 'Sample mode - no AI image generation',
+    imageError:
+      'Sample ad - AI generation is unavailable right now. Add a Google Gemini API key to switch on real generation.',
     language,
     generationsRemainingToday: 25,
   };

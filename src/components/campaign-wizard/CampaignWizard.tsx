@@ -227,6 +227,24 @@ export const CampaignWizard: React.FC = () => {
 
         {/* Minimalist Step Pills */}
         <div className="grid min-w-0 grid-cols-3 gap-2 pt-1 pb-0.5 sm:flex sm:items-center sm:justify-between sm:gap-1">
+          <div
+            className="flex items-center gap-2 sm:col-span-3"
+            role="progressbar"
+            aria-valuemin={1}
+            aria-valuemax={steps.length}
+            aria-valuenow={currentStep}
+            aria-label={tr('Campaign progress')}
+          >
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
+              <div
+                className="h-full rounded-full bg-[color:var(--marigold)] transition-all duration-300"
+                style={{ width: `${((currentStep - 1) / Math.max(1, steps.length - 1)) * 100}%` }}
+              />
+            </div>
+            <span className="text-xs font-semibold text-[color:var(--ink-soft)]">
+              {tr('Step {step} of {total}', { step: currentStep, total: steps.length })}
+            </span>
+          </div>
           {steps.map((st, idx) => {
             const isCurrent = currentStep === st.number;
             const isPast = currentStep > st.number;
