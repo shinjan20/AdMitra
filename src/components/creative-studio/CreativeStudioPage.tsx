@@ -5,6 +5,7 @@ import {
   AdLanguageCode,
   checkAdVideoProgress,
   generateMultilingualAd,
+  GeneratedAdIdea,
   getLatestAdVideo,
   getRemainingAdGenerations,
   getRemainingVideoGenerations,
@@ -153,6 +154,8 @@ export const CreativeStudioPage: React.FC = () => {
         ? [savedCreative]
         : [];
   });
+  const [followUps, setFollowUps] = useState<GeneratedAdIdea[]>([]);
+  const [copiedFollowUpId, setCopiedFollowUpId] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [offerError, setOfferError] = useState('');
@@ -421,6 +424,7 @@ export const CreativeStudioPage: React.FC = () => {
         imageUrl: '',
         badgeText: `AI ad idea ${index + 1}`,
       }));
+      setFollowUps(result.followUps || []);
 
       setGenerationProgress(tr('Putting your ad together...'));
       setVariations(aiIdeas);
@@ -700,6 +704,23 @@ export const CreativeStudioPage: React.FC = () => {
       showToast({ type: 'success', title: tr('Ad text copied') });
     } catch (error) {
       console.error('Could not copy ad text:', error);
+      showToast({
+        type: 'error',
+        title: tr('Could not copy the ad'),
+        message: tr('Select the text in the preview and copy it instead.'),
+      });
+    }
+  };
+
+  const handleCopyFollowUp = async (followUp: GeneratedAdIdea, index: number) => {
+    const followUpText = `${followUp.headline}\n\n${followUp.body}\n\n${followUp.button}`;
+    try {
+      await navigator.clipboard.writeText(followUpText);
+      setCopiedFollowUpId(`follow-up-${index}`);
+      window.setTimeout(() => setCopiedFollowUpId(null), 1800);
+      showToast({ type: 'success', title: tr('Ad text copied') });
+    } catch (error) {
+      console.error('Could not copy follow-up:', error);
       showToast({
         type: 'error',
         title: tr('Could not copy the ad'),
@@ -1133,6 +1154,41 @@ export const CreativeStudioPage: React.FC = () => {
               </button>
             ))}
           </div>
+
+          {followUps.length > 0 && (
+            <section className="space-y-3" aria-label="Follow-up messages">
+              <div>
+                <h2 className="text-lg font-semibold text-slate-900">{t('followUpsTitle')}</h2>
+                <p className="mt-1 text-sm text-slate-500">{t('followUpsHelp')}</p>
+              </div>
+              {followUps.map((followUp, index) => (
+                <div
+                  key={`follow-up-${index}`}
+                  className="rounded-xl border border-slate-200 bg-white p-4"
+                >
+                  <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    {t('followUpMessage', { n: index + 1 })}
+                  </span>
+                  <p className="mt-2 text-base font-semibold text-slate-900">{followUp.headline}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-slate-600">{followUp.body}</p>
+                  <div className="mt-3">
+                    <button
+                      type="button"
+                      onClick={() => handleCopyFollowUp(followUp, index)}
+                      className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+                    >
+                      {copiedFollowUpId === `follow-up-${index}` ? (
+                        <Check className="h-4 w-4" aria-hidden="true" />
+                      ) : (
+                        <Copy className="h-4 w-4" aria-hidden="true" />
+                      )}
+                      {t('copyAd')}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
 
           {selected && (
             <div data-tour="ad-preview" className="space-y-4">

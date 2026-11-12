@@ -116,6 +116,7 @@ export interface GeneratedAdResponse {
   language: AdLanguageCode;
   generationsRemainingToday: number;
   safetyIssues?: string[];
+  followUps?: GeneratedAdIdea[];
 }
 
 export interface StartedAdVideo {
@@ -138,6 +139,26 @@ interface GenerateAdRequest {
   language: AdLanguageCode;
   images: AdImageInput[];
   prohibitedClaims?: string[];
+}
+
+/**
+ * Build the immediate follow-up and booking nudge for a generated ad.
+ * Follow-ups are owner-editable ad copy sent after the first reply or while
+ * the ad is still getting attention; nothing is posted automatically.
+ */
+function buildFollowUps(request: GenerateAdRequest): GeneratedAdIdea[] {
+  const { businessName, offer } = request;
+  const immediateFollowUp: GeneratedAdIdea = {
+    headline: `${businessName} here`,
+    body: `${businessName} has you on the list for ${offer}. Send us a message here with your preferred time and we will fit you in.`,
+    button: 'Send WhatsApp Message',
+  };
+  const bookingNudge: GeneratedAdIdea = {
+    headline: `Reserve your slot at ${businessName}`,
+    body: `${offer}. Slots are limited, so book your appointment before they fill.`,
+    button: 'Book Now',
+  };
+  return [immediateFollowUp, bookingNudge];
 }
 
 /**
@@ -173,6 +194,12 @@ function generateLocalSampleAd(request: GenerateAdRequest): GeneratedAdResponse 
     prohibitedClaims: request.prohibitedClaims,
     language,
   });
+  const followUps = moderateGeneratedAds(buildFollowUps(request), {
+    businessName,
+    category,
+    prohibitedClaims: request.prohibitedClaims,
+    language,
+  });
 
   return {
     ads: moderation.ads,
@@ -182,6 +209,7 @@ function generateLocalSampleAd(request: GenerateAdRequest): GeneratedAdResponse 
     language,
     generationsRemainingToday: 25,
     safetyIssues: moderation.result.issues.map((item) => item.message),
+    followUps: followUps.ads,
   };
 }
 
@@ -264,6 +292,24 @@ export async function generateMultilingualAd(
     ? await moderateGeneratedImage(data.imageDataUrl)
     : { ok: true, issues: [] };
 
+  const backendFollowUps = Array.isArray(data.followUps) ? data.followUps : null;
+  const followUps =
+    backendFollowUps && backendFollowUps.length === 2 && backendFollowUps.every(
+      (item) => typeof item?.headline === 'string' && typeof item?.body === 'string' && typeof item?.button === 'string',
+    )
+      ? moderateGeneratedAds(backendFollowUps, {
+          businessName: request.businessName,
+          category: request.category,
+          prohibitedClaims: request.prohibitedClaims,
+          language: data.language,
+        }).ads
+      : moderateGeneratedAds(buildFollowUps(request), {
+          businessName: request.businessName,
+          category: request.category,
+          prohibitedClaims: request.prohibitedClaims,
+          language: data.language,
+        }).ads;
+
   const safetyIssues = Array.from(
     new Set([
       ...(data.safetyIssues || []),
@@ -276,6 +322,7 @@ export async function generateMultilingualAd(
     return {
       ...data,
       ads: moderation.ads,
+      followUps,
       imageError: imageModeration.issues[0]?.message || 'No image came back for the ad.',
       safetyIssues,
     };
@@ -284,6 +331,7 @@ export async function generateMultilingualAd(
   return {
     ...data,
     ads: moderation.ads,
+    followUps,
     safetyIssues,
   };
 }
