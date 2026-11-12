@@ -28,22 +28,30 @@ export const CampaignList: React.FC<CampaignListProps> = ({ onSelectCampaign }) 
   const [statusFilter, setStatusFilter] = useState<'all' | CampaignStatus>('all');
   const [objectiveFilter, setObjectiveFilter] = useState<'all' | CampaignObjective>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<'date' | 'budget' | 'name'>('date');
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   const businessCampaigns = campaigns.filter((c) => c.businessId === activeBusiness.id);
 
-  const filteredCampaigns = businessCampaigns.filter((c) => {
-    if (statusFilter !== 'all' && c.status !== statusFilter) return false;
-    if (objectiveFilter !== 'all' && c.objective !== objectiveFilter) return false;
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      return (
-        c.campaignName.toLowerCase().includes(q) ||
-        c.creative.headline.toLowerCase().includes(q) ||
-        c.audience.locationCity.toLowerCase().includes(q)
-      );
-    }
-    return true;
-  });
+  const filteredCampaigns = businessCampaigns
+    .filter((c) => {
+      if (statusFilter !== 'all' && c.status !== statusFilter) return false;
+      if (objectiveFilter !== 'all' && c.objective !== objectiveFilter) return false;
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        return (
+          c.campaignName.toLowerCase().includes(q) ||
+          c.creative.headline.toLowerCase().includes(q) ||
+          c.audience.locationCity.toLowerCase().includes(q)
+        );
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'budget') return (b.totalBudget || 0) - (a.totalBudget || 0);
+      if (sortBy === 'name') return a.campaignName.localeCompare(b.campaignName);
+      return new Date(b.createdAt || b.startDate).getTime() - new Date(a.createdAt || a.startDate).getTime();
+    });
 
   const getObjectiveIcon = (obj: CampaignObjective) => {
     switch (obj) {
@@ -162,6 +170,17 @@ export const CampaignList: React.FC<CampaignListProps> = ({ onSelectCampaign }) 
             <option value="leads">{tr('Phone enquiries')}</option>
             <option value="awareness">{tr('Shop visits')}</option>
           </select>
+
+          <select
+            aria-label={tr('Sort by')}
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as 'date' | 'budget' | 'name')}
+            className="min-h-10 min-w-0 flex-1 rounded-lg border border-[color:var(--line-strong)] bg-white px-2.5 text-sm font-medium text-[color:var(--ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--brand)] sm:flex-none"
+          >
+            <option value="date">{tr('Newest first')}</option>
+            <option value="budget">{tr('Highest budget')}</option>
+            <option value="name">{tr('Name')}</option>
+          </select>
         </div>
       </div>
 
@@ -257,20 +276,44 @@ export const CampaignList: React.FC<CampaignListProps> = ({ onSelectCampaign }) 
                     >
                       <ExternalLink className="h-4 w-4" aria-hidden="true" />
                     </button>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (window.confirm(tr('Delete campaign "{name}"?', { name: c.campaignName }))) {
-                          deleteCampaign(c.id);
-                        }
-                      }}
-                      className="rounded-lg p-2 text-[color:var(--line-strong)] transition-colors hover:bg-rose-50 hover:text-rose-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-rose-600"
-                      title={tr('Delete campaign')}
-                      aria-label={tr('Delete campaign')}
-                    >
-                      <Trash2 className="h-4 w-4" aria-hidden="true" />
-                    </button>
+                    {pendingDeleteId === c.id ? (
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteCampaign(c.id);
+                            setPendingDeleteId(null);
+                          }}
+                          className="rounded-lg bg-rose-600 px-2 py-1 text-xs font-semibold text-white hover:bg-rose-700"
+                        >
+                          {tr('Confirm')}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPendingDeleteId(null);
+                          }}
+                          className="rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50"
+                        >
+                          {tr('Cancel')}
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPendingDeleteId(c.id);
+                        }}
+                        className="rounded-lg p-2 text-[color:var(--line-strong)] transition-colors hover:bg-rose-50 hover:text-rose-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-rose-600"
+                        title={tr('Delete campaign')}
+                        aria-label={tr('Delete campaign')}
+                      >
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                      </button>
+                    )}
                   </div>
                 </div>
               </li>

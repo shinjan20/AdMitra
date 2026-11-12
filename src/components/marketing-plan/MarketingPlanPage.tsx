@@ -496,7 +496,9 @@ export const MarketingPlanPage: React.FC = () => {
           <span className="text-xs">{tr('Nothing is charged here.')}</span>
         </div>
 
-        <div className="grid gap-4 border-t border-slate-100 pt-4 md:grid-cols-2">
+        <details className="border-t border-slate-100 pt-4">
+          <summary className="cursor-pointer text-sm font-semibold text-slate-900">{tr('Plan details, assumptions and risks')}</summary>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div>
             <h3 className="text-sm font-semibold text-slate-900">{tr('What this plan assumes')}</h3>
             <ul className="mt-2 space-y-2 text-sm leading-relaxed text-slate-600">
@@ -531,6 +533,7 @@ export const MarketingPlanPage: React.FC = () => {
             </ul>
           </div>
         </div>
+        </details>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
           <p className="max-w-xl text-xs leading-relaxed text-slate-500">

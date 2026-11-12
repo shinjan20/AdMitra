@@ -20,6 +20,7 @@ export const Step4Audience: React.FC<Step4AudienceProps> = ({
   const [city, setCity] = useState(audience?.locationCity || activeBusiness.location.city);
   const [area, setArea] = useState(audience?.locationArea || activeBusiness.location.area);
   const [distance, setDistance] = useState(audience?.radiusKm || 5);
+  const [cityError, setCityError] = useState('');
   const hasPresetDistance = [5, 10, 20].includes(distance);
 
   useEffect(() => {
@@ -121,11 +122,20 @@ export const Step4Audience: React.FC<Step4AudienceProps> = ({
         {!city.trim() && (
           <p role="alert" className="text-sm text-rose-700">{tr('Add at least a town or city before approval.')}</p>
         )}
+        {cityError && (
+          <p role="alert" className="text-sm text-rose-700">{cityError}</p>
+        )}
         <button
           type="button"
-          onClick={onNext}
-          disabled={!city.trim()}
-          className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-slate-900 px-5 text-sm font-medium text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={() => {
+            if (!city.trim()) {
+              setCityError(tr('Add at least a town or city before approval.'));
+              return;
+            }
+            setCityError('');
+            onNext();
+          }}
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-slate-900 px-5 text-sm font-medium text-white transition-colors hover:bg-slate-800"
         >
           {tr('Continue')}
           <ArrowRight className="h-4 w-4" aria-hidden="true" />

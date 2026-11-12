@@ -357,8 +357,9 @@ export const BusinessProfilePage: React.FC = () => {
           </fieldset>
         </section>
 
-        <section className="surface-panel space-y-5 rounded-xl p-5 sm:p-7">
-          <div>
+        <details className="surface-panel space-y-5 rounded-xl p-5 sm:p-7" open={false}>
+          <summary className="cursor-pointer text-sm font-semibold text-slate-900">{tr('Money basics (optional)')}</summary>
+          <div className="mt-4">
             <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
               <IndianRupee className="h-4 w-4 text-slate-500" aria-hidden="true" />
               {tr('Money basics')}
@@ -397,10 +398,11 @@ export const BusinessProfilePage: React.FC = () => {
             <Info className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
             {tr('Budget recommendations are estimates, not guaranteed results. Capacity matters: a plan should not create more enquiries than the business can answer.')}
           </div>
-        </section>
+        </details>
 
-        <section className="surface-panel space-y-5 rounded-xl p-5 sm:p-7">
-          <div>
+        <details className="surface-panel space-y-5 rounded-xl p-5 sm:p-7">
+          <summary className="cursor-pointer text-sm font-semibold text-slate-900">{tr('Investment discovery (optional)')}</summary>
+          <div className="mt-4">
             <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
               <SlidersHorizontal className="h-4 w-4 text-slate-500" aria-hidden="true" />
               {tr('Investment discovery')}
@@ -477,7 +479,7 @@ export const BusinessProfilePage: React.FC = () => {
               </span>
             </span>
           </label>
-        </section>
+        </details>
 
         <section className="surface-panel space-y-5 rounded-xl p-5 sm:p-7">
           <div>

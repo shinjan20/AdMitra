@@ -310,8 +310,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const deferShopSetup = () => {
     setShowShopSetup(false);
-    // Go back to landing page instead of business profile
-    setActivePage('landing');
+    // Keep the user in the app with a lighter onboarding path instead of sending them back to landing.
+    setActivePage('creative-studio');
     postAuthPageRef.current = null;
   };
 
