@@ -152,7 +152,7 @@ export async function generateAdImage(request: AdImageRequest): Promise<AdImageR
 
   return {
     imageDataUrl: await shrinkForStorage(imageDataUrl),
-    model: typeof body?.model === 'string' ? body.model : 'gemini-1.5-flash-vision',
+    model: typeof body?.model === 'string' ? body.model : 'gemini-3-pro-image',
   };
 }
 

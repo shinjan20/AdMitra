@@ -111,7 +111,7 @@ Deno.serve(async (request: Request) => {
   // GET request to check if image maker is available
   if (request.method === 'GET') {
     const geminiKey = Deno.env.get('GEMINI_API_KEY');
-    const geminiModel = Deno.env.get('GEMINI_IMAGE_MODEL') || 'gemini-1.5-flash-vision';
+    const geminiModel = Deno.env.get('GEMINI_IMAGE_MODEL') || 'gemini-3-pro-image';
     const ready = Boolean(geminiKey);
     return response(request, {
       ready,
@@ -203,7 +203,7 @@ Deno.serve(async (request: Request) => {
   const outputLanguage = LANGUAGES[language as LanguageCode];
   let textResponse: Response;
   try {
-    const model = Deno.env.get('GEMINI_TEXT_MODEL') || 'gemini-1.5-flash';
+    const model = Deno.env.get('GEMINI_TEXT_MODEL') || 'gemini-3.8-flash';
     textResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
@@ -360,7 +360,7 @@ Deno.serve(async (request: Request) => {
 
   let imageResponse: Response;
   try {
-    const model = Deno.env.get('GEMINI_IMAGE_MODEL') || 'gemini-1.5-flash-vision';
+    const model = Deno.env.get('GEMINI_IMAGE_MODEL') || 'gemini-3-pro-image';
     imageResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
