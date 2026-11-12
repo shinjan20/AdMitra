@@ -28,7 +28,8 @@ export const ShopSetupPage: React.FC = () => {
   const [category, setCategory] = useState<string>(
     hasSavedBusiness && activeBusiness.category
       ? activeBusiness.category
-      : demoScenarioData?.category || BUSINESS_CATEGORIES[0].key
+      : BUSINESS_CATEGORIES.find((item) => item.key === demoScenarioData?.category)?.value
+        || BUSINESS_CATEGORIES[0].value
   );
   const [city, setCity] = useState(
     hasSavedBusiness ? activeBusiness.location.city : demoScenarioData?.city || ''
@@ -159,7 +160,7 @@ export const ShopSetupPage: React.FC = () => {
               className="min-h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
             >
               {BUSINESS_CATEGORIES.map(({ key, value }) => (
-                <option key={key} value={key}>{t(key)}</option>
+                <option key={key} value={value}>{t(key)}</option>
               ))}
             </select>
           </div>

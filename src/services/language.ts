@@ -85,7 +85,7 @@ const copy: Record<'en', LocaleCopy> = {
     password: 'Password', createAccount: 'Create account', fullName: 'Your name',
     googleSignIn: 'Continue with Google', or: 'or', noAccount: 'Don’t have an account?',
     createOne: 'Create an account', alreadyAccount: 'Already have an account?', back: 'Back',
-    categoryBeauty: 'Beauty & wellness', categoryEducation: 'Education & coaching',
+    categoryBeauty: 'Beauty', categoryEducation: 'Education & coaching',
     categoryRestaurant: 'Food & restaurant', categoryFitness: 'Fitness & gym',
     categoryRetail: 'Shop & clothing', categoryHealth: 'Clinic & health',
     categoryOther: 'Other local business', shopNameError: 'Enter your shop name.',
@@ -167,7 +167,7 @@ export function translate(
 }
 
 export const BUSINESS_CATEGORIES = [
-  { key: 'categoryBeauty', value: 'Beauty & Wellness' },
+  { key: 'categoryBeauty', value: 'Beauty' },
   { key: 'categoryEducation', value: 'Education & Coaching' },
   { key: 'categoryRestaurant', value: 'Restaurant & Dining' },
   { key: 'categoryFitness', value: 'Fitness & Gym' },

@@ -38,7 +38,7 @@ export const INITIAL_BUSINESS: BusinessProfile = {
   id: 'biz-aura-01',
   userId: INITIAL_USER.id,
   businessName: 'Aura Bridal Studio & Luxury Salon',
-  category: 'Beauty & Wellness',
+  category: 'Beauty',
   description: 'Premier bridal makeup studio and beauty salon specializing in HD bridal makeovers, pre-wedding rituals, and customized skincare treatments.',
   location: {
     city: 'Lucknow',

@@ -25,7 +25,7 @@ export const INDIAN_SMB_PRESETS: SMBPreset[] = [
   {
     id: 'preset-salon-lucknow',
     name: 'Aura Bridal Studio & Luxury Salon',
-    category: 'Beauty & Wellness',
+    category: 'Beauty',
     description: 'Premier bridal makeup studio and beauty salon specializing in HD bridal makeovers, pre-wedding rituals, and customized skincare treatments.',
     city: 'Lucknow',
     area: 'Gomti Nagar & Hazratganj',

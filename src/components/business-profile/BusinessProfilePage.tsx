@@ -47,6 +47,11 @@ export const BusinessProfilePage: React.FC = () => {
   const update = (field: keyof typeof formData, value: string | boolean) =>
     setFormData((previous) => ({ ...previous, [field]: value }));
 
+  const selectedCategory =
+    BUSINESS_CATEGORIES.find(
+      (item) => item.value === formData.category || item.key === formData.category,
+    )?.value ?? formData.category;
+
   const [isSaving, setIsSaving] = React.useState(false);
   const [profileError, setProfileError] = React.useState('');
 
@@ -164,14 +169,14 @@ export const BusinessProfilePage: React.FC = () => {
             </label>
             <select
               id="business-type"
-              value={formData.category}
+              value={selectedCategory}
               onChange={(event) => update('category', event.target.value)}
               required
               className={`${inputClass} bg-white`}
             >
               <option value="" disabled>{t('businessType')}</option>
-              {!BUSINESS_CATEGORIES.some((item) => item.value === formData.category) && (
-                <option value={formData.category}>{formData.category}</option>
+              {selectedCategory && !BUSINESS_CATEGORIES.some((item) => item.value === selectedCategory) && (
+                <option value={selectedCategory}>{selectedCategory}</option>
               )}
               {BUSINESS_CATEGORIES.map(({ key, value }) => (
                 <option key={value} value={value}>{t(key)}</option>

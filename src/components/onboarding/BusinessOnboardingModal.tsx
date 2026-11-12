@@ -16,7 +16,7 @@ export const BusinessOnboardingModal: React.FC = () => {
   const [useCustom, setUseCustom] = useState(false);
   const [formData, setFormData] = useState({
     businessName: '',
-    category: 'Beauty & Wellness',
+    category: 'Beauty',
     description: '',
     city: 'Lucknow',
     area: '',
@@ -202,7 +202,7 @@ export const BusinessOnboardingModal: React.FC = () => {
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                   className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 >
-                  <option value="Beauty & Wellness">Beauty & Wellness (Salon, Spa, Makeup)</option>
+                  <option value="Beauty">Beauty (Salon, Spa, Makeup)</option>
                   <option value="Education & Coaching">Education & Coaching (IIT, Board, Prep)</option>
                   <option value="Restaurant & Dining">Restaurant & Dining (Cafe, Bakery, Cloud Kitchen)</option>
                   <option value="Fitness & Gym">Fitness & Gym (Crossfit, Yoga, Gym)</option>
