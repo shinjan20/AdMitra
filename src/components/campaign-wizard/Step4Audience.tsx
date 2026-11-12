@@ -118,6 +118,9 @@ export const Step4Audience: React.FC<Step4AudienceProps> = ({
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           {tr('Back')}
         </button>
+        {!city.trim() && (
+          <p role="alert" className="text-sm text-rose-700">{tr('Add at least a town or city before approval.')}</p>
+        )}
         <button
           type="button"
           onClick={onNext}

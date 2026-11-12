@@ -41,6 +41,7 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
 }) => {
   const { activeBusiness, showToast, tr } = useApp();
   const [loading, setLoading] = useState(false);
+  const [generationError, setGenerationError] = useState('');
   const [needsRegeneration, setNeedsRegeneration] = useState(false);
   const [variations, setVariations] = useState<CreativeVariation[]>([]);
   const [selectedVariationIndex, setSelectedVariationIndex] = useState<number>(0);
@@ -73,6 +74,7 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
 
   const handleGenerateVariations = async () => {
     setLoading(true);
+    setGenerationError('');
     try {
       const vars = await AIEngine.generateCreatives({
         business: activeBusiness,
@@ -103,10 +105,12 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
       }
     } catch (err) {
       console.error(err);
+      const message = err instanceof Error ? err.message : tr('Please try again.');
+      setGenerationError(message);
       showToast({
         type: 'error',
         title: tr('Could not generate ad copy'),
-        message: tr('Please try again.'),
+        message,
       });
     } finally {
       setLoading(false);
@@ -273,6 +277,15 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
           <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider block">
             {tr('Ad ideas')}
           </span>
+
+          {generationError && (
+            <div role="alert" className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+              {generationError}{' '}
+              <button type="button" onClick={handleGenerateVariations} className="font-semibold underline">
+                {tr('Retry')}
+              </button>
+            </div>
+          )}
 
           {loading ? (
             <div className="p-8 text-center bg-slate-50 rounded-xl border border-slate-200/60">

@@ -155,10 +155,14 @@ export const CreativeStudioPage: React.FC = () => {
   });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [offerError, setOfferError] = useState('');
+  const [generationProgress, setGenerationProgress] = useState('');
   const [copied, setCopied] = useState(false);
   const [instagramCopied, setInstagramCopied] = useState(false);
   const [generatedImageUrl, setGeneratedImageUrl] = useState('');
   const [isMakingImage, setIsMakingImage] = useState(false);
+  const [imageMakerError, setImageMakerError] = useState('');
+  const [imageProgress, setImageProgress] = useState('');
   const [imageMakerReady, setImageMakerReady] = useState<boolean | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [speechError, setSpeechError] = useState('');
@@ -166,6 +170,8 @@ export const CreativeStudioPage: React.FC = () => {
   const [images, setImages] = useState<PreparedAdImage[]>([]);
   const [imageError, setImageError] = useState('');
   const [processingImages, setProcessingImages] = useState(false);
+  const [generationError, setGenerationError] = useState('');
+  const [lastGenerationAttempt, setLastGenerationAttempt] = useState<{ offer: string; tone: AdTone; images: PreparedAdImage[] } | null>(null);
   const speechRecognition = useRef<SpeechRecognitionLike | null>(null);
   const videoPollGeneration = useRef(0);
   const shopDetailsComplete = Boolean(
@@ -367,9 +373,18 @@ export const CreativeStudioPage: React.FC = () => {
     }
   };
 
-  const handleGenerate = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!offer.trim()) return;
+  const handleGenerate = async (event?: React.FormEvent) => {
+    event?.preventDefault();
+    if (!offer.trim()) {
+      setOfferError(tr('Please write or speak your offer.'));
+      return;
+    }
+    if (offer.trim().length < 5) {
+      setOfferError(tr('Offer must be at least 5 characters.'));
+      return;
+    }
+    setOfferError('');
+    setGenerationError('');
     if (!shopDetailsComplete) {
       showToast({
         type: 'warning',
@@ -385,6 +400,7 @@ export const CreativeStudioPage: React.FC = () => {
     }
 
     setLoading(true);
+    setGenerationProgress(tr('Writing your ad ideas...'));
     try {
       const result = await generateMultilingualAd({
         businessName: activeBusiness.businessName,
@@ -406,6 +422,7 @@ export const CreativeStudioPage: React.FC = () => {
         badgeText: `AI ad idea ${index + 1}`,
       }));
 
+      setGenerationProgress(tr('Putting your ad together...'));
       setVariations(aiIdeas);
       setSelectedIndex(0);
       setGeneratedImageUrl(result.imageDataUrl || '');
@@ -418,10 +435,12 @@ export const CreativeStudioPage: React.FC = () => {
       });
     } catch (error) {
       console.error('Could not create ad ideas:', error);
+      const message = error instanceof Error ? error.message : tr('Please try again.');
+      setGenerationError(message);
       showToast({
         type: 'error',
         title: tr('Could not create ad ideas'),
-        message: error instanceof Error ? error.message : tr('Please try again.'),
+        message,
       });
     } finally {
       if (user && isSupabaseConfigured()) {
@@ -432,6 +451,7 @@ export const CreativeStudioPage: React.FC = () => {
           setRemainingAttempts(null);
         }
       }
+      setGenerationProgress('');
       setLoading(false);
     }
   };
@@ -590,6 +610,8 @@ export const CreativeStudioPage: React.FC = () => {
     }
 
     setIsMakingImage(true);
+    setImageMakerError('');
+    setImageProgress(tr('Making your picture...'));
     try {
       const result = await generateAdImage({
         businessName: activeBusiness.businessName,
@@ -606,6 +628,8 @@ export const CreativeStudioPage: React.FC = () => {
       setGeneratedImageUrl(result.imageDataUrl);
       updateSelected({ imageUrl: result.imageDataUrl });
       setImageMakerReady(true);
+      setImageMakerError('');
+      setImageProgress('');
       showToast({
         type: 'success',
         title: tr('New picture ready'),
@@ -613,10 +637,13 @@ export const CreativeStudioPage: React.FC = () => {
       });
     } catch (error) {
       console.error('Could not make a new picture:', error);
+      const message = tr(adImageErrorText(error));
+      setImageMakerError(message);
+      setImageProgress('');
       showToast({
         type: 'error',
         title: tr('Could not make a picture'),
-        message: tr(adImageErrorText(error)),
+        message,
       });
     } finally {
       setIsMakingImage(false);
@@ -754,6 +781,7 @@ export const CreativeStudioPage: React.FC = () => {
 
       <form
         onSubmit={handleGenerate}
+        noValidate
         data-tour="ad-prompt"
         className="surface-raised space-y-5 rounded-2xl p-5 sm:p-7"
       >
@@ -764,13 +792,20 @@ export const CreativeStudioPage: React.FC = () => {
           <textarea
             id="ad-offer"
             value={offer}
-            onChange={(event) => setOffer(event.target.value)}
+            onChange={(event) => {
+              setOffer(event.target.value);
+              if (offerError) setOfferError('');
+            }}
             rows={2}
             maxLength={180}
             required
+            aria-invalid={Boolean(offerError)}
             placeholder={t('offerHint')}
-            className="min-h-24 w-full resize-y rounded-xl border border-slate-300 px-3 py-2.5 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900"
+            className={`min-h-24 w-full resize-y rounded-xl border px-3 py-2.5 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 ${offerError ? 'border-rose-400 focus:ring-rose-500' : 'border-slate-300'}`}
           />
+          {offerError && (
+            <p role="alert" className="mt-1 text-sm text-rose-700">{offerError}</p>
+          )}
           <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs text-slate-500">{t('offerHint')}</p>
             <button
@@ -940,7 +975,18 @@ export const CreativeStudioPage: React.FC = () => {
                 {t('videoProgress')}
               </p>
             )}
-            {videoError && <p role="alert" className="text-sm leading-relaxed text-rose-700">{videoError}</p>}
+            {videoError && (
+              <div role="alert" className="text-sm leading-relaxed text-rose-700">
+                {videoError}{' '}
+                <button
+                  type="button"
+                  onClick={handleGenerateVideo}
+                  className="font-semibold underline"
+                >
+                  {tr('Retry')}
+                </button>
+              </div>
+            )}
           </div>
         </details>
 
@@ -949,13 +995,27 @@ export const CreativeStudioPage: React.FC = () => {
             <button
               type="submit"
               data-tour="ad-generate"
-              disabled={loading || videoLoading || processingImages || !offer.trim() || !shopDetailsComplete}
+              disabled={loading || videoLoading || processingImages || !shopDetailsComplete}
               className="brand-button inline-flex min-h-12 items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Sparkles className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} aria-hidden="true" />
               {loading ? t('makingAd') : t('makeAd')}
             </button>
           </div>
+          {generationError && (
+            <div role="alert" className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+              {generationError}{' '}
+              <button type="button" onClick={() => void handleGenerate()} className="font-semibold underline">
+                {tr('Retry')}
+              </button>
+            </div>
+          )}
+          {loading && generationProgress && (
+            <p role="status" aria-live="polite" className="text-sm font-medium text-slate-700">
+              <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-slate-400 border-t-transparent align-middle" />{' '}
+              {generationProgress}
+            </p>
+          )}
           <div className="flex flex-col gap-1 text-xs text-slate-500 sm:flex-row sm:gap-4">
             {isSupabaseConfigured() && user && (
               <p>
@@ -1104,13 +1164,27 @@ export const CreativeStudioPage: React.FC = () => {
                     className="btn-secondary min-h-10 px-3 text-sm disabled:cursor-wait disabled:opacity-70"
                   >
                     <Sparkles className={`h-4 w-4 text-[color:var(--brand)] ${isMakingImage ? 'animate-pulse' : ''}`} aria-hidden="true" />
-                    {isMakingImage ? tr('Making a new picture…') : tr('Make a new picture')}
+                    {isMakingImage
+                      ? imageProgress || tr('Making a new picture…')
+                      : imageMakerError
+                        ? tr('Try again')
+                        : tr('Make a new picture')}
                   </button>
+                  {imageMakerError && (
+                    <p role="alert" className="min-w-0 flex-1 text-xs leading-relaxed text-rose-700">
+                      {imageMakerError}{' '}
+                      <button type="button" onClick={handleMakeNewImage} className="font-semibold underline">
+                        {tr('Retry')}
+                      </button>
+                    </p>
+                  )}
+                  {!imageMakerError && (
                   <p className="min-w-0 flex-1 text-xs leading-relaxed text-[color:var(--ink-soft)]">
                     {imageMakerReady === false
                       ? tr('Picture making is switched off. Add a Google Gemini key to switch it on.')
                       : tr('A new picture made from this ad idea. Check it looks like your shop before you share it.')}
                   </p>
+                  )}
                 </div>
                 <div className="space-y-3 p-4">
                   <label htmlFor="ad-headline" className="block text-sm font-medium text-slate-700">

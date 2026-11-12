@@ -40,6 +40,7 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
 }) => {
   const { activeBusiness, showToast, tr } = useApp();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [isEditingHook, setIsEditingHook] = useState(false);
 
   const suggestedPlan = BudgetEngine.buildPlan({
@@ -65,6 +66,7 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
 
   const handleGenerate = async () => {
     setLoading(true);
+    setError('');
     try {
       const rec = await AIEngine.generateStrategy({
         business: activeBusiness,
@@ -78,10 +80,12 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
       }
     } catch (err) {
       console.error(err);
+      const message = err instanceof Error ? err.message : tr('Please try again.');
+      setError(message);
       showToast({
         type: 'error',
         title: tr('Could not make a suggestion'),
-        message: tr('Please try again.'),
+        message,
       });
     } finally {
       setLoading(false);
@@ -110,6 +114,15 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
           {loading ? tr('Working...') : tr('Try another plan')}
         </button>
       </div>
+
+      {error && (
+        <div role="alert" className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+          {error}{' '}
+          <button type="button" onClick={handleGenerate} className="font-semibold underline">
+            {tr('Retry')}
+          </button>
+        </div>
+      )}
 
       {loading && !recommendation ? (
         <div className="py-12 text-center space-y-2 bg-slate-50 rounded-xl border border-slate-200/60">

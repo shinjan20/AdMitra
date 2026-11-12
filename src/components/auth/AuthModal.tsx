@@ -270,7 +270,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
               />
             </svg>
-            <span>{googleLoading ? '…' : t('googleSignIn')}</span>
+            <span className="inline-flex items-center gap-2">
+              {googleLoading && <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />}
+              {googleLoading ? tr('Signing in...') : t('googleSignIn')}
+            </span>
           </button>
 
           {/* Divider */}
@@ -403,11 +406,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   disabled={loading}
                   className="min-h-11 w-full rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:opacity-50"
                 >
-                  {loading
-                    ? '…'
-                    : otpSent
-                      ? t('verifyOtp')
-                      : t('sendOtp')}
+                  {loading ? (
+                    <span className="inline-flex items-center gap-2">
+                      <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      {tr('Working...')}
+                    </span>
+                  ) : otpSent ? (
+                    t('verifyOtp')
+                  ) : (
+                    t('sendOtp')
+                  )}
                 </button>
                 {otpSent && (
                   <button
@@ -511,7 +519,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               className="min-h-11 w-full rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 disabled:opacity-50"
             >
               {loading ? (
-                '…'
+                <span className="inline-flex items-center gap-2">
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  {tr('Working...')}
+                </span>
               ) : mode === 'login' ? (
                 <>
                   {t('signIn')} <ArrowRight className="w-3.5 h-3.5" />

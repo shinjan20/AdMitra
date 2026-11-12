@@ -47,9 +47,19 @@ export const BusinessProfilePage: React.FC = () => {
   const update = (field: keyof typeof formData, value: string | boolean) =>
     setFormData((previous) => ({ ...previous, [field]: value }));
 
+  const [isSaving, setIsSaving] = React.useState(false);
+  const [profileError, setProfileError] = React.useState('');
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    updateBusiness({
+    if (!formData.businessName.trim() || !formData.city.trim()) {
+      setProfileError(tr('Shop or business name and city are required.'));
+      return;
+    }
+    setProfileError('');
+    setIsSaving(true);
+    try {
+      updateBusiness({
       ...activeBusiness,
       businessName: formData.businessName.trim(),
       category: formData.category,
@@ -95,6 +105,9 @@ export const BusinessProfilePage: React.FC = () => {
         hasAdAccounts: formData.hasAdAccounts,
       },
     });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const inputClass =
@@ -124,7 +137,7 @@ export const BusinessProfilePage: React.FC = () => {
         </p>
       </header>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} noValidate className="space-y-5">
         <section className="surface-panel space-y-5 rounded-xl p-5 sm:p-7">
           <div>
             <h2 className="text-sm font-semibold text-slate-900">{tr('Business basics')}</h2>
@@ -514,15 +527,26 @@ export const BusinessProfilePage: React.FC = () => {
           </div>
         </section>
 
+        {profileError && (
+          <p role="alert" className="text-sm text-rose-700">{profileError}</p>
+        )}
         <div className="flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-slate-500">
             {tr('Saved in this browser. No ad account is connected and no financial data is sent to a provider.')}
           </p>
           <button
             type="submit"
-            className="brand-button inline-flex min-h-11 items-center justify-center rounded-lg px-5 text-sm font-semibold"
+            disabled={isSaving}
+            className="brand-button inline-flex min-h-11 items-center justify-center rounded-lg px-5 text-sm font-semibold disabled:opacity-70"
           >
-            {tr('Save business context')}
+            {isSaving ? (
+              <span className="flex items-center gap-2">
+                <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                {tr('Saving...')}
+              </span>
+            ) : (
+              tr('Save business context')
+            )}
           </button>
         </div>
       </form>

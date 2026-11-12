@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Building2, Compass } from 'lucide-react';
+import { Building2, Compass, AlertCircle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { BUSINESS_CATEGORIES } from '../../services/language';
+import { validateShopSetup, getFieldError } from '../../utils/validation';
+import { LoadingOverlay } from '../common/LoadingOverlay';
 
 export const ShopSetupPage: React.FC = () => {
-  const { user, activeBusiness, t, tr, completeShopSetup, deferShopSetup } = useApp();
+  const { user, activeBusiness, t, tr, completeShopSetup, deferShopSetup, showToast } = useApp();
   const hasSavedBusiness = activeBusiness.userId === user?.id;
 
   // Check for demo scenario data
@@ -37,12 +39,41 @@ export const ShopSetupPage: React.FC = () => {
   const [whatsappNumber, setWhatsappNumber] = useState(
     hasSavedBusiness ? activeBusiness.whatsappNumber || '' : ''
   );
+  const [isLoading, setIsLoading] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{ field: string; message: string }[]>([]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    completeShopSetup({ language: 'en', businessName, category, city, area, whatsappNumber });
-    // Clear demo scenario data after use
-    localStorage.removeItem('admitra:demo-scenario');
+    
+    // Validate form
+    const validation = validateShopSetup({ businessName, category, city });
+    if (!validation.isValid) {
+      setValidationErrors(validation.errors);
+      return;
+    }
+
+    setIsLoading(true);
+    setValidationErrors([]);
+
+    try {
+      completeShopSetup({ language: 'en', businessName, category, city, area, whatsappNumber });
+      showToast({
+        type: 'success',
+        title: tr('Shop details saved'),
+        message: tr('Your shop details have been saved.'),
+      });
+      // Clear demo scenario data after use
+      localStorage.removeItem('admitra:demo-scenario');
+    } catch (error) {
+      setValidationErrors([
+        {
+          field: 'submit',
+          message: 'Failed to save shop details. Please try again.',
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -55,7 +86,7 @@ export const ShopSetupPage: React.FC = () => {
           <span className="text-lg">Ad<span className="brand-accent">Mitra</span></span>
         </div>
 
-        <form onSubmit={handleSubmit} className="surface-raised space-y-5 rounded-2xl p-5 sm:p-8">
+        <form onSubmit={handleSubmit} noValidate className="surface-raised space-y-5 rounded-2xl p-5 sm:p-8">
           <header>
             <div className="chip">
               <Building2 className="h-3.5 w-3.5" aria-hidden="true" />
@@ -68,6 +99,23 @@ export const ShopSetupPage: React.FC = () => {
               {tr('A few quick answers so your ad sounds right. You can change them later.')}
             </p>
           </header>
+
+          {/* Error Messages */}
+          {validationErrors.length > 0 && (
+            <div className="rounded-lg bg-red-50 p-4 border border-red-200">
+              <div className="flex gap-3">
+                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-semibold text-red-900 text-sm">Please fix the following errors:</h3>
+                  <ul className="mt-2 space-y-1 text-sm text-red-800">
+                    {validationErrors.map((error, idx) => (
+                      <li key={idx}>• {error.message}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div>
             <label htmlFor="shop-language" className="mb-1.5 block text-sm font-medium text-slate-800">
@@ -170,18 +218,33 @@ export const ShopSetupPage: React.FC = () => {
             <button
               type="button"
               onClick={deferShopSetup}
-              className="min-h-11 rounded-lg px-4 text-sm font-medium text-slate-600 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-slate-900"
+              disabled={isLoading}
+              className="min-h-11 rounded-lg px-4 text-sm font-medium text-slate-600 hover:bg-slate-100 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-slate-900"
             >
               {t('skip')}
             </button>
             <button
               type="submit"
-              className="brand-button min-h-11 rounded-lg px-5 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+              disabled={isLoading}
+              className="brand-button min-h-11 rounded-lg px-5 text-sm font-semibold disabled:opacity-75 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
             >
-              {tr('Next: make my ad')}
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  Saving...
+                </span>
+              ) : (
+                tr('Next: make my ad')
+              )}
             </button>
           </div>
         </form>
+
+        <LoadingOverlay
+          isVisible={isLoading}
+          message="Saving your shop details..."
+          progressText="This should only take a moment"
+        />
       </section>
     </main>
   );

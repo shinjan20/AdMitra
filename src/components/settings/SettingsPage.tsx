@@ -5,6 +5,7 @@ import { DemoNoticeBadge } from '../common/DemoNoticeBadge';
 
 export const SettingsPage: React.FC = () => {
   const { resetAllData, tr } = useApp();
+  const [isResetting, setIsResetting] = React.useState(false);
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 pb-16">
@@ -33,14 +34,27 @@ export const SettingsPage: React.FC = () => {
         </p>
         <button
           type="button"
+          disabled={isResetting}
           onClick={() => {
             if (window.confirm(tr('Reset practice data saved in this browser?'))) {
-              resetAllData();
+              setIsResetting(true);
+              try {
+                resetAllData();
+              } finally {
+                setIsResetting(false);
+              }
             }
           }}
           className="min-h-11 rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-medium text-rose-800 hover:bg-rose-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-700"
         >
-          {tr('Reset practice data')}
+          {isResetting ? (
+            <span className="inline-flex items-center gap-2">
+              <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              {tr('Resetting...')}
+            </span>
+          ) : (
+            tr('Reset practice data')
+          )}
         </button>
       </section>
     </div>
