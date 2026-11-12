@@ -98,13 +98,24 @@ Deno.serve(async (request: Request) => {
     }
     const headers: Record<string, string> = {
       'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Vary': 'Origin',
     };
     if (origin) headers['Access-Control-Allow-Origin'] = origin;
     return new Response(null, {
       status: 204,
       headers,
+    });
+  }
+
+  // GET request to check if image maker is available
+  if (request.method === 'GET') {
+    const geminiKey = Deno.env.get('GEMINI_API_KEY');
+    const geminiModel = Deno.env.get('GEMINI_IMAGE_MODEL') || 'gemini-1.5-flash-vision';
+    const ready = Boolean(geminiKey);
+    return response(request, {
+      ready,
+      model: ready ? geminiModel : undefined,
     });
   }
 
