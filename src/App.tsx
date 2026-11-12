@@ -2,6 +2,7 @@ import React from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Navbar } from './components/common/Navbar';
 import { ToastContainer } from './components/common/Toast';
+import { OfflineStatus } from './components/common/OfflineStatus';
 import { AuthModal } from './components/auth/AuthModal';
 import { CreativeStudioPage } from './components/creative-studio/CreativeStudioPage';
 import { BusinessProfilePage } from './components/business-profile/BusinessProfilePage';
@@ -82,6 +83,7 @@ const MainContent: React.FC = () => {
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
       {showProductTour && <ProductTour onComplete={completeProductTour} />}
       <ToastContainer />
+      <OfflineStatus />
     </div>
   );
 };
