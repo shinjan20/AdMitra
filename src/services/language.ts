@@ -65,7 +65,7 @@ const copy: Record<'en', LocaleCopy> = {
     landingHeadline: 'Make ads in your language.',
     landingBody: 'Turn a real offer into an editable ad in your language. Review it, then share it yourself. Video is optional and may not always be available.',
     campaignPlanHeadline: 'Make your first ad, one small step at a time.',
-    campaignPlanBody: 'Tell us about your shop, write one offer, and get an ad in your language. You can edit every word. This is a practice ad—nothing is posted or charged.',
+    campaignPlanBody: 'Built for Indian businesses: tell us about your shop, write one offer, and get an ad you can edit. This is a practice ad—nothing is posted or charged.',
     tagline: 'Your shop, your language, your ad.',
     explore: 'Explore without signing in', signInForAI: 'Sign in to make an AI ad',
     signIn: 'Sign in', signOut: 'Sign out', yourBusiness: 'Your shop',
