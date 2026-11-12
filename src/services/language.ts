@@ -113,7 +113,7 @@ const copy: Record<'en', LocaleCopy> = {
 };
 
 export function getInitialLanguage(): AppLanguage {
-  return detectLanguage();
+  return 'en';
 }
 
 function detectLanguage(): AppLanguage {

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Building2, Compass, AlertCircle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { APP_LANGUAGES, BUSINESS_CATEGORIES } from '../../services/language';
+import { BUSINESS_CATEGORIES } from '../../services/language';
 import { validateShopSetup, getFieldError } from '../../utils/validation';
 import { LoadingOverlay } from '../common/LoadingOverlay';
 
 export const ShopSetupPage: React.FC = () => {
-  const { user, activeBusiness, language, setLanguage, t, tr, completeShopSetup, deferShopSetup, showToast } = useApp();
+  const { user, activeBusiness, t, tr, completeShopSetup, deferShopSetup, showToast } = useApp();
   const hasSavedBusiness = activeBusiness.userId === user?.id;
 
   // Check for demo scenario data
@@ -56,7 +56,7 @@ export const ShopSetupPage: React.FC = () => {
     setValidationErrors([]);
 
     try {
-      completeShopSetup({ language, businessName, category, city, area, whatsappNumber });
+      completeShopSetup({ language: 'en', businessName, category, city, area, whatsappNumber });
       showToast({
         type: 'success',
         title: tr('Shop details saved'),
@@ -123,14 +123,13 @@ export const ShopSetupPage: React.FC = () => {
             </label>
             <select
               id="shop-language"
-              value={language}
-              onChange={(event) => setLanguage(event.target.value as any)}
-              className="min-h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
+              value="en"
+              disabled
+              className="min-h-12 w-full rounded-lg border border-slate-300 bg-gray-100 px-3 text-base text-slate-900 cursor-not-allowed"
             >
-              {APP_LANGUAGES.map((option) => (
-                <option key={option.code} value={option.code}>{option.name}</option>
-              ))}
+              <option value="en">English</option>
             </select>
+            <p className="mt-1 text-xs text-slate-500">Ads are created in English</p>
           </div>
 
           <div>

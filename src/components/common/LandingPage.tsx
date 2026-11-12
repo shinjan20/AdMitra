@@ -174,17 +174,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSignIn, onCreateCamp
           </span>
         </div>
         <div className="flex items-center gap-1.5 sm:gap-3">
-          <label className="sr-only" htmlFor="landing-language">{t('chooseLanguage')}</label>
-          <select
-            id="landing-language"
-            value={language}
-            onChange={(event) => setLanguage(event.target.value as typeof language)}
-            className="min-h-11 max-w-[7.5rem] rounded-xl border border-[color:var(--line-strong)] bg-white px-2.5 text-sm font-medium text-[color:var(--ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--brand)] sm:max-w-none sm:px-3"
-          >
-            {APP_LANGUAGES.map((option) => (
-              <option key={option.code} value={option.code}>{option.name}</option>
-            ))}
-          </select>
           <button
             type="button"
             onClick={onSignIn}

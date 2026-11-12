@@ -12,7 +12,6 @@ import {
   Settings,
   Target,
 } from 'lucide-react';
-import { APP_LANGUAGES } from '../../services/language';
 
 
 export const Navbar: React.FC = () => {
@@ -22,8 +21,6 @@ export const Navbar: React.FC = () => {
     user,
     setShowAuthModal,
     logout,
-    language,
-    setLanguage,
     t,
     tr,
     activePage,
@@ -100,17 +97,6 @@ export const Navbar: React.FC = () => {
           )}
 
           <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
-            <label className="sr-only" htmlFor="app-language">{t('chooseLanguage')}</label>
-            <select
-              id="app-language"
-              value={language}
-              onChange={(event) => setLanguage(event.target.value as typeof language)}
-              className="min-h-11 max-w-[5.5rem] rounded-lg border border-[color:var(--line-strong)] bg-white px-2 text-sm font-medium text-[color:var(--ink)] focus:outline-none focus:ring-2 focus:ring-[color:var(--brand)] sm:max-w-[8rem]"
-            >
-              {APP_LANGUAGES.map((option) => (
-                <option key={option.code} value={option.code}>{option.name}</option>
-              ))}
-            </select>
             {user ? (
               <div className="relative">
                 <button
