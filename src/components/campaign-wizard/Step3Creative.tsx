@@ -216,7 +216,7 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <section id="wizard-step-3" className="space-y-6">
       <DemoNoticeBadge />
       <div className="flex items-start justify-between">
         <div>
@@ -611,6 +611,6 @@ export const Step3Creative: React.FC<Step3CreativeProps> = ({
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
-    </div>
+    </section>
   );
 };

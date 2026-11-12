@@ -43,7 +43,7 @@ export const Step4Audience: React.FC<Step4AudienceProps> = ({
   }, [city, area, distance]);
 
   return (
-    <div className="space-y-6">
+    <section id="wizard-step-4" className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold tracking-tight text-slate-900">
           {tr('Choose an area')}
@@ -141,6 +141,6 @@ export const Step4Audience: React.FC<Step4AudienceProps> = ({
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
-    </div>
+    </section>
   );
 };

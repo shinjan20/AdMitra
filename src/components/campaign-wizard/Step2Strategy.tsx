@@ -93,7 +93,7 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <section id="wizard-step-2" className="space-y-6">
       <DemoNoticeBadge />
       <div className="flex items-start justify-between">
         <div>
@@ -286,6 +286,6 @@ export const Step2Strategy: React.FC<Step2StrategyProps> = ({
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
-    </div>
+    </section>
   );
 };

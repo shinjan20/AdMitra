@@ -14,6 +14,7 @@ import { CampaignDashboardPage } from './components/dashboard/CampaignDashboardP
 import { MarketingPlanPage } from './components/marketing-plan/MarketingPlanPage';
 import { ConnectedAccountsPage } from './components/connected-accounts/ConnectedAccountsPage';
 import { SettingsPage } from './components/settings/SettingsPage';
+import { ScrollToTop } from './components/common/ScrollToTop';
 
 const MainContent: React.FC = () => {
   const {
@@ -84,6 +85,7 @@ const MainContent: React.FC = () => {
       {showProductTour && <ProductTour onComplete={completeProductTour} />}
       <ToastContainer />
       <OfflineStatus />
+      <ScrollToTop />
     </div>
   );
 };

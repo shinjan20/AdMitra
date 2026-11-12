@@ -21,6 +21,7 @@ export const Step1Objective: React.FC<Step1ObjectiveProps> = ({
   onNext,
 }) => {
   const { tr } = useApp();
+
   const objectives: {
     id: CampaignObjective;
     title: string;
@@ -52,7 +53,7 @@ export const Step1Objective: React.FC<Step1ObjectiveProps> = ({
   ];
 
   return (
-    <div className="space-y-6">
+    <section id="wizard-step-1" className="space-y-6">
       <div>
         <h2 className="display text-2xl font-bold">
           {tr('What would you like people to do?')}
@@ -110,6 +111,6 @@ export const Step1Objective: React.FC<Step1ObjectiveProps> = ({
           <ArrowRight className="h-4 w-4" />
         </button>
       </div>
-    </div>
+    </section>
   );
 };

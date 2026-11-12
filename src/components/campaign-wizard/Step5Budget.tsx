@@ -55,7 +55,7 @@ export const Step5Budget: React.FC<Step5BudgetProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <section id="wizard-step-5" className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold tracking-tight text-slate-900">
           {tr('Choose a sample budget')}
@@ -197,6 +197,6 @@ export const Step5Budget: React.FC<Step5BudgetProps> = ({
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
-    </div>
+    </section>
   );
 };

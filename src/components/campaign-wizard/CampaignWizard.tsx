@@ -148,7 +148,15 @@ export const CampaignWizard: React.FC = () => {
 
   const handleNextStep = (next: number) => {
     setCurrentStep(next);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Scroll to the step section so the relevant content is in view
+    requestAnimationFrame(() => {
+      const section = document.getElementById(`wizard-step-${next}`);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
 
     const stepEvents: Record<number, any> = {
       2: 'campaign_recommendation_generated',

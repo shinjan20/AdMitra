@@ -170,7 +170,7 @@ export const Step6Review: React.FC<Step6ReviewProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <section id="wizard-step-6" className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-slate-900 tracking-tight">
           {tr('Review your ad')}
@@ -419,6 +419,6 @@ export const Step6Review: React.FC<Step6ReviewProps> = ({
           {isSaving ? tr('Saving…') : tr('Approve and save plan')}
         </button>
       </div>
-    </div>
+    </section>
   );
 };
