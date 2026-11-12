@@ -138,7 +138,7 @@ export const CreativeStudioPage: React.FC = () => {
       : activeBusiness.location.area || ''
   );
   const [tone, setTone] = useState<AdTone>(savedAdDetails?.tone || 'Friendly');
-  const [language] = useState<AdLanguageCode>('hi');
+  const [language] = useState<AdLanguageCode>('en');
   const [videoDirection, setVideoDirection] = useState('');
   const [videoInteractionId, setVideoInteractionId] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
@@ -843,13 +843,13 @@ export const CreativeStudioPage: React.FC = () => {
           </label>
           <select
             id="ad-language"
-            value="hi"
+            value="en"
             disabled
             className="min-h-11 w-full rounded-lg border border-slate-300 bg-gray-100 px-3 text-base text-slate-900 cursor-not-allowed"
           >
-            <option value="hi">Hindi (हिन्दी)</option>
+            <option value="en">English</option>
           </select>
-          <p className="mt-1 text-xs text-slate-500">Ads are created in Hindi</p>
+          <p className="mt-1 text-xs text-slate-500">Ads are created in English</p>
         </div>
 
         <details className="border-t border-slate-200 pt-3">

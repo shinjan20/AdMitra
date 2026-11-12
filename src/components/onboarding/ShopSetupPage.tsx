@@ -40,7 +40,7 @@ export const ShopSetupPage: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    completeShopSetup({ language: 'hi', businessName, category, city, area, whatsappNumber });
+    completeShopSetup({ language: 'en', businessName, category, city, area, whatsappNumber });
     // Clear demo scenario data after use
     localStorage.removeItem('admitra:demo-scenario');
   };
@@ -75,13 +75,13 @@ export const ShopSetupPage: React.FC = () => {
             </label>
             <select
               id="shop-language"
-              value="hi"
+              value="en"
               disabled
               className="min-h-12 w-full rounded-lg border border-slate-300 bg-gray-100 px-3 text-base text-slate-900 cursor-not-allowed"
             >
-              <option value="hi">Hindi (हिन्दी)</option>
+              <option value="en">English</option>
             </select>
-            <p className="mt-1 text-xs text-slate-500">Ads are created in Hindi</p>
+            <p className="mt-1 text-xs text-slate-500">Ads are created in English</p>
           </div>
 
           <div>
