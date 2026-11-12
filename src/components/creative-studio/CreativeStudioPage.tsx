@@ -175,6 +175,7 @@ export const CreativeStudioPage: React.FC = () => {
   const [processingImages, setProcessingImages] = useState(false);
   const [generationError, setGenerationError] = useState('');
   const [lastGenerationAttempt, setLastGenerationAttempt] = useState<{ offer: string; tone: AdTone; images: PreparedAdImage[] } | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const speechRecognition = useRef<SpeechRecognitionLike | null>(null);
   const videoPollGeneration = useRef(0);
   const shopDetailsComplete = Boolean(
@@ -186,6 +187,19 @@ export const CreativeStudioPage: React.FC = () => {
   useEffect(() => {
     // Language is now fixed to Hindi
   }, []);
+
+  // Detect unsaved changes and warn before navigation
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   useEffect(() => {
     let active = true;
@@ -610,6 +624,7 @@ export const CreativeStudioPage: React.FC = () => {
       index === selectedIndex ? { ...variation, ...changes } : variation
     );
     setVariations(updated);
+    setHasUnsavedChanges(true);
     if (updated[selectedIndex]) saveDraft(updated[selectedIndex], updated);
   };
 
@@ -671,6 +686,7 @@ export const CreativeStudioPage: React.FC = () => {
     const current = variations[selectedIndex];
     if (!current) return;
     saveDraft(current, variations);
+    setHasUnsavedChanges(false);
     updateActiveDraft((prev) => {
       const base = prev ?? {};
       return {
@@ -806,7 +822,16 @@ export const CreativeStudioPage: React.FC = () => {
         </div>
         <button
           type="button"
-          onClick={() => navigateTo('create-campaign')}
+          onClick={() => {
+            if (hasUnsavedChanges) {
+              if (window.confirm(tr('You have unsaved changes. Are you sure you want to leave?'))) {
+                setHasUnsavedChanges(false);
+                navigateTo('create-campaign');
+              }
+            } else {
+              navigateTo('create-campaign');
+            }
+          }}
           className="btn-secondary min-h-11 px-4 text-sm"
         >
           {tr('Plan a budget (optional)')}
@@ -1067,7 +1092,16 @@ export const CreativeStudioPage: React.FC = () => {
             </p>
             <button
               type="button"
-              onClick={() => navigateTo('business-profile')}
+              onClick={() => {
+                if (hasUnsavedChanges) {
+                  if (window.confirm(tr('You have unsaved changes. Are you sure you want to leave?'))) {
+                    setHasUnsavedChanges(false);
+                    navigateTo('business-profile');
+                  }
+                } else {
+                  navigateTo('business-profile');
+                }
+              }}
               className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
             >
               {t('shopSetup')}
@@ -1277,10 +1311,26 @@ export const CreativeStudioPage: React.FC = () => {
                     onChange={(event) => updateSelected({ description: event.target.value })}
                     className="w-full resize-y rounded-lg border border-slate-300 px-3 py-2 text-base leading-relaxed text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-900"
                   />
-                  <div className="brand-button flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-semibold">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const whatsappNumber = activeBusiness.whatsappNumber?.replace(/\D/g, '');
+                      if (whatsappNumber) {
+                        window.open(`https://wa.me/${whatsappNumber}`, '_blank');
+                      } else {
+                        showToast({
+                          type: 'warning',
+                          title: tr('WhatsApp number not saved'),
+                          message: tr('Add your WhatsApp number in business profile to open WhatsApp.'),
+                        });
+                      }
+                    }}
+                    className="brand-button inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-semibold hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+                    title={activeBusiness.whatsappNumber ? tr('Open WhatsApp') : tr('Add WhatsApp number first')}
+                  >
                     <MessageCircle className="h-4 w-4" aria-hidden="true" />
                     {selected.ctaLabel || 'Send a WhatsApp message'}
-                  </div>
+                  </button>
                 </div>
               </div>
 

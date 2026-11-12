@@ -284,10 +284,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                       setPhoneNumber(event.target.value);
                       setOtpSent(false);
                       setOtpCode('');
+                      setErrorMessage(null);
+                    }}
+                    onBlur={() => {
+                      const phone = normalizeIndianPhone(phoneNumber);
+                      if (phoneNumber.trim() && !phone) {
+                        setErrorMessage(t('phoneFormatError'));
+                      }
                     }}
                     maxLength={14}
                     placeholder="98765 43210"
                     required
+                    minLength={10}
                     className="min-w-0 flex-1 px-3 text-base focus:outline-none"
                   />
                 </div>
