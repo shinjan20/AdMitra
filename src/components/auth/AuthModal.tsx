@@ -21,7 +21,7 @@ interface AuthModalProps {
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const { setUser, setActiveBusiness, showToast, t, tr } = useApp();
   const [mode, setMode] = useState<'login' | 'register'>('login');
-  const [authMethod, setAuthMethod] = useState<'email' | 'phone'>('phone');
+  const [authMethod, setAuthMethod] = useState<'phone'>('phone');
 
   // Form states
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -176,7 +176,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const changeAuthMethod = (method: 'email' | 'phone') => {
+  const changeAuthMethod = (method: 'phone') => {
     setAuthMethod(method);
     setErrorMessage(null);
     setNoticeMessage(null);
@@ -220,30 +220,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
         {/* Sign-in method selector */}
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-2" aria-label={tr('Sign-in method')}>
-            <button
-              type="button"
-              onClick={() => changeAuthMethod('email')}
-              aria-pressed={authMethod === 'email'}
-              className={`min-h-11 rounded-lg border px-3 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 ${
-                authMethod === 'email'
-                  ? 'border-slate-900 bg-slate-50 text-slate-900'
-                  : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              {authMethod === 'phone' ? t('useEmail') : t('email')}
-            </button>
+          <div aria-label={tr('Sign-in method')}>
             <button
               type="button"
               onClick={() => changeAuthMethod('phone')}
               aria-pressed={authMethod === 'phone'}
-              className={`min-h-11 rounded-lg border px-3 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 ${
+              className={`min-h-11 w-full rounded-lg border px-3 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 ${
                 authMethod === 'phone'
                   ? 'border-slate-900 bg-slate-50 text-slate-900'
                   : 'border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
             >
-              {authMethod === 'email' ? t('usePhone') : t('mobileNumber')}
+              {t('mobileNumber')}
             </button>
           </div>
 
