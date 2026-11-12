@@ -192,7 +192,7 @@ Deno.serve(async (request: Request) => {
   const outputLanguage = LANGUAGES[language as LanguageCode];
   let textResponse: Response;
   try {
-    const model = Deno.env.get('GEMINI_TEXT_MODEL') || 'gemini-3.8-flash';
+    const model = Deno.env.get('GEMINI_TEXT_MODEL') || 'gemini-1.5-flash';
     textResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
@@ -349,7 +349,7 @@ Deno.serve(async (request: Request) => {
 
   let imageResponse: Response;
   try {
-    const model = Deno.env.get('GEMINI_IMAGE_MODEL') || 'gemini-2.5-flash-image';
+    const model = Deno.env.get('GEMINI_IMAGE_MODEL') || 'gemini-1.5-flash-vision';
     imageResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
