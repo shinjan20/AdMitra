@@ -9,7 +9,7 @@ interface AIInsightsCardProps {
 }
 
 export const AIInsightsCard: React.FC<AIInsightsCardProps> = ({ campaign }) => {
-  const { activeBusiness, tr } = useApp();
+  const { activeBusiness, tr, updateCampaignStatus } = useApp();
   const recommendations = AIEngine.generatePerformanceRecommendations(campaign, {
     acceptableCostPerLead: activeBusiness.economics?.acceptableCostPerLead,
   });
@@ -75,6 +75,21 @@ export const AIInsightsCard: React.FC<AIInsightsCardProps> = ({ campaign }) => {
               </span>
             </p>
           </div>
+
+          {recommendation.apply ? (
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <p className="text-xs leading-relaxed text-slate-600">
+                {tr('This recommendation can be applied by you. Nothing has been changed yet.')}
+              </p>
+              <button
+                type="button"
+        onClick={() => updateCampaignStatus(campaign.id, recommendation.apply!.action)}
+                className="inline-flex min-h-11 items-center justify-center rounded-lg bg-slate-900 px-4 text-xs font-semibold text-white transition-colors hover:bg-slate-800"
+              >
+                {recommendation.apply.label}
+              </button>
+            </div>
+          ) : null}
         </div>
       ))}
 

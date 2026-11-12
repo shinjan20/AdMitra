@@ -644,6 +644,52 @@ export const AIEngine = {
       });
     }
 
+    const hasDelivery = Boolean(
+      metrics && (metrics.totalSpend > 0 || (metrics.totalImpressions ?? 0) > 0),
+    );
+    if (campaign.status === 'active' && !hasDelivery) {
+      recommendations.push({
+        id: `rec-${campaign.id}-delivery`,
+        title: 'The campaign has not delivered yet',
+        whatHappened: metrics
+          ? `About ₹${metrics.totalSpend.toLocaleString('en-IN')} was planned, but no delivery is recorded in the practice data yet.`
+          : 'No delivery is recorded for this campaign yet.',
+        whatItMayMean:
+          'The campaign may be waiting on account readiness, tracking or the area setup before delivery can be trusted.',
+        whyItMatters:
+          'An approved campaign that never delivers can waste budget and owner confidence.',
+        suggestedAction:
+          'Hold the plan and check the delivery or preflight state before adding more money.',
+        evidence: sourceLabel,
+        uncertainty: 'High: without delivery data this is still a hypothesis.',
+        source: 'diagnostic',
+        tradeoff: 'Holding spend is slower, but safer than guessing.',
+        metricToWatch: 'Delivery status and first spend',
+        apply: { action: 'paused', label: 'Hold plan' },
+      });
+    }
+
+    const variationCount = campaign.creative?.variations?.length || 0;
+    if (variationCount > 1) {
+      recommendations.push({
+        id: `rec-${campaign.id}-variants`,
+        title: 'Compare your creative variants',
+        whatHappened: `This plan carries ${variationCount} creative variations to compare.`,
+        whatItMayMean:
+          'One version may outperform the other, but the practice sample is too small to say yet.',
+        whyItMatters:
+          'The creative is often the biggest lever in a small local ad.',
+        suggestedAction:
+          'Keep the stronger variant and test the next one after enough outcomes come in.',
+        evidence: `The plan carries ${variationCount} creative variations.`,
+        uncertainty:
+          'High: creative comparison needs enough outcomes before it is meaningful.',
+        source: 'best_practice',
+        tradeoff: 'Testing more variants spreads spend thinner.',
+        metricToWatch: 'Enquiries per variation over the next test window',
+      });
+    }
+
     if (recommendations.length === 0) {
       recommendations.push({
         id: `rec-${campaign.id}-observe`,

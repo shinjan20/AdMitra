@@ -159,6 +159,11 @@ export interface PerformanceRecommendation {
   source: 'observed' | 'diagnostic' | 'best_practice';
   tradeoff: string;
   metricToWatch: string;
+  /** Optional owner-approved change that this recommendation can lead to. */
+  apply?: {
+    action: 'paused' | 'active';
+    label: string;
+  };
 }
 
 export type CTAType =
