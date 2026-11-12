@@ -3,6 +3,8 @@
  * The Gemini key lives on the server; this file never sees or sends it.
  */
 
+import { checkCreativeInput, moderateGeneratedImage } from './adSafety';
+
 export type AdImageErrorCode =
   | 'not_configured'
   | 'rate_limited'
@@ -112,6 +114,18 @@ async function shrinkForStorage(dataUrl: string): Promise<string> {
 }
 
 export async function generateAdImage(request: AdImageRequest): Promise<AdImageResult> {
+  const inputSafety = checkCreativeInput({
+    businessName: request.businessName,
+    category: request.category,
+    city: request.city,
+    area: request.area,
+    offer: request.offer,
+    tone: request.tone,
+  });
+  if (!inputSafety.ok) {
+    throw new AdImageError('bad_request', inputSafety.issues[0]?.message || 'We could not safely use that ad input.');
+  }
+
   let response: Response;
   try {
     response = await fetch(ENDPOINT, {
@@ -148,6 +162,11 @@ export async function generateAdImage(request: AdImageRequest): Promise<AdImageR
   const imageDataUrl = typeof body?.imageDataUrl === 'string' ? body.imageDataUrl : '';
   if (!imageDataUrl.startsWith('data:image/')) {
     throw new AdImageError('no_image');
+  }
+
+  const imageSafety = await moderateGeneratedImage(imageDataUrl);
+  if (!imageSafety.ok) {
+    throw new AdImageError('blocked', imageSafety.issues[0]?.message);
   }
 
   return {

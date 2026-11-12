@@ -428,11 +428,24 @@ export const CreativeStudioPage: React.FC = () => {
       setGeneratedImageUrl(result.imageDataUrl || '');
       saveDraft(aiIdeas[0], aiIdeas);
       setRemainingAttempts(result.generationsRemainingToday);
-      showToast({
-        type: result.imageError ? 'warning' : 'success',
-        title: result.imageError ? t('imageMissing') : t('adReady'),
-        message: result.imageError || tr('Your ad text is saved in this browser. Nothing has been published.'),
-      });
+      const safetyMessages = (result.safetyIssues || []).filter(
+        (message) => typeof message === 'string' && message.trim().length > 0,
+      );
+      if (result.imageError || safetyMessages.length > 0) {
+        showToast({
+          type: 'warning',
+          title: result.imageError ? t('imageMissing') : t('safetyCheck'),
+          message:
+            [result.imageError, ...safetyMessages].filter(Boolean).join(' ') ||
+            tr('Your ad text is saved in this browser. Nothing has been published.'),
+        });
+      } else {
+        showToast({
+          type: 'success',
+          title: t('adReady'),
+          message: tr('Your ad text is saved in this browser. Nothing has been published.'),
+        });
+      }
     } catch (error) {
       console.error('Could not create ad ideas:', error);
       const message = error instanceof Error ? error.message : tr('Please try again.');

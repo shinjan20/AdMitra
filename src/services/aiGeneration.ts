@@ -1,4 +1,5 @@
 import { getSupabaseClient, isSupabaseConfigured } from './supabaseClient';
+import { checkCreativeInput, moderateGeneratedAds, moderateGeneratedImage } from './adSafety';
 import { AppLanguage, APP_LANGUAGES } from './language';
 
 export const AD_LANGUAGES = [
@@ -114,6 +115,7 @@ export interface GeneratedAdResponse {
   imageError?: string;
   language: AdLanguageCode;
   generationsRemainingToday: number;
+  safetyIssues?: string[];
 }
 
 export interface StartedAdVideo {
@@ -135,6 +137,7 @@ interface GenerateAdRequest {
   tone: string;
   language: AdLanguageCode;
   images: AdImageInput[];
+  prohibitedClaims?: string[];
 }
 
 /**
@@ -142,12 +145,10 @@ interface GenerateAdRequest {
  */
 function generateLocalSampleAd(request: GenerateAdRequest): GeneratedAdResponse {
   const { businessName, category, city, offer, tone, language } = request;
-  
+
   // Create deterministic variations based on inputs
-  const categoryLower = category.toLowerCase();
   const cityDisplay = city || 'your city';
-  
-  // Generate 3 ad ideas
+
   const ads: GeneratedAdIdea[] = [
     {
       headline: `${businessName} - ${offer}`,
@@ -165,14 +166,22 @@ function generateLocalSampleAd(request: GenerateAdRequest): GeneratedAdResponse 
       button: 'Get Offer',
     },
   ];
-  
+
+  const moderation = moderateGeneratedAds(ads, {
+    businessName,
+    category,
+    prohibitedClaims: request.prohibitedClaims,
+    language,
+  });
+
   return {
-    ads,
+    ads: moderation.ads,
     imageDataUrl: null,
     imageError:
       'Sample ad - AI generation is unavailable right now. Add a Google Gemini API key to switch on real generation.',
     language,
     generationsRemainingToday: 25,
+    safetyIssues: moderation.result.issues.map((item) => item.message),
   };
 }
 
@@ -182,7 +191,19 @@ export async function generateMultilingualAd(
   if (request.images.length > MAX_AD_IMAGES) {
     throw new Error('You can attach up to 6 photos to one ad.');
   }
-  
+
+  const inputSafety = checkCreativeInput({
+    businessName: request.businessName,
+    category: request.category,
+    city: request.city,
+    area: request.area,
+    offer: request.offer,
+    tone: request.tone,
+  });
+  if (!inputSafety.ok) {
+    throw new Error(inputSafety.issues[0]?.message || 'We could not safely use that ad input.');
+  }
+
   // If Supabase is not configured, use local sample generator
   if (!isSupabaseConfigured()) {
     return generateLocalSampleAd(request);
@@ -233,7 +254,38 @@ export async function generateMultilingualAd(
     throw new Error('The ad-making service returned an incomplete result. Please try again.');
   }
 
-  return data;
+  const moderation = moderateGeneratedAds(data.ads, {
+    businessName: request.businessName,
+    category: request.category,
+    prohibitedClaims: request.prohibitedClaims,
+    language: data.language,
+  });
+  const imageModeration = data.imageDataUrl
+    ? await moderateGeneratedImage(data.imageDataUrl)
+    : { ok: true, issues: [] };
+
+  const safetyIssues = Array.from(
+    new Set([
+      ...(data.safetyIssues || []),
+      ...moderation.result.issues.map((item) => item.message),
+      ...imageModeration.issues.map((item) => item.message),
+    ]),
+  );
+
+  if (!imageModeration.ok) {
+    return {
+      ...data,
+      ads: moderation.ads,
+      imageError: imageModeration.issues[0]?.message || 'No image came back for the ad.',
+      safetyIssues,
+    };
+  }
+
+  return {
+    ...data,
+    ads: moderation.ads,
+    safetyIssues,
+  };
 }
 
 export async function getRemainingAdGenerations(): Promise<number> {
@@ -266,6 +318,17 @@ export async function startAdVideoGeneration(request: {
   offer: string;
   style: string;
 }): Promise<StartedAdVideo> {
+  const inputSafety = checkCreativeInput({
+    businessName: request.businessName,
+    category: request.category,
+    city: request.city,
+    offer: request.offer,
+    tone: request.style,
+  });
+  if (!inputSafety.ok) {
+    throw new Error(inputSafety.issues[0]?.message || 'We could not safely use that ad input.');
+  }
+
   const supabase = getSupabaseClient();
   if (!supabase) {
     throw new Error('Could not connect to the video-making service.');
