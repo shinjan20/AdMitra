@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Building2, Compass } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { APP_LANGUAGES, BUSINESS_CATEGORIES } from '../../services/language';
+import { BUSINESS_CATEGORIES } from '../../services/language';
 
 export const ShopSetupPage: React.FC = () => {
-  const { user, activeBusiness, language, setLanguage, t, tr, completeShopSetup, deferShopSetup } = useApp();
+  const { user, activeBusiness, t, tr, completeShopSetup, deferShopSetup } = useApp();
   const hasSavedBusiness = activeBusiness.userId === user?.id;
 
   // Check for demo scenario data
@@ -40,7 +40,7 @@ export const ShopSetupPage: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    completeShopSetup({ language, businessName, category, city, area, whatsappNumber });
+    completeShopSetup({ language: 'hi', businessName, category, city, area, whatsappNumber });
     // Clear demo scenario data after use
     localStorage.removeItem('admitra:demo-scenario');
   };
@@ -75,14 +75,13 @@ export const ShopSetupPage: React.FC = () => {
             </label>
             <select
               id="shop-language"
-              value={language}
-              onChange={(event) => setLanguage(event.target.value as typeof language)}
-              className="min-h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+              value="hi"
+              disabled
+              className="min-h-12 w-full rounded-lg border border-slate-300 bg-gray-100 px-3 text-base text-slate-900 cursor-not-allowed"
             >
-              {APP_LANGUAGES.map((option) => (
-                <option key={option.code} value={option.code}>{option.name}</option>
-              ))}
+              <option value="hi">Hindi (हिन्दी)</option>
             </select>
+            <p className="mt-1 text-xs text-slate-500">Ads are created in Hindi</p>
           </div>
 
           <div>

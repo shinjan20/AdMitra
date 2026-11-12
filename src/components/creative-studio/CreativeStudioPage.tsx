@@ -15,7 +15,6 @@ import {
 } from '../../services/aiGeneration';
 import { isSupabaseConfigured } from '../../services/supabaseClient';
 import { adImageErrorText, generateAdImage, getAdImageMakerStatus } from '../../services/adImage';
-import { APP_LANGUAGES } from '../../services/language';
 import { CreativeVariation } from '../../types';
 import {
   Check,
@@ -139,7 +138,7 @@ export const CreativeStudioPage: React.FC = () => {
       : activeBusiness.location.area || ''
   );
   const [tone, setTone] = useState<AdTone>(savedAdDetails?.tone || 'Friendly');
-  const [language, setLanguage] = useState<AdLanguageCode>(savedAdDetails?.language || uiLanguage);
+  const [language] = useState<AdLanguageCode>('hi');
   const [videoDirection, setVideoDirection] = useState('');
   const [videoInteractionId, setVideoInteractionId] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
@@ -176,8 +175,8 @@ export const CreativeStudioPage: React.FC = () => {
   );
 
   useEffect(() => {
-    setLanguage(uiLanguage);
-  }, [uiLanguage]);
+    // Language is now fixed to Hindi
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -844,20 +843,13 @@ export const CreativeStudioPage: React.FC = () => {
           </label>
           <select
             id="ad-language"
-            value={language}
-            onChange={(event) => {
-              const nextLanguage = event.target.value as AdLanguageCode;
-              if (isListening) speechRecognition.current?.stop();
-              setLanguage(nextLanguage);
-            }}
-            className="min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
+            value="hi"
+            disabled
+            className="min-h-11 w-full rounded-lg border border-slate-300 bg-gray-100 px-3 text-base text-slate-900 cursor-not-allowed"
           >
-            {AD_LANGUAGES.map((option) => (
-              <option key={option.code} value={option.code}>
-                {APP_LANGUAGES.find((item) => item.code === option.code)?.name || option.name}
-              </option>
-            ))}
+            <option value="hi">Hindi (हिन्दी)</option>
           </select>
+          <p className="mt-1 text-xs text-slate-500">Ads are created in Hindi</p>
         </div>
 
         <details className="border-t border-slate-200 pt-3">
