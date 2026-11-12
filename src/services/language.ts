@@ -61,7 +61,7 @@ const copy: Record<'en', LocaleCopy> = {
     messageOnWhatsApp: 'Message on WhatsApp',
     optionalDetails: 'More details (optional)',
     continue: 'Continue', saveShop: 'Save shop details', skip: 'Do this later',
-    landingEyebrow: 'For small local shops',
+    landingEyebrow: 'For small and medium business owners',
     landingHeadline: 'Make ads in your language.',
     landingBody: 'Turn a real offer into an editable ad in your language. Review it, then share it yourself. Video is optional and may not always be available.',
     campaignPlanHeadline: 'Make your first ad, one small step at a time.',
